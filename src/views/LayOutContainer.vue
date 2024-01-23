@@ -15,10 +15,10 @@
         <a-layout-sider>
           <a-menu :default-selected-keys="['1']">
             <router-link to="/today">
-              <a-menu-item key="1"> 今日待办 </a-menu-item>
+              <a-menu-item key="1"> 所有待办 </a-menu-item>
             </router-link>
             <router-link to="/categories">
-              <a-menu-item key="2"> 待办分类 </a-menu-item>
+              <a-menu-item key="2"> 自定义待办 </a-menu-item>
             </router-link>
             <router-link to="/pomodoro">
               <a-menu-item key="3"> 番茄钟 </a-menu-item>

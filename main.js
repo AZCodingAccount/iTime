@@ -6,7 +6,7 @@ const WinState = require("electron-win-state").default;
 // 创建一个窗口
 const createWindow = () => {
   const winState = new WinState({
-    defaultWidth: 1000,
+    defaultWidth: 2400,
     defaultHeight: 800,
   });
   const win = new BrowserWindow({
@@ -27,6 +27,8 @@ const createWindow = () => {
   win.setMenu(null);
 
   //   win.loadFile("index.html");
+  win.setSize(1100, 700); // 显式设置窗口大小，因为之前的大小被缓存了
+  win.center(); // 使窗口居中
   win.loadURL("http://localhost:5173");
   winState.BrowserWindow(win); // 配置持久化
 };
