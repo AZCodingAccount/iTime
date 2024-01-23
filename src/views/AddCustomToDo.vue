@@ -137,11 +137,11 @@ const handleOk = () => {
   // customToDoStore.createTime = new Date();
   console.log(todoTitle.value,content.value,new Date());
   customToDoStore.addToDo(todoTitle.value,content.value,new Date())
+  content.value = "";
+  todoTitle.value = "";
   // 告诉用户添加成功，清空文本框的内容
   Message.success("添加成功！");
   isModalVisible.value = false;
-  content.value = "";
-  todoTitle.value = "";
 };
 </script>
 <template>

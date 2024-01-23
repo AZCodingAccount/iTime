@@ -4,7 +4,7 @@ import { ref } from "vue";
 export const useCustomToDoStore = defineStore(
   "customTodoList",
   () => {
-    const customTodoList = ref([]); // 待办列表
+    const customTodoList = ref([]); // 待办列表，必须暴露出去，不然持久化不生效
 
     // 定义代办标题和内容（这个是自定义）
     // let title = ref(""); // 标题
