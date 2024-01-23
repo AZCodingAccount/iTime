@@ -10,6 +10,7 @@ const router = createRouter({
       redirect: "/today",
       children: [
         { path: "/today", component: () => import("@/views/TodayToDo.vue") },
+        { path: "/add/customtodo", component: () => import("@/views/AddCustomToDo.vue") },
         {
           path: "/categories",
           component: () => import("@/views/MyCategory.vue"),
