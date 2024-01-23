@@ -10,11 +10,15 @@ import App from "./App.vue";
 // import { create, NButton } from "naive-ui"; // 按需引入
 
 import { Message } from '@arco-design/web-vue';
+import ArcoVueIcon from '@arco-design/web-vue/es/icon';
+
 import '@arco-design/web-vue/dist/arco.css';
 
 
 const app = createApp(App);
 Message._context = app._context; // 引入message
+app.use(ArcoVueIcon);
+
 
 
 // const naive = create({

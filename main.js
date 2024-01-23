@@ -30,7 +30,7 @@ const createWindow = () => {
   win.setSize(1100, 700); // 显式设置窗口大小，因为之前的大小被缓存了
   win.center(); // 使窗口居中
   win.loadURL("http://localhost:5173");
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()   // 打开开发者工具
   winState.BrowserWindow(win); // 配置持久化
 };
 
