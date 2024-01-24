@@ -27,7 +27,6 @@ const colors = [
   //   "magenta",
   //   "gray",
 ];
-const tags = ["学习", "工作"];
 // 待办完成
 const handleFinish = (id) => {
   const index = todoList.value.findIndex((todo) => todo.id === id);

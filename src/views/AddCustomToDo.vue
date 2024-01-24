@@ -128,16 +128,15 @@ const handleKeydown = (e) => {
   }
 };
 const customToDoStore = useCustomToDoStore();
-
+const quill = ref(null); // 编辑器对象
 // 执行存储的逻辑
 const handleOk = () => {
-  console.log(111);
   // customToDoStore.todoTitle = todoTitle.value;
   // customToDoStore.content = content.value;
   // customToDoStore.createTime = new Date();
-  console.log(todoTitle.value,content.value,new Date());
-  customToDoStore.addToDo(todoTitle.value,content.value,new Date())
-  content.value = "";
+  console.log(todoTitle.value, content.value, new Date());
+  customToDoStore.addToDo(todoTitle.value, content.value, new Date());
+  quill.value.setText("");
   todoTitle.value = "";
   // 告诉用户添加成功，清空文本框的内容
   Message.success("添加成功！");
@@ -151,6 +150,7 @@ const handleOk = () => {
     :options="editorOptions"
     v-model:content="content"
     content-type="html"
+    ref="quill"
   />
   <!-- 确认弹框 -->
   <a-modal v-model:visible="isModalVisible" @ok="handleOk">
