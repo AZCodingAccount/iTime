@@ -10,18 +10,25 @@ const router = createRouter({
       redirect: "/today",
       children: [
         { path: "/today", component: () => import("@/views/TodayToDo.vue") },
-        { path: "/add/customtodo", component: () => import("@/views/AddCustomToDo.vue") },
+        {
+          path: "/add/customtodo",
+          component: () => import("@/views/AddCustomToDo.vue"),
+        },
         {
           path: "/categories",
           component: () => import("@/views/MyCategory.vue"),
         },
-        { path: "/pomodoro", component: () => import("@/views/Pomodoro.vue") },
         { path: "/settings", component: () => import("@/views/Settings.vue") },
         { path: "/about", component: () => import("@/views/AboutAuthor.vue") },
+        {
+          path: "/countdown",
+          component: () => import("@/views/CountDown.vue"),
+        },
       ],
       // 待办界面（悬浮在桌面的）
     },
     { path: "/todo", component: () => import("@/views/ToDo.vue") },
+    { path: "/pomodoro", component: () => import("@/views/Pomodoro.vue") },
   ],
 });
 

@@ -23,14 +23,17 @@
             <router-link to="/add/customtodo">
               <a-menu-item key="3"> 添加自定义待办 </a-menu-item>
             </router-link>
+            <router-link to="/countdown">
+              <a-menu-item key="4"> 倒计时 </a-menu-item>
+            </router-link>
             <router-link to="/pomodoro">
-              <a-menu-item key="4"> 番茄钟 </a-menu-item>
+              <a-menu-item key="5"> 番茄钟 </a-menu-item>
             </router-link>
             <router-link to="/settings">
-              <a-menu-item key="5"> 自定义设置 </a-menu-item>
+              <a-menu-item key="6"> 自定义设置 </a-menu-item>
             </router-link>
             <router-link to="/about">
-              <a-menu-item key="6"> 关于作者 </a-menu-item>
+              <a-menu-item key="7"> 关于作者 </a-menu-item>
             </router-link>
           </a-menu></a-layout-sider
         >
