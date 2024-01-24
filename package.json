@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@vueup/vue-quill": "^1.2.0",
+    "dayjs": "^1.11.10",
     "electron-win-state": "^1.1.22",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "unplugin-vue-components": "^0.26.0",
+    "uuid": "^9.0.1",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5"
   },

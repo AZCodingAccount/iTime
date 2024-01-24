@@ -25,11 +25,17 @@ const formattedDate = (dateString) => {
     .replace(/T/, " ") // 替换 T 为一个空格
     .replace(/\..+/, ""); // 删除小数点及其后面的部分
 };
+
+
 </script>
 <template>
   <!-- 折叠面板 -->
   <a-collapse>
-    <a-collapse-item v-for="todo in ToDoList" :key="todo.content" key="1">
+    <a-collapse-item
+      v-for="todo in ToDoList"
+      :key="todo.content"
+      key="1"
+    >
       <template #header>
         <div class="header">
           <div class="title">{{ todo.title }}</div>
@@ -51,10 +57,10 @@ const formattedDate = (dateString) => {
   align-items: center;
   padding-left: 20px;
 }
-.title{
+.title {
   font-size: 18px;
 }
-.createTime{
+.createTime {
   font-size: 14x;
   color: gray;
 }
@@ -62,10 +68,10 @@ const formattedDate = (dateString) => {
 >>> .arco-collapse-item-header-title {
   width: 100%;
 }
->>>.arco-collapse-item-header-left{
+>>> .arco-collapse-item-header-left {
   height: 80px;
 }
->>>.arco-collapse-item .arco-collapse-item-expand-icon {
+>>> .arco-collapse-item .arco-collapse-item-expand-icon {
   font-size: 24px;
 }
 </style>
