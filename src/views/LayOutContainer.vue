@@ -1,4 +1,10 @@
-<script setup></script>
+<script setup>
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const currentRouteKey = computed(() => route.path);
+</script>
 <template>
   <div class="common-layout">
     <a-layout>
@@ -13,29 +19,29 @@
       </a-layout-header>
       <a-layout>
         <a-layout-sider>
-          <a-menu :default-selected-keys="['1']">
+          <a-menu :selectedKeys="[currentRouteKey]">
             <router-link to="/today">
-              <a-menu-item key="1"> 所有待办 </a-menu-item>
+              <a-menu-item key="/today"> 所有待办 </a-menu-item>
             </router-link>
             <router-link to="/categories">
-              <a-menu-item key="2"> 自定义待办 </a-menu-item>
+              <a-menu-item key="/categories"> 自定义待办 </a-menu-item>
             </router-link>
             <router-link to="/add/customtodo">
-              <a-menu-item key="3"> 添加自定义待办 </a-menu-item>
+              <a-menu-item key="/add/customtodo"> 添加自定义待办 </a-menu-item>
             </router-link>
             <a-divider margin="10px" />
             <router-link to="/countdown">
-              <a-menu-item key="4"> 倒计时 </a-menu-item>
+              <a-menu-item key="/countdown"> 倒计时 </a-menu-item>
             </router-link>
             <router-link to="/pomodoro">
-              <a-menu-item key="5"> 番茄钟 </a-menu-item>
+              <a-menu-item key="/pomodoro"> 番茄钟 </a-menu-item>
             </router-link>
             <a-divider margin="10px" />
             <router-link to="/settings">
-              <a-menu-item key="6"> 自定义设置 </a-menu-item>
+              <a-menu-item key="/settings"> 自定义设置 </a-menu-item>
             </router-link>
             <router-link to="/about">
-              <a-menu-item key="7"> 关于作者 </a-menu-item>
+              <a-menu-item key="/about"> 关于作者 </a-menu-item>
             </router-link>
           </a-menu></a-layout-sider
         >

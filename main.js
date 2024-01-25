@@ -4,12 +4,13 @@ const path = require("path");
 const WinState = require("electron-win-state").default;
 
 // 创建一个窗口
+let win = null;
 const createWindow = () => {
   const winState = new WinState({
     defaultWidth: 2400,
     defaultHeight: 800,
   });
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     ...WinState.winOptions,
     // 设置偏好
     // frame: false, // 无边框窗口
@@ -30,7 +31,7 @@ const createWindow = () => {
   win.setSize(1100, 700); // 显式设置窗口大小，因为之前的大小被缓存了
   win.center(); // 使窗口居中
   win.loadURL("http://localhost:5173");
-  // win.webContents.openDevTools(); // 打开开发者工具
+  win.webContents.openDevTools(); // 打开开发者工具
   winState.manage(win); // 配置持久化
 };
 
@@ -97,6 +98,17 @@ const addToDoToDesktop = (title, content) => {
   // winState.manage(todoWindow); // 配置持久化
 };
 
+// 删除待办
+const removeToDo = (id) => {
+  console.log("remove todo:", id);
+  win.webContents.send("remove-todo", id);
+};
+// 编辑待办
+const editToDo = (id) => {
+  console.log("edit-todo", id);
+  win.webContents.send("edit-todo", id);
+};
+
 // 移除窗口
 ipcMain.on("remove-window", (event) => {
   const window = BrowserWindow.fromWebContents(event.sender);
@@ -104,17 +116,12 @@ ipcMain.on("remove-window", (event) => {
     window.close();
   }
 });
+let contextMenu = null;
 // 创建右键菜单
-ipcMain.on("show-context-menu", (event, type, title, content) => {
+ipcMain.on("show-context-menu", (event, type, id, title, content) => {
   const menuTemplate = [];
   // 根据类型添加不同的菜单项
   if (type === "customToDo") {
-    menuTemplate.push({
-      label: "删除待办",
-      click: () => {
-        console.log("操作1");
-      },
-    });
     menuTemplate.push({
       label: "将待办添加到桌面",
       click: () => {
@@ -123,6 +130,21 @@ ipcMain.on("show-context-menu", (event, type, title, content) => {
         //   message: content,
         //   buttons: ["OK"],
         // });
+      },
+    });
+    menuTemplate.push({
+      label: "编辑待办",
+      click: () => {
+        // 直接把数据传给添加新待办那个组件过去就行了，顺便编辑成功把待办删除了
+        editToDo(id);
+      },
+    });
+    menuTemplate.push({
+      label: "删除待办",
+      click: () => {
+        // console.log("click event", id);
+        // 发送消息告诉本地存储里面的东西可以删除了
+        removeToDo(id);
       },
     });
   } else if (type === "type2") {
@@ -140,6 +162,8 @@ ipcMain.on("show-context-menu", (event, type, title, content) => {
     });
   }
 
-  const contextMenu = Menu.buildFromTemplate(menuTemplate);
+  // 如果菜单不存在，则创建它
+  contextMenu = Menu.buildFromTemplate(menuTemplate);
+
   contextMenu.popup(BrowserWindow.fromWebContents(event.sender));
 });
