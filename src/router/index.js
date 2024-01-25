@@ -29,6 +29,11 @@ const router = createRouter({
     },
     { path: "/todo", component: () => import("@/views/ToDo.vue") },
     { path: "/pomodoro", component: () => import("@/views/Pomodoro.vue") },
+    // 下面是测试用的三个路径
+    {
+      path: "/customtodo",
+      component: () => import("@/views/desktop/CustomToDo.vue"),
+    },
   ],
 });
 
