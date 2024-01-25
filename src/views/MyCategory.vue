@@ -26,10 +26,10 @@ const formattedDate = (dateString) => {
 };
 
 // 右键菜单
-const onRightClick = (e, content) => {
-  e.preventDefault();
+const onRightClick = (e, title,content) => {
+  e.preventDefault(); // 阻止默认事件
   console.log(content);
-  window.electron.showContextMenu("customToDo", content); // 调用主进程的方法
+  window.electron.showContextMenu("customToDo", title,content); // 调用主进程的方法
 };
 </script>
 <template>
@@ -37,7 +37,7 @@ const onRightClick = (e, content) => {
   <a-list max-height="80vh" style="border: none">
     <a-collapse>
       <a-collapse-item
-        @contextmenu="onRightClick($event, todo.content)"
+        @contextmenu="onRightClick($event, todo.title, todo.content)"
         v-for="(todo, index) in ToDoList"
         :key="index"
         key="1"

@@ -3,11 +3,77 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
+  padding: 0;
+  border: 0;
   /*   或者灰色,#f5f5f5 */
   /* background-color: #f5f5f5;  */
-  background-color: white;
+  /* background-color: rgba(0, 0, 0, 0); */
 }
+body {
+  /* background-color: rgba(0, 0, 0, 0); */
+}
+* {
+  margin: 0;
+}
+
 #app {
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+html {
+  /* 禁用html的滚动条，因为用的无框架窗口，默认就会有一个滚动条，所以去掉 */
+  overflow-y: hidden;
+}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 2px; /*滚动条宽度*/
+  /*height: 2px;  !*滚动条高度*!*/
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);*/
+  /*border-radius: 10px;  !*滚动条的背景区域的圆角*!*/
+  /*background-color: red;!*滚动条的背景颜色*!*/
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 99px; /*滚动条的圆角*/
+  /*-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);*/
+  /*background-color: green;  !*滚动条的背景颜色*!*/
+}
+
+/* 在这里自定义一些html全局样式，其实需要定义的也不算多，就一个列表和标题。需要自己把握间距了~~~ */
+/* 原本40px */
+ul {
+  padding-inline-start: 25px;
+}
+ol {
+  padding-inline-start: 25px;
+}
+/* 原本没有间距 */
+li {
+  margin: 0.7em 0;
+}
+/* 无序列表 */
+/* ul li::marker {
+  content: "😍";
+}
+/* 有序列表 */
+/*
+ol li::marker {
+  content: "🤔";
+} */
+/* h1 原本0.67em */
+h1 {
+  margin: 0.25em 0;
+}
+/* p */
+p{
+  margin: 0.5em;
 }

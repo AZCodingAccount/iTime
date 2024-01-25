@@ -12,13 +12,13 @@ const createWindow = () => {
   const win = new BrowserWindow({
     ...WinState.winOptions,
     // 设置偏好
+    // frame: false, // 无边框窗口
+    // titleBarStyle: "hidden",
+    // titleBarOverlay: true,
     webPreferences: {
       // 不安全，不建议使用
       // nodeIntegration: true, // 启用Node.js集成
       // contextIsolation: false, // 取消上下文隔离
-      frame: false, // 无边框窗口
-      titleBarStyle: "hidden",
-      titleBarOverlay: true,
       sandbox: false, // 取消沙箱模式
       preload: path.resolve(__dirname, "./preload"), // 在预加载脚本中执行 Electron API
     },
@@ -49,42 +49,63 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
 // 创建一个待办窗口
-const addToDoToDesktop = (content) => {
-  let newWindow = new BrowserWindow({
+const addToDoToDesktop = (title, content) => {
+  let todoWindow = new BrowserWindow({
+    // width: 1200,
+    // height: 800,
     width: 400,
     height: 300,
+    transparent: true, // 透明
+    frame: false, // 无边框窗口
+    // show: false, // 窗口不可见
+    // autoHideMenuBar: true, // 自动隐藏菜单栏
+    // titleBarStyle: "hidden",
+    // titleBarOverlay: true,
+
     webPreferences: {
       // nodeIntegration: true,
       // contextIsolation: false,
-      // frame: false, // 无边框窗口
       sandbox: false, // 取消沙箱模式
-      preload: path.resolve(__dirname, "./preload/customtodo.js"), // 在预加载脚本中执行 Electron API
+      preload: path.resolve(__dirname, "./preload"), // 在预加载脚本中执行 Electron API
     },
   });
 
   // 加载本地文件（测试过程中通过url访问）
-  newWindow.loadURL("http://localhost:5173/customtodo");
+  todoWindow.loadURL("http://localhost:5173/customtodo");
+  // todoWindow.loadURL("C:\\Users\\Albert han\\Desktop\\easyToDo\\src\\views\\test\\test.html");
 
   // 等待加载完成以后并且延迟1ms发送消息
-  newWindow.webContents.on("did-finish-load", () => {
+  todoWindow.webContents.on("did-finish-load", () => {
     setTimeout(() => {
-      newWindow.webContents.send("load-html-content", content);
+      todoWindow.webContents.send("load-html-content", title, content);
       console.log("Message sent after delay!");
-    }, 1); // 延迟时间，以毫秒为单位
+    }, 100); // 延迟时间，以毫秒为单位
+  });
+  todoWindow.setAlwaysOnTop(true, "normal");
+
+  // todoWindow.webContents.openDevTools(); // 打开开发者工具
+
+  todoWindow.on("closed", () => {
+    console.log("close~~~~");
+    todoWindow = null;
+  });
+  todoWindow.once("ready-to-show", () => {
+    todoWindow.show();
   });
 
-  // newWindow.webContents.openDevTools(); // 打开开发者工具
-  newWindow.setMenu(null); // 关闭菜单栏
-
-  newWindow.on("closed", () => {
-    console.log("关闭了~~~~");
-    newWindow = null;
-  });
+  // winState.manage(todoWindow); // 配置持久化
 };
+
+// 移除窗口
+ipcMain.on("remove-window", (event) => {
+  const window = BrowserWindow.fromWebContents(event.sender);
+  if (window) {
+    window.close();
+  }
+});
 // 创建右键菜单
-ipcMain.on("show-context-menu", (event, type, content) => {
+ipcMain.on("show-context-menu", (event, type, title, content) => {
   const menuTemplate = [];
   // 根据类型添加不同的菜单项
   if (type === "customToDo") {
@@ -97,7 +118,7 @@ ipcMain.on("show-context-menu", (event, type, content) => {
     menuTemplate.push({
       label: "将待办添加到桌面",
       click: () => {
-        addToDoToDesktop(content);
+        addToDoToDesktop(title, content);
         // dialog.showMessageBox({
         //   message: content,
         //   buttons: ["OK"],
