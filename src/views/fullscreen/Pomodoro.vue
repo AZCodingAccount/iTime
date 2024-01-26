@@ -1,6 +1,8 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
+import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
+import { Message } from "@arco-design/web-vue";
 
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
@@ -106,8 +108,8 @@ const endTimer = () => {
 
 onMounted(() => {
   Message.info({
-    content: "按F键即可进入全屏😎",
-    icon: () => h(IconFullscreen),
+    content: "按F键即可退出全屏😊",
+    icon: () => h(IconFullscreenExit),
   });
   window.addEventListener("keydown", handleKeyDown);
 });
@@ -121,7 +123,7 @@ const handleKeyDown = (e) => {
   if (e.key === "f") {
     // 关闭窗口并跳转
     window.electron.closePomodoroWindow();
-    router.push("/countdown");
+    router.push("/pomodoro");
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted ,h} from "vue";
+import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { Message } from "@arco-design/web-vue";
 import { IconFullscreen } from "@arco-design/web-vue/es/icon";
@@ -122,10 +122,10 @@ onUnmounted(() => {
 const handleKeyDown = (e) => {
   if (e.key === "f") {
     // 执行跳转逻辑，向主进程发送消息打开新窗口并加载指定页面
-    window.electron.openPomodoroWindow('f');
-  }else if(e.key==='a'){
+    window.electron.openPomodoroWindow("f");
+  } else if (e.key === "a") {
     // 添加widget到桌面
-    window.electron.openPomodoroWindow('a')
+    window.electron.openPomodoroWindow("a");
   }
 };
 </script>

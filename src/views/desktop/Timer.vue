@@ -11,9 +11,7 @@ const inputTime = ref(0); // 输入的时间
 const totalTime = ref(0); // 计算成的秒数
 let intervalId = null;
 const handleChange = () => {
-  console.log(totalTime.value, originTime.value);
   totalTime.value = inputTime.value * 60;
-  console.log(totalTime.value, originTime.value);
 };
 
 const minutes = computed(() =>
@@ -65,12 +63,13 @@ const pauseTimer = () => {
 };
 
 onMounted(() => {
-  // 可以在这里设置开始的默认状态
   window.addEventListener("keydown", handleKeyDown);
-  Message.info({
-    content: "按F键即可进入全屏😎",
-    icon: () => h(IconFullscreen),
-  });
+
+  // 可以在这里设置开始的默认状态
+  //   Message.info({
+  //     content: "按F键即可进入全屏😎",
+  //     icon: () => h(IconFullscreen),
+  //   });
 });
 
 onUnmounted(() => {
@@ -80,72 +79,76 @@ onUnmounted(() => {
 
 // 添加监听事件
 const handleKeyDown = (e) => {
-  if (e.key === "f") {
-    // fullscreen 全屏
-    // 执行跳转逻辑，向主进程发送消息打开新窗口
-    window.electron.openTimerWindow("f");
-  } else if (e.key === "a") {
-    // add 添加
-    // 打开新窗口
-    window.electron.openTimerWindow("a");
+  if (e.key === "r") {
+    // r reset
+    // 恢复定时器初始状态
+    clearInterval(intervalId);
+    intervalId = null;
+    totalTime.value = 0;
+    inputTime.value = originTime.value;
+    originTime.value = 0;
+    isRunning.value = false;
+    percent.value = 0;
+  } else if (e.key === "e") {
+    // exit，退出
+    window.electron.removeWindow();
   }
 };
 </script>
 <template>
-  <div class="main">
-    <div class="pomodoro-timer">
-      <!-- 输入框 -->
-      <!-- 这个输入框是真的丑，但是我找了15分钟也没找到怎么修改灰色背景，就这样吧唉 -->
-      <a-input-number
-        v-model="inputTime"
-        :style="{ width: '125px' }"
-        mode="button"
-        size="large"
-        :default-value="24"
-        :min="0.1"
-        :max="999"
-        v-if="!isBegin"
-        @change="handleChange"
-      />
-      <!-- 进度条 -->
-      <!-- :show-text="false" -->
-      <a-progress
-        status="warning"
-        :percent="percent"
-        type="circle"
-        size="small"
-        color="rgb(12, 228, 140)"
+  <div class="pomodoro-timer">
+    <!-- 输入框 -->
+    <!-- 这个输入框是真的丑，但是我找了15分钟也没找到怎么修改灰色背景，就这样吧唉 -->
+    <a-input-number
+      v-model="inputTime"
+      :style="{ width: '125px' }"
+      mode="button"
+      size="large"
+      :default-value="24"
+      :min="0.1"
+      :max="999"
+      v-if="!isBegin"
+      @change="handleChange"
+      style="-webkit-app-region: no-drag"
+    />
+    <!-- 进度条 -->
+    <!-- :show-text="false" -->
+    <a-progress
+      status="warning"
+      :percent="percent"
+      type="circle"
+      size="small"
+      color="rgb(12, 228, 140)"
+      v-else
+    />
+    <div class="timer-display">{{ minutes }}:{{ seconds }}</div>
+    <div class="button">
+      <a-button
+        v-if="!isRunning"
+        @click="startTimer"
+        shape="circle"
+        style="
+          width: 44px;
+          height: 44px;
+          color: white;
+          background-color: transparent;
+          border: 2px solid white;
+        "
+        ><icon-play-arrow
+      /></a-button>
+      <a-button
         v-else
-      />
-      <div class="timer-display">{{ minutes }}:{{ seconds }}</div>
-      <div class="button">
-        <a-button
-          v-if="!isRunning"
-          @click="startTimer"
-          shape="circle"
-          style="
-            width: 44px;
-            height: 44px;
-            color: white;
-            background-color: transparent;
-            border: 2px solid white;
-          "
-          ><icon-play-arrow
-        /></a-button>
-        <a-button
-          v-else
-          @click="pauseTimer"
-          shape="circle"
-          style="
-            width: 44px;
-            height: 44px;
-            color: white;
-            background-color: transparent;
-            border: 2px solid white;
-          "
-          ><icon-pause
-        /></a-button>
-      </div>
+        @click="pauseTimer"
+        shape="circle"
+        style="
+          width: 44px;
+          height: 44px;
+          color: white;
+          background-color: transparent;
+          border: 2px solid white;
+        "
+        ><icon-pause
+      /></a-button>
     </div>
   </div>
 </template>
@@ -153,23 +156,6 @@ const handleKeyDown = (e) => {
 <style scoped>
 /* 在CSS文件中使用@import引入Roboto字体 */
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
-
-.main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  font-family: "Roboto", sans-serif;
-  color: white;
-  font-weight: 700;
-  background-image: url(/timeBGC.jpg);
-  background-size: cover; /* 覆盖整个容器 */
-  background-repeat: no-repeat; /* 不重复 */
-  background-position: center center; /* 图像居中显示 */
-}
 .pomodoro-timer {
   display: flex;
   align-items: center;
@@ -177,17 +163,21 @@ const handleKeyDown = (e) => {
   flex-direction: row;
   width: 320px;
   height: 80px;
-  border: 2px solid white;
+  /* border: 2px solid black; */
+  background-color: rgba(23, 31, 29, 0.4);
   border-radius: 10px;
   padding: 0 15px;
+  -webkit-app-region: drag;
 }
 
 .timer-display {
   font-size: 3em;
+  color: white;
 }
 
 button {
   cursor: pointer;
+  -webkit-app-region: no-drag;
 }
 /* 自定义字体颜色 */
 >>> .arco-progress-circle-text {

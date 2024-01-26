@@ -5,14 +5,14 @@ contextBridge.exposeInMainWorld("electron", {
   // 展示右键菜单
   showContextMenu: (type, id, title, content) =>
     ipcRenderer.send("show-context-menu", type, id, title, content),
-  // 移除窗口
-  // @params type 'todo'|'timer'|'pomodoro' // 不需要
+  // 移除窗口，好像都可以使用这个方法
   removeWindow: () => {
-    ipcRenderer.send("remove-window");
+    ipcRenderer.send("remove-window",);
   },
   // 打开一个全屏的倒计时窗口
-  openTimerWindow: () => {
-    ipcRenderer.send("open-timer-window");
+  // @params type 'f' 全屏|'a' 打开挂件
+  openTimerWindow: (type) => {
+    ipcRenderer.send("open-timer-window",type);
   },
   // 切换到主窗口
   switchToMainWindow: () => {
@@ -22,11 +22,16 @@ contextBridge.exposeInMainWorld("electron", {
   closeTimerWindow: () => {
     ipcRenderer.send("close-timer-window");
   },
-  // 打开一个全屏的番茄钟窗口
-  openPomodoroWindow: () => {
-    ipcRenderer.send("open-pomodoro-window");
+  // 打开一个番茄钟窗口
+  // @params type 'f' 全屏|'a' 打开挂件
+  openPomodoroWindow: (type) => {
+    ipcRenderer.send("open-pomodoro-window",type);
   },
-  // 打开一个全屏的关于窗口
+  // 关闭全屏番茄钟窗口
+  closePomodoroWindow: () => {
+    ipcRenderer.send("close-pomodoro-window");
+  },
+  // 退出窗口
 
   // 主进程向渲染进程发消息
   // 参数是一个回调函数，用的话直接访问回调函数即可。

@@ -74,7 +74,7 @@ const addToDoToDesktop = (title, content) => {
   });
 
   // 加载本地文件（测试过程中通过url访问）
-  todoWindow.loadURL("http://localhost:5173/customtodo");
+  todoWindow.loadURL("http://localhost:5173/desktop/customtodo");
   // todoWindow.loadURL("C:\\Users\\Albert han\\Desktop\\easyToDo\\src\\views\\test\\test.html");
 
   // 等待加载完成以后并且延迟1ms发送消息
@@ -95,10 +95,9 @@ const addToDoToDesktop = (title, content) => {
     todoWindow.show();
   });
 };
-let timerWindow = null;
 // 创建一个全屏计时器窗口
 const createTimerWindow = () => {
-  timerWindow = new BrowserWindow({
+  let timerWindow = new BrowserWindow({
     frame: false,
     fullscreen: true,
     resizable: false,
@@ -117,7 +116,76 @@ const createTimerWindow = () => {
     timerWindow.show();
   });
 };
-
+// 创建定时器小挂件窗口
+const createTimerWidgetWindow = () => {
+  let timerWidgetWindow = new BrowserWindow({
+    width: 354,
+    height: 84,
+    // width:1000,
+    // height:800,
+    transparent: true, // 透明
+    frame: false, // 无边框窗口
+    resizable: false,
+    webPreferences: {
+      // nodeIntegration: true,
+      // contextIsolation: false,
+      sandbox: false, // 取消沙箱模式
+      preload: path.resolve(__dirname, "./preload"),
+    },
+  });
+  timerWidgetWindow.loadURL("http://localhost:5173/desktop/timer");
+  timerWidgetWindow.on("closed", () => {
+    timerWidgetWindow = null;
+  });
+  timerWidgetWindow.webContents.openDevTools();
+  timerWidgetWindow.once("ready-to-show", () => {
+    timerWidgetWindow.show();
+  });
+};
+// 创建番茄钟窗口
+const createPomodoroWindow = () => {
+  let pomodoroWindow = new BrowserWindow({
+    frame: false,
+    fullscreen: true,
+    resizable: false,
+    webPreferences: {
+      // nodeIntegration: true,
+      // contextIsolation: false,
+      sandbox: false, // 取消沙箱模式
+      preload: path.resolve(__dirname, "./preload"),
+    },
+  });
+  pomodoroWindow.loadURL("http://localhost:5173/fullscreen/pomodoro");
+  pomodoroWindow.on("closed", () => {
+    pomodoroWindow = null;
+  });
+  pomodoroWindow.on("ready-to-show", () => {
+    pomodoroWindow.show();
+  });
+};
+const createPomodoroWidgetWindow = () => {
+  let pomodoroWidgetWindow = new BrowserWindow({
+    width: 300,
+    height: 200,
+    transparent: true, // 透明
+    frame: false, // 无边框窗口
+    resizable: false,
+    webPreferences: {
+      // nodeIntegration: true,
+      // contextIsolation: false,
+      sandbox: false, // 取消沙箱模式
+      preload: path.resolve(__dirname, "./preload"),
+    },
+  });
+  pomodoroWidgetWindow.loadURL("http://localhost:5173/desktop/pomodoro");
+  pomodoroWidgetWindow.on("closed", () => {
+    pomodoroWidgetWindow = null;
+  });
+  pomodoroWidgetWindow.webContents.openDevTools();
+  pomodoroWidgetWindow.once("ready-to-show", () => {
+    pomodoroWidgetWindow.show();
+  });
+};
 // 删除待办
 const removeToDo = (id) => {
   console.log("remove todo:", id);
@@ -204,6 +272,28 @@ ipcMain.on("show-context-menu", (event, type, id, title, content) => {
 });
 
 // 打开倒计时窗口
-ipcMain.on("open-timer-window", () => {
-  createTimerWindow();
+ipcMain.on("open-timer-window", (event, type) => {
+  if (type === "f") {
+    createTimerWindow();
+  } else if (type === "a") {
+    // 添加小挂件
+    createTimerWidgetWindow();
+  }
+});
+// 打开番茄钟窗口
+ipcMain.on("open-pomodoro-window", (event, type) => {
+  if (type === "f") {
+    createPomodoroWindow();
+  } else if (type === "a") {
+    // 添加小挂件
+    createPomodoroWidgetWindow();
+  }
+});
+// 关闭番茄钟窗口
+ipcMain.on("close-pomodoro-window", (event) => {
+  const window = BrowserWindow.fromWebContents(event.sender);
+
+  if (window) {
+    window.close();
+  }
 });

@@ -12,7 +12,7 @@ const draggable = ref(true);
 const isShowContent = ref(true);
 // 移除窗口，向主进程发一个请求
 const removeWindow = () => {
-  window.electron.removeWindow("todo");
+  window.electron.removeWindow();
 };
 // 双击鼠标事件
 const handleDBLClick = () => {

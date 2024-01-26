@@ -24,18 +24,33 @@ const router = createRouter({
           path: "/countdown",
           component: () => import("@/views/CountDown.vue"),
         },
+        { path: "/pomodoro", component: () => import("@/views/Pomodoro.vue") },
       ],
       // 待办界面（悬浮在桌面的）
     },
     { path: "/todo", component: () => import("@/views/ToDo.vue") },
-    { path: "/pomodoro", component: () => import("@/views/Pomodoro.vue") },
-    // 下面是测试用的三个路径
+    // 下面是桌面用的三个路径
     {
-      path: "/customtodo",
+      path: "/desktop/customtodo",
       component: () => import("@/views/desktop/CustomToDo.vue"),
     },
+    {
+      path: "/desktop/timer",
+      component: () => import("@/views/desktop/Timer.vue"),
+    },
+    {
+      path: "/desktop/pomodoro",
+      component: () => import("@/views/desktop/Pomodoro.vue"),
+    },
     // 全屏跳转的路径
-    { path: "/fullscreen/countdown", component: () => import("@/views/fullscreen/CountDown.vue") },
+    {
+      path: "/fullscreen/countdown",
+      component: () => import("@/views/fullscreen/CountDown.vue"),
+    },
+    {
+      path: "/fullscreen/pomodoro",
+      component: () => import("@/views/fullscreen/Pomodoro.vue"),
+    },
   ],
 });
 
