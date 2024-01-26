@@ -78,8 +78,6 @@ const startTimer = () => {
             : (step.value = step.value + 1);
           hintText.value = "专注中";
         } // 修改上方提示文字
-        // console.log(longBreakInterval,typeof(longBreakInterval));
-        // console.log(step.value);
         isStart.value = true; // 标记下次再开启定时器是第一次开启
         startTimer(); //继续计时
       }
@@ -107,10 +105,10 @@ const endTimer = () => {
 };
 
 onMounted(() => {
-  Message.info({
-    content: "按F键即可进入全屏😎",
-    icon: () => h(IconFullscreen),
-  });
+  //   Message.info({
+  //     content: "按F键即可进入全屏😎",
+  //     icon: () => h(IconFullscreen),
+  //   });
   window.addEventListener("keydown", handleKeyDown);
 });
 
@@ -120,87 +118,81 @@ onUnmounted(() => {
 });
 // 添加监听事件
 const handleKeyDown = (e) => {
-  if (e.key === "f") {
-    // 执行跳转逻辑，向主进程发送消息打开新窗口并加载指定页面
-    window.electron.openPomodoroWindow("f");
-  } else if (e.key === "a") {
-    // 添加widget到桌面
-    window.electron.openPomodoroWindow("a");
+  if (e.key === "e") {
+    window.electron.removeWindow();
   }
 };
 </script>
 <template>
-  <div class="main">
-    <div class="pomodoro-timer">
-      <!-- 上方提示文字 （专注中、短休息、长休息）-->
-      <div class="hint">
-        {{ hintText }}
+  <div class="pomodoro-timer">
+    <!-- 上方提示文字 （专注中、短休息、长休息）-->
+    <div class="hint">
+      {{ hintText }}
+    </div>
+    <!-- 下方展示计时器 -->
+    <div class="bottom">
+      <!-- 轮数 -->
+      <div class="step">
+        {{ step }}
       </div>
-      <!-- 下方展示计时器 -->
-      <div class="bottom">
-        <!-- 轮数 -->
-        <div class="step">
-          {{ step }}
-        </div>
-        <!-- 时间 -->
-        <div class="timer-display">{{ minutes }}:{{ seconds }}</div>
-        <!-- 开始暂停按钮 -->
-        <div class="button">
-          <a-button
-            v-if="!isRunning"
-            @click="startTimer"
-            shape="circle"
-            style="
-              width: 44px;
-              height: 44px;
-              color: white;
-              background-color: transparent;
-              border: 2px solid white;
-            "
-            ><icon-play-arrow size="1.5em"
-          /></a-button>
-          <a-button
-            @click="pauseTimer"
-            v-if="isRunning"
-            shape="circle"
-            style="
-              width: 44px;
-              height: 44px;
-              color: white;
-              background-color: transparent;
-              border: 2px solid white;
-            "
-            ><icon-pause size="1.5em"
-          /></a-button>
-          <a-button
-            @click="endTimer"
-            v-if="isEnding"
-            shape="circle"
-            style="
-              width: 44px;
-              height: 44px;
-              color: white;
-              background-color: transparent;
-              border: 2px solid white;
-              margin-left: 10px;
-            "
-            ><svg
-              t="1706081169498"
-              class="icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              p-id="7401"
-              width="1.5em"
-              height="1.5em"
-            >
-              <path
-                d="M192 128a64 64 0 0 0-64 64v640a64 64 0 0 0 64 64h640a64 64 0 0 0 64-64V192a64 64 0 0 0-64-64H192z m0-64h640a128 128 0 0 1 128 128v640a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128V192a128 128 0 0 1 128-128z"
-                fill="#ffffff"
-                p-id="7402"
-              ></path></svg
-          ></a-button>
-        </div>
+      <!-- 时间 -->
+      <div class="timer-display">{{ minutes }}:{{ seconds }}</div>
+      <!-- 开始暂停按钮 -->
+      <div class="button">
+        <a-button
+          v-if="!isRunning"
+          @click="startTimer"
+          shape="circle"
+          style="
+            width: 44px;
+            height: 44px;
+            color: white;
+            background-color: transparent;
+            border: 2px solid white;
+          "
+          ><icon-play-arrow size="1.5em"
+        /></a-button>
+        <a-button
+          @click="pauseTimer"
+          v-if="isRunning"
+          shape="circle"
+          style="
+            width: 44px;
+            height: 44px;
+            color: white;
+            background-color: transparent;
+            border: 2px solid white;
+          "
+          ><icon-pause size="1.5em"
+        /></a-button>
+        <a-button
+          @click="endTimer"
+          v-if="isEnding"
+          shape="circle"
+          style="
+            width: 44px;
+            height: 44px;
+            color: white;
+            background-color: transparent;
+            border: 2px solid white;
+            margin-left: 10px;
+          "
+          ><svg
+            t="1706081169498"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="7401"
+            width="1.5em"
+            height="1.5em"
+          >
+            <path
+              d="M192 128a64 64 0 0 0-64 64v640a64 64 0 0 0 64 64h640a64 64 0 0 0 64-64V192a64 64 0 0 0-64-64H192z m0-64h640a128 128 0 0 1 128 128v640a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128V192a128 128 0 0 1 128-128z"
+              fill="#ffffff"
+              p-id="7402"
+            ></path></svg
+        ></a-button>
       </div>
     </div>
   </div>
@@ -210,22 +202,6 @@ const handleKeyDown = (e) => {
 /* 在CSS文件中使用@import引入Roboto字体 */
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 /* 定义主界面 */
-.main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  font-family: "Roboto", sans-serif;
-  color: white;
-  font-weight: 700;
-  background-image: url(/timeBGC.jpg);
-  background-size: cover; /* 覆盖整个容器 */
-  background-repeat: no-repeat; /* 不重复 */
-  background-position: center center; /* 图像居中显示 */
-}
 /* 定义定时器盒子样式 */
 .pomodoro-timer {
   width: 340px;
@@ -234,7 +210,9 @@ const handleKeyDown = (e) => {
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  border: 2px solid white;
+  background-color: rgba(23, 31, 29, 0.4);
+  -webkit-app-region: drag;
+  color: white;
   border-radius: 10px;
   padding: 0 15px;
 }
@@ -270,6 +248,7 @@ const handleKeyDown = (e) => {
   justify-content: flex-end;
   cursor: pointer;
   margin-left: auto;
+  -webkit-app-region: no-drag;
 }
 /* 提示样式 */
 .hint {

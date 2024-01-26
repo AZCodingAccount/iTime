@@ -126,6 +126,7 @@ const createTimerWidgetWindow = () => {
     transparent: true, // 透明
     frame: false, // 无边框窗口
     resizable: false,
+    alwaysOnTop: true,
     webPreferences: {
       // nodeIntegration: true,
       // contextIsolation: false,
@@ -137,7 +138,7 @@ const createTimerWidgetWindow = () => {
   timerWidgetWindow.on("closed", () => {
     timerWidgetWindow = null;
   });
-  timerWidgetWindow.webContents.openDevTools();
+  // timerWidgetWindow.webContents.openDevTools();
   timerWidgetWindow.once("ready-to-show", () => {
     timerWidgetWindow.show();
   });
@@ -165,8 +166,8 @@ const createPomodoroWindow = () => {
 };
 const createPomodoroWidgetWindow = () => {
   let pomodoroWidgetWindow = new BrowserWindow({
-    width: 300,
-    height: 200,
+    width: 374,
+    height: 104,
     transparent: true, // 透明
     frame: false, // 无边框窗口
     resizable: false,
@@ -181,7 +182,7 @@ const createPomodoroWidgetWindow = () => {
   pomodoroWidgetWindow.on("closed", () => {
     pomodoroWidgetWindow = null;
   });
-  pomodoroWidgetWindow.webContents.openDevTools();
+  // pomodoroWidgetWindow.webContents.openDevTools();
   pomodoroWidgetWindow.once("ready-to-show", () => {
     pomodoroWidgetWindow.show();
   });
