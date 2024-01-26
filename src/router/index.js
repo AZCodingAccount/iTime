@@ -34,6 +34,8 @@ const router = createRouter({
       path: "/customtodo",
       component: () => import("@/views/desktop/CustomToDo.vue"),
     },
+    // 全屏跳转的路径
+    { path: "/fullscreen/countdown", component: () => import("@/views/fullscreen/CountDown.vue") },
   ],
 });
 

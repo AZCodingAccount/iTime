@@ -1,7 +1,8 @@
 <script setup>
+import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
+import { ref, computed, onMounted, onUnmounted ,h} from "vue";
+import { useRouter } from "vue-router";
 import { Message } from "@arco-design/web-vue";
-import { ref, computed, onMounted, onUnmounted, h } from "vue";
-import { IconFullscreen } from "@arco-design/web-vue/es/icon";
 
 const isRunning = ref(false);
 const percent = ref(0); // 定义进度条
@@ -66,8 +67,8 @@ onMounted(() => {
   // 可以在这里设置开始的默认状态
   window.addEventListener("keydown", handleKeyDown);
   Message.info({
-    content: "按F键即可进入全屏😎",
-    icon: () => h(IconFullscreen),
+    content: "按F键即可退出全屏😊",
+    icon: () => h(IconFullscreenExit),
   });
 });
 
@@ -75,14 +76,15 @@ onUnmounted(() => {
   clearInterval(intervalId);
   window.removeEventListener("keydown", handleKeyDown);
 });
-
+const router = useRouter();
 // 添加监听事件
 const handleKeyDown = (e) => {
   if (e.key === "f") {
-    // console.log("f键被点击了......");
-    // 执行跳转逻辑，向主进程发送消息打开新窗口并加载指定页面
-    window.electron.openTimerWindow();
-    // 给用户提示
+    // 先切换到主窗口，因为是spa
+    window.electron.switchToMainWindow();
+    // 执行跳转逻辑，再跳回去，关闭全屏窗口
+    router.push("/countdown");
+    // window.electron.closeTimerWindow();
   }
 };
 </script>

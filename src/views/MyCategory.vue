@@ -8,9 +8,9 @@ const router = useRouter();
 
 // 获取store
 const customToDoStore = useCustomToDoStore();
-// const ToDoList = computed(() => customToDoStore.getToDoList());
+const ToDoList = computed(() => customToDoStore.getToDoList());
 // 存储空值，注意空值的逻辑
-const ToDoList = ref([]);
+// const ToDoList = ref([]);
 // 格式化时间
 const formattedDate = (dateString) => {
   // console.log(date,typeof(date));
@@ -49,6 +49,7 @@ const handleEditToDo = (id) => {
 };
 // 监听事件
 onMounted(() => {
+  // 这个是值，不是响应式的，因此使用ref没办法响应式更新
   ToDoList.value = customToDoStore.getToDoList();
   console.log("挂载时候触发的", ToDoList.value);
   if (customToDoStore.isFirst) {

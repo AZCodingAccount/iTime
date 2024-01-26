@@ -32,7 +32,7 @@ const createWindow = () => {
   win.center(); // 使窗口居中
   win.loadURL("http://localhost:5173");
   win.webContents.openDevTools(); // 打开开发者工具
-  winState.manage(win); // 配置持久化
+  // winState.manage(win); // 配置持久化
 };
 
 app.whenReady().then(() => {
@@ -57,6 +57,7 @@ const addToDoToDesktop = (title, content) => {
     // height: 800,
     width: 400,
     height: 300,
+    // fullscreen:true,
     transparent: true, // 透明
     frame: false, // 无边框窗口
     // show: false, // 窗口不可见
@@ -88,14 +89,33 @@ const addToDoToDesktop = (title, content) => {
   // todoWindow.webContents.openDevTools(); // 打开开发者工具
 
   todoWindow.on("closed", () => {
-    console.log("close~~~~");
     todoWindow = null;
   });
   todoWindow.once("ready-to-show", () => {
     todoWindow.show();
   });
-
-  // winState.manage(todoWindow); // 配置持久化
+};
+let timerWindow = null;
+// 创建一个全屏计时器窗口
+const createTimerWindow = () => {
+  timerWindow = new BrowserWindow({
+    frame: false,
+    fullscreen: true,
+    resizable: false,
+    webPreferences: {
+      // nodeIntegration: true,
+      // contextIsolation: false,
+      sandbox: false, // 取消沙箱模式
+      preload: path.resolve(__dirname, "./preload"),
+    },
+  });
+  timerWindow.loadURL("http://localhost:5173/fullscreen/countdown");
+  timerWindow.on("closed", () => {
+    timerWindow = null;
+  });
+  timerWindow.on("ready-to-show", () => {
+    timerWindow.show();
+  });
 };
 
 // 删除待办
@@ -108,7 +128,22 @@ const editToDo = (id) => {
   console.log("edit-todo", id);
   win.webContents.send("edit-todo", id);
 };
-
+// 监听切换窗口事件
+ipcMain.on("switch-to-main-window", (event) => {
+  const window = BrowserWindow.fromWebContents(event.sender);
+  // 弹出信息对话框
+  // dialog.showMessageBox({
+  //   type: "info",
+  //   title: "信息",
+  //   message: "正在切换到主窗口...",
+  // });
+  if (window) {
+    window.close();
+  }
+  // if (win) {
+  //   win.show();
+  // }
+});
 // 移除窗口
 ipcMain.on("remove-window", (event) => {
   const window = BrowserWindow.fromWebContents(event.sender);
@@ -166,4 +201,9 @@ ipcMain.on("show-context-menu", (event, type, id, title, content) => {
   contextMenu = Menu.buildFromTemplate(menuTemplate);
 
   contextMenu.popup(BrowserWindow.fromWebContents(event.sender));
+});
+
+// 打开倒计时窗口
+ipcMain.on("open-timer-window", () => {
+  createTimerWindow();
 });

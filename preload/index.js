@@ -10,6 +10,24 @@ contextBridge.exposeInMainWorld("electron", {
   removeWindow: () => {
     ipcRenderer.send("remove-window");
   },
+  // 打开一个全屏的倒计时窗口
+  openTimerWindow: () => {
+    ipcRenderer.send("open-timer-window");
+  },
+  // 切换到主窗口
+  switchToMainWindow: () => {
+    ipcRenderer.send("switch-to-main-window");
+  },
+  // 关闭这个倒计时窗口
+  closeTimerWindow: () => {
+    ipcRenderer.send("close-timer-window");
+  },
+  // 打开一个全屏的番茄钟窗口
+  openPomodoroWindow: () => {
+    ipcRenderer.send("open-pomodoro-window");
+  },
+  // 打开一个全屏的关于窗口
+
   // 主进程向渲染进程发消息
   // 参数是一个回调函数，用的话直接访问回调函数即可。
   // 接收参数
@@ -30,10 +48,5 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.on("edit-todo", (event, id) => {
       callback(id);
     });
-  },
-  // 移除监听器
-  removeToDoListener: (callback1, callback2) => {
-    ipcRenderer.removeListener("remove-todo", callback1);
-    ipcRenderer.removeListener("edit-todo", callback2);
   },
 });

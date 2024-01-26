@@ -119,10 +119,9 @@ onUnmounted(() => {
 // 添加监听事件
 const handleKeyDown = (e) => {
   if (e.key === "f") {
-    // console.log("f键被点击了......");
-    // 执行跳转逻辑，向主进程发送消息打开新窗口并加载指定页面
-    window.electron.openPomodoroWindow();
-    // 给用户提示
+    // 关闭窗口并跳转
+    window.electron.closePomodoroWindow();
+    router.push("/countdown");
   }
 };
 </script>
