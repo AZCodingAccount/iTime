@@ -7,12 +7,12 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.send("show-context-menu", type, id, title, content),
   // 移除窗口，好像都可以使用这个方法
   removeWindow: () => {
-    ipcRenderer.send("remove-window",);
+    ipcRenderer.send("remove-window");
   },
   // 打开一个全屏的倒计时窗口
   // @params type 'f' 全屏|'a' 打开挂件
   openTimerWindow: (type) => {
-    ipcRenderer.send("open-timer-window",type);
+    ipcRenderer.send("open-timer-window", type);
   },
   // 切换到主窗口
   switchToMainWindow: () => {
@@ -25,7 +25,7 @@ contextBridge.exposeInMainWorld("electron", {
   // 打开一个番茄钟窗口
   // @params type 'f' 全屏|'a' 打开挂件
   openPomodoroWindow: (type) => {
-    ipcRenderer.send("open-pomodoro-window",type);
+    ipcRenderer.send("open-pomodoro-window", type);
   },
   // 关闭全屏番茄钟窗口
   closePomodoroWindow: () => {
@@ -54,4 +54,8 @@ contextBridge.exposeInMainWorld("electron", {
       callback(id);
     });
   },
+
+  // 双向通信
+  // 保存文件
+  saveFile: (type,originFilePath) => ipcRenderer.invoke("save-file",  type,originFilePath),
 });

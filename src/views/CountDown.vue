@@ -165,7 +165,7 @@ const handleKeyDown = (e) => {
   font-family: "Roboto", sans-serif;
   color: white;
   font-weight: 700;
-  background-image: url(/timeBGC.jpg);
+  background-image: url(/timeBGI.jpg);
   background-size: cover; /* 覆盖整个容器 */
   background-repeat: no-repeat; /* 不重复 */
   background-position: center center; /* 图像居中显示 */

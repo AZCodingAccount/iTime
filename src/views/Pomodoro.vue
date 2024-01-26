@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted ,h} from "vue";
+import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { Message } from "@arco-design/web-vue";
 import { IconFullscreen } from "@arco-design/web-vue/es/icon";
@@ -9,6 +9,7 @@ let totalTime = ref(0); // 计算成的秒数
 const isStart = ref(true); // 是不是第一次启动定时器
 let intervalId = null;
 let isEnding = ref(false); // 定义结束按钮是否显示隐藏
+const backgroundImage = ref("/timeBGI");
 
 // 计算分钟
 const minutes = computed(() =>
@@ -23,6 +24,7 @@ const seconds = computed(() =>
 const hintText = ref("待开始"); // 上方提示文字
 // 读取番茄钟配置
 const customSettingsStore = useCustomSettingsStore();
+backgroundImage.value = customSettingsStore.customSettings["f-pomodoro-bgi"];
 const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
 // const pShortBreakDuration = ref(shortBreakDuration); // 短休息
@@ -122,15 +124,15 @@ onUnmounted(() => {
 const handleKeyDown = (e) => {
   if (e.key === "f") {
     // 执行跳转逻辑，向主进程发送消息打开新窗口并加载指定页面
-    window.electron.openPomodoroWindow('f');
-  }else if(e.key==='a'){
+    window.electron.openPomodoroWindow("f");
+  } else if (e.key === "a") {
     // 添加widget到桌面
-    window.electron.openPomodoroWindow('a')
+    window.electron.openPomodoroWindow("a");
   }
 };
 </script>
 <template>
-  <div class="main">
+  <div class="main" :style="{ backgroundImage: `url(${backgroundImage})` }">
     <div class="pomodoro-timer">
       <!-- 上方提示文字 （专注中、短休息、长休息）-->
       <div class="hint">
@@ -221,7 +223,6 @@ const handleKeyDown = (e) => {
   font-family: "Roboto", sans-serif;
   color: white;
   font-weight: 700;
-  background-image: url(/timeBGC.jpg);
   background-size: cover; /* 覆盖整个容器 */
   background-repeat: no-repeat; /* 不重复 */
   background-position: center center; /* 图像居中显示 */

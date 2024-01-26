@@ -10,6 +10,8 @@ const isStart = ref(true); // 是不是第一次启动定时器
 let intervalId = null;
 let isEnding = ref(false); // 定义结束按钮是否显示隐藏
 
+const backgroundImage = ref("none");
+
 // 计算分钟
 const minutes = computed(() =>
   Math.floor(totalTime.value / 60)
@@ -23,6 +25,7 @@ const seconds = computed(() =>
 const hintText = ref("待开始"); // 上方提示文字
 // 读取番茄钟配置
 const customSettingsStore = useCustomSettingsStore();
+backgroundImage.value = customSettingsStore.customSettings["w-pomodoro-bgi"];
 const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
 // const pShortBreakDuration = ref(shortBreakDuration); // 短休息
@@ -124,7 +127,10 @@ const handleKeyDown = (e) => {
 };
 </script>
 <template>
-  <div class="pomodoro-timer">
+  <div
+    class="pomodoro-timer"
+    :style="{ backgroundImage: `url(${backgroundImage})` }"
+  >
     <!-- 上方提示文字 （专注中、短休息、长休息）-->
     <div class="hint">
       {{ hintText }}
@@ -215,6 +221,9 @@ const handleKeyDown = (e) => {
   color: white;
   border-radius: 10px;
   padding: 0 15px;
+  background-size: cover; /* 覆盖整个容器 */
+  background-repeat: no-repeat; /* 不重复 */
+  background-position: center center; /* 图像居中显示 */
 }
 
 /* 定义下方样式 */

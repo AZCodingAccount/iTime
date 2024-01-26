@@ -9,7 +9,7 @@ let totalTime = ref(0); // 计算成的秒数
 const isStart = ref(true); // 是不是第一次启动定时器
 let intervalId = null;
 let isEnding = ref(false); // 定义结束按钮是否显示隐藏
-
+const backgroundImage = ref("");
 // 计算分钟
 const minutes = computed(() =>
   Math.floor(totalTime.value / 60)
@@ -23,6 +23,7 @@ const seconds = computed(() =>
 const hintText = ref("待开始"); // 上方提示文字
 // 读取番茄钟配置
 const customSettingsStore = useCustomSettingsStore();
+
 const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
 // const pShortBreakDuration = ref(shortBreakDuration); // 短休息
@@ -107,6 +108,7 @@ const endTimer = () => {
 };
 
 onMounted(() => {
+  backgroundImage.value = customSettingsStore.customSettings["f-pomodoro-bgi"];
   Message.info({
     content: "按F键即可退出全屏😊",
     icon: () => h(IconFullscreenExit),
@@ -128,7 +130,7 @@ const handleKeyDown = (e) => {
 };
 </script>
 <template>
-  <div class="main">
+  <div class="main" :style="{ backgroundImage: `url(${backgroundImage})` }">
     <div class="pomodoro-timer">
       <!-- 上方提示文字 （专注中、短休息、长休息）-->
       <div class="hint">
@@ -219,7 +221,6 @@ const handleKeyDown = (e) => {
   font-family: "Roboto", sans-serif;
   color: white;
   font-weight: 700;
-  background-image: url(/timeBGC.jpg);
   background-size: cover; /* 覆盖整个容器 */
   background-repeat: no-repeat; /* 不重复 */
   background-position: center center; /* 图像居中显示 */

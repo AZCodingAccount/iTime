@@ -6,7 +6,7 @@ const router = createRouter({
     {
       // 软件主界面
       path: "/",
-      component: () => import("@/views/LayOutContainer.vue"), // 使用箭头函数可以懒加载
+      component: () => import("@/views/layout/LayOutContainer.vue"), // 使用箭头函数可以懒加载
       redirect: "/today",
       children: [
         { path: "/today", component: () => import("@/views/TodayToDo.vue") },
@@ -18,7 +18,30 @@ const router = createRouter({
           path: "/categories",
           component: () => import("@/views/MyCategory.vue"),
         },
-        { path: "/settings", component: () => import("@/views/Settings.vue") },
+        {
+          path: "/settings",
+          redirect: "/settings/global",
+          component: () => import("@/views/layout/LayOutSettings.vue"),
+          children: [
+            {
+              path: "/settings/global",
+              component: () => import("@/views/settings/GlobalSettings.vue"),
+            },
+            {
+              path: "/settings/todo",
+              component: () => import("@/views/settings/ToDoSettings.vue"),
+            },
+            {
+              path: "/settings/clock",
+              component: () => import("@/views/settings/ClockSettings.vue"),
+            },
+            {
+              path: "/settings/appearance",
+              component: () =>
+                import("@/views/settings/AppearanceSettings.vue"),
+            },
+          ],
+        },
         { path: "/about", component: () => import("@/views/AboutAuthor.vue") },
         {
           path: "/countdown",

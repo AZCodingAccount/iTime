@@ -2,6 +2,7 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
+const fs = require("fs");
 
 // 创建一个窗口
 let win = null;
@@ -150,6 +151,8 @@ const createPomodoroWindow = () => {
     fullscreen: true,
     resizable: false,
     webPreferences: {
+      webSecurity: false, // 允许加载本地文件
+      allowFileAccess: true, // 允许访问文件
       // nodeIntegration: true,
       // contextIsolation: false,
       sandbox: false, // 取消沙箱模式
@@ -160,12 +163,15 @@ const createPomodoroWindow = () => {
   pomodoroWindow.on("closed", () => {
     pomodoroWindow = null;
   });
+  // pomodoroWindow.webContents.openDevTools();
   pomodoroWindow.on("ready-to-show", () => {
     pomodoroWindow.show();
   });
 };
 const createPomodoroWidgetWindow = () => {
   let pomodoroWidgetWindow = new BrowserWindow({
+    // width: 1000,
+    // height: 800,
     width: 374,
     height: 104,
     transparent: true, // 透明
@@ -297,4 +303,42 @@ ipcMain.on("close-pomodoro-window", (event) => {
   if (window) {
     window.close();
   }
+});
+
+// 保存文件
+ipcMain.handle("save-file", (event, type, originFilePath) => {
+  const pathDir = "backgrounds";
+
+  if (type && originFilePath) {
+    // 获取原始文件的扩展名
+    const fileExtension = path.extname(originFilePath);
+    const fileName = type + fileExtension; // 构造新文件名
+    const newFilePath = path.join(__dirname, pathDir, fileName);
+    console.log(newFilePath);
+    // 确保 'backgrounds' 目录存在
+    if (!fs.existsSync(path.join(__dirname, pathDir))) {
+      fs.mkdirSync(path.join(__dirname, pathDir), { recursive: true });
+    }
+
+    return new Promise((resolve, reject) => {
+      // 读取原始文件内容
+      fs.readFile(originFilePath, (readErr, data) => {
+        if (readErr) {
+          reject(readErr);
+        } else {
+          // 将内容写入新文件
+          fs.writeFile(newFilePath, data, (writeErr) => {
+            if (writeErr) {
+              reject(writeErr);
+            } else {
+              // 返回新文件的路径
+              let pathName = "/" + pathDir + "/" + fileName;
+              resolve(pathName);
+            }
+          });
+        }
+      });
+    });
+  }
+  return null;
 });
