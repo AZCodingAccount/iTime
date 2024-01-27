@@ -1,5 +1,5 @@
 // 导入模块，不能使用ES6的语法
-const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain, shell } = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
 const fs = require("fs");
@@ -31,9 +31,16 @@ const createWindow = () => {
   //   win.loadFile("index.html");
   win.setSize(1200, 800); // 显式设置窗口大小，因为之前的大小被缓存了
   win.center(); // 使窗口居中
+  win.setMenu(null);
   win.loadURL("http://localhost:5173");
   win.webContents.openDevTools(); // 打开开发者工具
   // winState.manage(win); // 配置持久化
+
+  
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url); // 使用外部浏览器打开
+    return { action: "deny" }; // 阻止 Electron 打开新窗口
+  });
 };
 
 app.whenReady().then(() => {
@@ -44,6 +51,17 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
+  // 拦截所有url
+  // app.on("web-contents-created", (e, webContents) => {
+  //   webContents.setWindowOpenHandler(({ url }) => {
+  //     shell.openExternal(url);
+  //   });
+  //   webContents.on("new-window", (event, url) => {
+  //     console.log("open");
+  //     event.preventDefault();
+  //     shell.openExternal(url);
+  //   });
+  // });
 });
 
 app.on("window-all-closed", () => {

@@ -16,6 +16,10 @@ body {
   margin: 0;
   user-select: none;
 }
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
 #app {
   width: 100%;

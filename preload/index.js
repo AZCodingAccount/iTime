@@ -1,4 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
+const { shell } = require("electron");
+
 
 contextBridge.exposeInMainWorld("electron", {
   // 渲染进程向主进程发消息
@@ -57,5 +59,6 @@ contextBridge.exposeInMainWorld("electron", {
 
   // 双向通信
   // 保存文件
-  saveFile: (type,originFilePath) => ipcRenderer.invoke("save-file",  type,originFilePath),
+  saveFile: (type, originFilePath) =>
+    ipcRenderer.invoke("save-file", type, originFilePath),
 });
