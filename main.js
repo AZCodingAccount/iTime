@@ -126,6 +126,7 @@ const createTimerWidgetWindow = () => {
     // height:800,
     transparent: true, // 透明
     frame: false, // 无边框窗口
+    skipTaskbar: true, // 不在任务栏中显示
     resizable: false,
     alwaysOnTop: true,
     webPreferences: {
@@ -142,6 +143,14 @@ const createTimerWidgetWindow = () => {
   // timerWidgetWindow.webContents.openDevTools();
   timerWidgetWindow.once("ready-to-show", () => {
     timerWidgetWindow.show();
+  });
+  // hook这个消息，禁用窗口
+  timerWidgetWindow.hookWindowMessage(278, function (e) {
+    timerWidgetWindow.setEnabled(false); //窗口禁用
+    setTimeout(() => {
+      timerWidgetWindow.setEnabled(true); //窗口启用
+    }, 1);
+    return true;
   });
 };
 // 创建番茄钟窗口
@@ -177,6 +186,7 @@ const createPomodoroWidgetWindow = () => {
     transparent: true, // 透明
     frame: false, // 无边框窗口
     resizable: false,
+    skipTaskbar: true, // 不在任务栏中显示
     webPreferences: {
       // nodeIntegration: true,
       // contextIsolation: false,
@@ -188,9 +198,19 @@ const createPomodoroWidgetWindow = () => {
   pomodoroWidgetWindow.on("closed", () => {
     pomodoroWidgetWindow = null;
   });
+  pomodoroWidgetWindow.setAlwaysOnTop(true, "desktop");
+
   // pomodoroWidgetWindow.webContents.openDevTools();
   pomodoroWidgetWindow.once("ready-to-show", () => {
     pomodoroWidgetWindow.show();
+  });
+  // hook这个消息，禁用窗口
+  pomodoroWidgetWindow.hookWindowMessage(278, function (e) {
+    pomodoroWidgetWindow.setEnabled(false); //窗口禁用
+    setTimeout(() => {
+      pomodoroWidgetWindow.setEnabled(true); //窗口启用
+    }, 1);
+    return true;
   });
 };
 // 删除待办
