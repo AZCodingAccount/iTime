@@ -14,7 +14,7 @@ watchEffect(() => {
     // 设置全局变量
     const style = document.createElement("style");
     style.id = "custom-ol-style"; // 为 <style> 元素设置一个唯一的 id
-    style.innerHTML = `ol > li::before { content: "${todoIcons.value.olIcon}" !important; }`;
+    style.innerHTML = `.ql-container ol > li::before,.card ol>li::marker { content: "${todoIcons.value.olIcon}" !important; }`;
     document.head.appendChild(style);
     console.log("所有样式添加成功~~~");
   } else {

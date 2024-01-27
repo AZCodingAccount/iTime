@@ -63,17 +63,17 @@ li {
 }
 /* marker用于定制元素的样式（比如大小颜色），before用于改变样式，比如改变标点符号,必须加！important，不然会被覆盖 */
 /* 无序列表 */
-ul > li:not(.arco-select-option)::before {
+.ql-container ul > li::before {
+  content: var(--ulIcon, "●") !important;
+}
+
+.card ul > li::marker {
   content: var(--ulIcon, "●") !important;
 }
 
 /* ul li::before {
   content: 🙂;
 } */
-/* 有序列表 */
-ol.ol-class > li::before {
-  content: var(--olIcon) !important ;
-}
 /* h1 原本0.67em */
 h1 {
   margin: 0.2em 0;
