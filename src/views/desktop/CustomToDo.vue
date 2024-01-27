@@ -115,7 +115,7 @@ const handleDBLClick = () => {
   user-select: none;
 }
 .content {
-  padding: 2vh 1vw 1vh;
+  padding: 8px 1vw;
 }
 /* 可拖拽 */
 .draggable {

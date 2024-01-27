@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 // 定义待办列表
 export const useCustomSettingsStore = defineStore(
   "customSettings",
@@ -16,24 +16,96 @@ export const useCustomSettingsStore = defineStore(
     // 默认番茄钟背景图设置
     customSettings.value["f-pomodoro-bgi"] = "/timeBGI.jpg";
     customSettings.value["w-pomodoro-bgi"] = "none";
-    // 重置番茄钟背景图
-    const resetPomodoroBGI = () => {
-      customSettings.value["f-pomodoro-bgi"] = "/timeBGI.jpg";
-      customSettings.value["w-pomodoro-bgi"] = "none";
-    };
+
     // 待办图标样式
     customSettings.value["todo-icons"] = {
       olIcon: "1.",
       ulIcon: "●",
     };
+
+    // 默认快捷键设置
+    customSettings.value["shortcutKeys"] = {
+      fPomodoro: "Ctrl+Alt+0",
+      wPomodoro: "Ctrl+Alt+1",
+      fTimer: "Ctrl+Alt+2",
+      wTimer: "Ctrl+Alt+3",
+    };
+
+    // 默认位置设置，是否在顶层
+    customSettings.value["position"] = {
+      pomodoroP: false,
+      timerP: false,
+      todoP: false,
+    };
+
+    // 提示语音设置
+    customSettings.value["voice"] = {
+      pomodoroV: "默认",
+      timerV: "默认",
+      todoV: "默认",
+      isClosedV: false,
+    };
+    // 防止用户快捷键输入空值
+    watchEffect(() => {
+      if (customSettings.value["shortcutKeys"]["fPomodoro"] === "") {
+        customSettings.value["shortcutKeys"]["fPomodoro"] = "Control+Alt+0";
+      }
+      if (customSettings.value["shortcutKeys"]["wPomodoro"] === "") {
+        customSettings.value["shortcutKeys"]["wPomodoro"] = "Control+Alt+1";
+      }
+      if (customSettings.value["shortcutKeys"]["fTimer"] === "") {
+        customSettings.value["shortcutKeys"]["fTimer"] = "Control+Alt+2";
+      }
+      if (customSettings.value["shortcutKeys"]["wTimer"] === "") {
+        customSettings.value["shortcutKeys"]["wTimer"] = "Control+Alt+3";
+      }
+    });
     // 重置番茄钟背景图
+    const resetPomodoroBGI = () => {
+      customSettings.value["f-pomodoro-bgi"] = "/timeBGI.jpg";
+      customSettings.value["w-pomodoro-bgi"] = "none";
+    };
+    // 重置待办图标
     const resetForm = () => {
       customSettings.value["todo-icons"] = {
         olIcon: "1.",
         ulIcon: "●",
       };
     };
-    return { customSettings, resetPomodoroBGI, resetForm };
+    // 重置快捷键设置
+    const resetShortcutKeys = () => {
+      customSettings.value["shortcutKeys"] = {
+        fPomodoro: "Control+Alt+0",
+        wPomodoro: "Control+Alt+1",
+        fTimer: "Control+Alt+2",
+        wTimer: "Control+Alt+3",
+      };
+    };
+    // 重置位置设置
+    const resetPositionSettings = () => {
+      customSettings.value["position"] = {
+        pomodoroP: false,
+        timerP: false,
+        todoP: false,
+      };
+    };
+    // 重置语音提示设置
+    const resetVoiceSettings = () => {
+      customSettings.value["voice"] = {
+        pomodoroV: "默认",
+        timerV: "默认",
+        todoV: "默认",
+        isClosedV: false,
+      };
+    };
+    return {
+      customSettings,
+      resetPomodoroBGI,
+      resetForm,
+      resetShortcutKeys,
+      resetPositionSettings,
+      resetVoiceSettings,
+    };
   },
   { persist: true } // 持久化
 );

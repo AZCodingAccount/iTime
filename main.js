@@ -17,6 +17,7 @@ const createWindow = () => {
     // frame: false, // 无边框窗口
     // titleBarStyle: "hidden",
     // titleBarOverlay: true,
+    // fullscreen: true,
     webPreferences: {
       // 不安全，不建议使用
       // nodeIntegration: true, // 启用Node.js集成
@@ -26,10 +27,9 @@ const createWindow = () => {
     },
   });
   //隐藏顶部菜单
-  win.setMenu(null);
 
   //   win.loadFile("index.html");
-  win.setSize(1100, 700); // 显式设置窗口大小，因为之前的大小被缓存了
+  win.setSize(1200, 800); // 显式设置窗口大小，因为之前的大小被缓存了
   win.center(); // 使窗口居中
   win.loadURL("http://localhost:5173");
   win.webContents.openDevTools(); // 打开开发者工具
