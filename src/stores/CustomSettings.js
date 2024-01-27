@@ -21,8 +21,19 @@ export const useCustomSettingsStore = defineStore(
       customSettings.value["f-pomodoro-bgi"] = "/timeBGI.jpg";
       customSettings.value["w-pomodoro-bgi"] = "none";
     };
-
-    return { customSettings, resetPomodoroBGI };
+    // 待办图标样式
+    customSettings.value["todo-icons"] = {
+      olIcon: "1.",
+      ulIcon: "●",
+    };
+    // 重置番茄钟背景图
+    const resetForm = () => {
+      customSettings.value["todo-icons"] = {
+        olIcon: "1.",
+        ulIcon: "●",
+      };
+    };
+    return { customSettings, resetPomodoroBGI, resetForm };
   },
   { persist: true } // 持久化
 );

@@ -193,7 +193,7 @@ const resetBGI = () => {
         <a-button @click="resetForm">恢复默认设置</a-button>
       </a-form-item>
     </a-form>
-
+    <a-divider></a-divider>
     <!-- 设置背景图 -->
     <div class="background">
       <div
