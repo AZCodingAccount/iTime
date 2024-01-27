@@ -1,5 +1,44 @@
 <script setup>
+// 在这里定义一些全局样式
+import { ref, watchEffect } from "vue";
+import { useCustomSettingsStore } from "./stores/CustomSettings";
+const customSettingsStore = useCustomSettingsStore();
+const todoIcons = ref(customSettingsStore.customSettings["todo-icons"]);
 
+// 使用 watchEffect 来响应式地更新 CSS 变量
+watchEffect(() => {
+  console.log(111);
+  console.log(todoIcons.value.olIcon);
+  // 通过js操作元素样式
+  if (todoIcons.value.olIcon !== "1." && todoIcons.value.olIcon.trim() !== "") {
+    // 设置全局变量
+    const style = document.createElement("style");
+    style.id = "custom-ol-style"; // 为 <style> 元素设置一个唯一的 id
+    style.innerHTML = `ol > li::before { content: "${todoIcons.value.olIcon}" !important; }`;
+    document.head.appendChild(style);
+    console.log("所有样式添加成功~~~");
+  } else {
+    const styleElement = document.getElementById("custom-ol-style"); // 通过 id 选中 <style> 元素
+    if (styleElement) {
+      styleElement.parentNode.removeChild(styleElement); // 从其父元素中移除
+    }
+    console.log("样式添加失败");
+  }
+
+  // 设置自定义样式变量
+  document.documentElement.style.setProperty(
+    "--ulIcon",
+    `"${todoIcons.value.ulIcon}"`
+  );
+});
+
+// 获取元素的属性值看一下
+// const ulIconValue = getComputedStyle(document.documentElement)
+//   .getPropertyValue("--ulIcon")
+//   .trim();
+// console.log(ulIconValue); // 输出 --ulIcon 的当前值
+
+// console.log("设置成功~~~~", todoIcons.value);
 </script>
 
 <template>

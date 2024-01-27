@@ -11,7 +11,6 @@ const selfForm = ref({
   olIcon: "1.",
   ulIcon: "●",
 });
-const formRef = ref(null);
 const customSettingsStore = useCustomSettingsStore();
 const todoIcons = customSettingsStore.customSettings["todo-icons"];
 onMounted(() => {
@@ -33,17 +32,17 @@ const resetForm = () => {
 </script>
 <template>
   <div class="app">
-    <a-form :model="form" ref="formRef" :style="{ width: '600px' }">
+    <a-form :model="form" :style="{ width: '600px' }">
       <a-form-item field="form.olIcon" label="有序列表">
         <a-select
           :style="{ width: '320px' }"
           placeholder="选择一个图标"
           v-model="form.olIcon"
         >
-          <a-option value="1.">1.</a-option>
-          <a-option value="🔢">🔢</a-option>
-          <a-option value="🆙">🆙</a-option>
-          <a-option value="😊">😊</a-option>
+          <a-option>1.</a-option>
+          <a-option>🔢</a-option>
+          <a-option>🆙</a-option>
+          <a-option>😊</a-option>
         </a-select>
       </a-form-item>
       <a-form-item field="ulIcon" label="无序列表">
@@ -61,8 +60,8 @@ const resetForm = () => {
     </a-form>
     <a-divider></a-divider>
     <!-- 自定义输入 -->
-    <a-form :model="selfForm" ref="formRef" :style="{ width: '600px' }">
-      <a-form-item field="form.olIcon" label="有序列表">
+    <a-form :model="selfForm" :style="{ width: '600px' }">
+      <a-form-item field="selfForm.olIcon" label="有序列表">
         <a-input
           :style="{ width: '320px' }"
           placeholder="请输入Unicode支持的字符串"
@@ -70,7 +69,7 @@ const resetForm = () => {
           v-model="selfForm.olIcon"
         />
       </a-form-item>
-      <a-form-item field="form.ulIcon" label="无序列表">
+      <a-form-item field="selfForm.ulIcon" label="无序列表">
         <a-input
           :style="{ width: '320px' }"
           placeholder="请输入Unicode支持的字符串"
