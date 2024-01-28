@@ -3,6 +3,8 @@ import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useRouter } from "vue-router";
 import { Message } from "@arco-design/web-vue";
+import { useCustomSettingsStore } from "@/stores/CustomSettings";
+const customSettingsStore = useCustomSettingsStore();
 
 const isRunning = ref(false);
 const percent = ref(0); // 定义进度条
@@ -26,6 +28,15 @@ const seconds = computed(() =>
   (totalTime.value % 60).toString().padStart(2, "0")
 );
 
+// 播放器对象
+const audioFullTimePlayer = ref(null);
+const audioHalfTimePlayer = ref(null);
+const role = computed(
+  () => customSettingsStore.customSettings.voice.timerV ?? "default"
+); // 当前角色
+const isClosed = computed(
+  () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
+); //是否关闭(使用计算属性保持响应性)
 const startTimer = () => {
   // 首先把数字输入框隐藏，显示进度条
   isBegin.value = true;
@@ -41,12 +52,18 @@ const startTimer = () => {
     intervalId = setInterval(() => {
       if (totalTime.value > 0) {
         totalTime.value--;
-        percent.value = (1 - totalTime.value / originTime.value).toFixed(2); //更新进度条
+        percent.value = Number(
+          (1 - totalTime.value / originTime.value).toFixed(2)
+        ); //更新进度条
+        if (percent.value == 0.5) {
+          !isClosed.value && audioHalfTimePlayer.value.play();
+        }
       } else {
         // 时间结束，做最后的工作
         clearInterval(intervalId);
         // TODO：调用原生弹窗给用户提示
         alert("时间到！");
+        !isClosed.value && audioFullTimePlayer.value.play();
         // 恢复到之前的状态
         isBegin.value = false;
         isRunning.value = false;
@@ -56,7 +73,6 @@ const startTimer = () => {
     }, 1000);
   }
 };
-
 const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
@@ -144,6 +160,15 @@ const handleKeyDown = (e) => {
         /></a-button>
       </div>
     </div>
+    <!-- 播放音频 |时间过半|时间到|-->
+    <audio
+      ref="audioHalfTimePlayer"
+      :src="`/voices/timer/${role}/halfTime.wav`"
+    ></audio>
+    <audio
+      ref="audioFullTimePlayer"
+      :src="`/voices/timer/${role}/fullTime.wav`"
+    ></audio>
   </div>
 </template>
 
