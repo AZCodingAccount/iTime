@@ -13,7 +13,7 @@ const fs = require("fs");
 
 // 创建一个窗口
 let win = null;
-let globalSettings = {}; // 用户全局配置
+let globalSettings = []; // 用户全局配置 position:0|voice:1
 
 const createWindow = () => {
   const winState = new WinState({
@@ -51,7 +51,7 @@ const createWindow = () => {
   });
 };
 // let customSettings = {}; // 存储自定义设置
-// 创建一个待办窗口
+// 创建待办小挂件窗口
 const addToDoToDesktop = (title, content) => {
   let todoWindow = new BrowserWindow({
     // width: 1200,
@@ -85,7 +85,7 @@ const addToDoToDesktop = (title, content) => {
       console.log("Message sent after delay!");
     }, 100); // 延迟时间，以毫秒为单位
   });
-  todoWindow.setAlwaysOnTop(true, "normal");
+  todoWindow.setAlwaysOnTop(globalSettings[0].todoP);
 
   // todoWindow.webContents.openDevTools(); // 打开开发者工具
 
@@ -94,6 +94,14 @@ const addToDoToDesktop = (title, content) => {
   });
   todoWindow.once("ready-to-show", () => {
     todoWindow.show();
+  });
+  // hook这个消息，禁用窗口
+  todoWindow.hookWindowMessage(278, function (e) {
+    todoWindow.setEnabled(false); //窗口禁用
+    setTimeout(() => {
+      todoWindow.setEnabled(true); //窗口启用
+    }, 1);
+    return true;
   });
 };
 // 创建全屏计时器窗口
@@ -128,7 +136,6 @@ const createTimerWidgetWindow = () => {
     frame: false, // 无边框窗口
     skipTaskbar: true, // 不在任务栏中显示
     resizable: false,
-    alwaysOnTop: true,
     webPreferences: {
       // nodeIntegration: true,
       // contextIsolation: false,
@@ -144,6 +151,7 @@ const createTimerWidgetWindow = () => {
   timerWidgetWindow.once("ready-to-show", () => {
     timerWidgetWindow.show();
   });
+  timerWidgetWindow.setAlwaysOnTop(globalSettings[0].timerP);
   // hook这个消息，禁用窗口
   timerWidgetWindow.hookWindowMessage(278, function (e) {
     timerWidgetWindow.setEnabled(false); //窗口禁用
@@ -199,7 +207,7 @@ const createPomodoroWidgetWindow = () => {
   pomodoroWidgetWindow.on("closed", () => {
     pomodoroWidgetWindow = null;
   });
-  pomodoroWidgetWindow.setAlwaysOnTop(true, "desktop");
+  pomodoroWidgetWindow.setAlwaysOnTop(globalSettings[0].pomodoroP);
 
   // pomodoroWidgetWindow.webContents.openDevTools();
   pomodoroWidgetWindow.once("ready-to-show", () => {
@@ -382,7 +390,7 @@ ipcMain.handle("save-file", (event, type, originFilePath) => {
 ipcMain.on("sync-else-setting", (event, settings) => {
   // 更新全局的值即可
   globalSettings = settings;
-  // console.log("globalSettings", globalSettings);
+  // console.log(globalSettings);
 });
 
 // 全局快捷键设置

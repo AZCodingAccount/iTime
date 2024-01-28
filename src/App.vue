@@ -57,7 +57,6 @@ test()
 watch(
   [customSettings.value.position, customSettings.value.voice],
   (oldV, newV) => {
-    console.log(oldV);
     const customSettingsForIpc = JSON.parse(JSON.stringify(oldV));
     // 需要更新全局配置
     window.electron.syncElseSetting(customSettingsForIpc);
