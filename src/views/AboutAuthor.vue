@@ -234,4 +234,7 @@ import { onMounted, ref } from "vue";
 .icons svg {
   margin: 0px 15px;
 }
+.docs:hover {
+  color: rgb(252, 106, 0);
+}
 </style>

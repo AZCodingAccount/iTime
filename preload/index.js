@@ -1,6 +1,4 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const { shell } = require("electron");
-
 
 contextBridge.exposeInMainWorld("electron", {
   // 渲染进程向主进程发消息
@@ -34,6 +32,10 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.send("close-pomodoro-window");
   },
   // 退出窗口
+  // 同步系统设置
+  syncSetting: (customSettings) => {
+    ipcRenderer.send("sync-setting", customSettings);
+  },
 
   // 主进程向渲染进程发消息
   // 参数是一个回调函数，用的话直接访问回调函数即可。

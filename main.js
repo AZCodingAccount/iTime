@@ -1,5 +1,12 @@
 // 导入模块，不能使用ES6的语法
-const { app, BrowserWindow, Menu, ipcMain, shell } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  ipcMain,
+  shell,
+  globalShortcut,
+} = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
 const fs = require("fs");
@@ -36,39 +43,12 @@ const createWindow = () => {
   win.webContents.openDevTools(); // 打开开发者工具
   // winState.manage(win); // 配置持久化
 
-  
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url); // 使用外部浏览器打开
     return { action: "deny" }; // 阻止 Electron 打开新窗口
   });
 };
-
-app.whenReady().then(() => {
-  createWindow();
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
-  // 拦截所有url
-  // app.on("web-contents-created", (e, webContents) => {
-  //   webContents.setWindowOpenHandler(({ url }) => {
-  //     shell.openExternal(url);
-  //   });
-  //   webContents.on("new-window", (event, url) => {
-  //     console.log("open");
-  //     event.preventDefault();
-  //     shell.openExternal(url);
-  //   });
-  // });
-});
-
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
+// let customSettings = {}; // 存储自定义设置
 // 创建一个待办窗口
 const addToDoToDesktop = (title, content) => {
   let todoWindow = new BrowserWindow({
@@ -114,7 +94,7 @@ const addToDoToDesktop = (title, content) => {
     todoWindow.show();
   });
 };
-// 创建一个全屏计时器窗口
+// 创建全屏计时器窗口
 const createTimerWindow = () => {
   let timerWindow = new BrowserWindow({
     frame: false,
@@ -171,7 +151,7 @@ const createTimerWidgetWindow = () => {
     return true;
   });
 };
-// 创建番茄钟窗口
+// 创建全屏番茄钟窗口
 const createPomodoroWindow = () => {
   let pomodoroWindow = new BrowserWindow({
     frame: false,
@@ -195,6 +175,7 @@ const createPomodoroWindow = () => {
     pomodoroWindow.show();
   });
 };
+// 创建番茄钟小挂件窗口
 const createPomodoroWidgetWindow = () => {
   let pomodoroWidgetWindow = new BrowserWindow({
     // width: 1000,
@@ -231,6 +212,46 @@ const createPomodoroWidgetWindow = () => {
     return true;
   });
 };
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
+// 配置全局快捷键并清除之前的快捷键
+ipcMain.on("sync-setting", (event, settings) => {
+  globalShortcut.unregisterAll();
+  const keys = settings.shortcutKeys;
+  if (keys) {
+    // 4个快捷键
+    globalShortcut.register(keys.fPomodoro, () => {
+      // 全屏番茄钟
+      createPomodoroWindow();
+    });
+    globalShortcut.register(keys.wPomodoro, () => {
+      // 番茄钟挂件
+      createPomodoroWidgetWindow();
+    });
+    globalShortcut.register(keys.fTimer, () => {
+      // 全屏计时器
+      createTimerWindow();
+    });
+    globalShortcut.register(keys.wTimer, () => {
+      // 计时器挂件
+      createTimerWidgetWindow();
+    });
+  }
+});
+
 // 删除待办
 const removeToDo = (id) => {
   console.log("remove todo:", id);

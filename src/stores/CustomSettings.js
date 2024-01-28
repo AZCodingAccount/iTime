@@ -25,10 +25,10 @@ export const useCustomSettingsStore = defineStore(
 
     // 默认快捷键设置
     customSettings.value["shortcutKeys"] = {
-      fPomodoro: "Ctrl+Alt+0",
-      wPomodoro: "Ctrl+Alt+1",
-      fTimer: "Ctrl+Alt+2",
-      wTimer: "Ctrl+Alt+3",
+      fPomodoro: "Control+Alt+0",
+      wPomodoro: "Control+Alt+1",
+      fTimer: "Control+Alt+2",
+      wTimer: "Control+Alt+3",
     };
 
     // 默认位置设置，是否在顶层

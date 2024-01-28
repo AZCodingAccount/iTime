@@ -2,9 +2,8 @@
 import { ref, nextTick } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { List, Message } from "@arco-design/web-vue";
-const form = ref(null);
 const customSettingsStore = useCustomSettingsStore();
-form.value = customSettingsStore.customSettings.shortcutKeys;
+let form = ref({ ...customSettingsStore.customSettings.shortcutKeys });
 
 // 定义控制是否可以输入的变量
 const fPomodoroDisabled = ref(true);
@@ -88,6 +87,17 @@ const updateForm = () => {
 };
 // 定义保存事件 @params type 'fPomodoro'|'wPomodoro'|'fTimer'|'wTimer'
 const handleSave = (type) => {
+  // 如果输入了不允许输入的值，就给用户提示
+  for (const value of Object.values(form.value)) {
+    if (
+      value === "Control+Alt" ||
+      value === "Alt+Control" ||
+      value.includes("Meta")
+    ) {
+      Message.error("不允许设置  (｡•́︿•̀｡)");
+      return; // 退出整个 handleSave 函数
+    }
+  }
   // 重置状态
   currentInput.value = "";
   if (type == "fPomodoro") {
@@ -99,7 +109,9 @@ const handleSave = (type) => {
   } else if (type == "wTimer") {
     wTimerDisabled.value = true;
   }
-  updateForm(); // 更新表单显示的值
+  // 手动更新本地存储的值;
+  customSettingsStore.customSettings.shortcutKeys = { ...form.value };
+  // updateForm(); // 更新表单显示的值
   Message.success("保存成功    (˃ᴗ˂)");
 };
 // 恢复默认设置
@@ -134,7 +146,18 @@ const resetVoiceForm = () => {
   <div class="app">
     <!-- 全局快捷键设置 -->
     <a-form :model="form" :style="{ width: '600px' }">
-      <div class="hin" style="width:600px;text-align: center;margin: 10px 0px 20px; font-size: 14px; font-weight: 600;">快捷键设置</div>
+      <div
+        class="hin"
+        style="
+          width: 600px;
+          text-align: center;
+          margin: 10px 0px 20px;
+          font-size: 14px;
+          font-weight: 600;
+        "
+      >
+        快捷键设置
+      </div>
       <a-form-item field="fPomodoro" label="全屏显示番茄钟">
         <a-input v-model="form.fPomodoro" :disabled="fPomodoroDisabled" />
         <a-button @click="handleClick('fPomodoro')" v-if="fPomodoroDisabled"
@@ -171,7 +194,7 @@ const resetVoiceForm = () => {
     <a-divider></a-divider>
     <!-- 设置倒计时、番茄钟、便签是否总是在底层 -->
     <a-form :model="positionForm" layout="inline">
-      <a-form-item style="font-weight: 600;">挂件是否在顶层设置</a-form-item>
+      <a-form-item style="font-weight: 600">挂件是否在顶层设置</a-form-item>
       <a-form-item field="positionForm.pomodoroP" label="番茄钟">
         <a-switch v-model="positionForm.pomodoroP" />
       </a-form-item>
@@ -189,8 +212,8 @@ const resetVoiceForm = () => {
     <a-divider></a-divider>
     <!-- 设置提示语音、待办，倒计时、番茄钟 -->
     <a-form :model="voiceForm" layout="inline">
-      <a-form-item style="font-weight: 600;">提示语音设置</a-form-item>
-      <a-form-item field="voiceForm.pomodoroV" label="番茄钟" >
+      <a-form-item style="font-weight: 600">提示语音设置</a-form-item>
+      <a-form-item field="voiceForm.pomodoroV" label="番茄钟">
         <a-select
           size="small"
           style="width: 100px"

@@ -1,8 +1,9 @@
 <script setup>
-// 在这里定义一些全局样式
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, watch, computed } from "vue";
 import { useCustomSettingsStore } from "./stores/CustomSettings";
+import { onMounted } from "vue";
 const customSettingsStore = useCustomSettingsStore();
+/*  在这里定义一些全局样式
 const todoIcons = ref(customSettingsStore.customSettings["todo-icons"]);
 
 // 使用 watchEffect 来响应式地更新 CSS 变量
@@ -33,12 +34,34 @@ watchEffect(() => {
 });
 
 // 获取元素的属性值看一下
-// const ulIconValue = getComputedStyle(document.documentElement)
-//   .getPropertyValue("--ulIcon")
-//   .trim();
-// console.log(ulIconValue); // 输出 --ulIcon 的当前值
+const ulIconValue = getComputedStyle(document.documentElement)
+  .getPropertyValue("--ulIcon")
+  .trim();
+console.log(ulIconValue); // 输出 --ulIcon 的当前值
 
-// console.log("设置成功~~~~", todoIcons.value);
+console.log("设置成功~~~~", todoIcons.value);
+*/
+// 同步配置信息
+const customSettings = ref(customSettingsStore.customSettings);
+
+// 立即生效是浪费性能的，因为我传递的是整个配置对象，但是为了用户体验，还是立即生效
+// watch(
+//   customSettings,
+//   (oldV, newV) => {
+//     console.log(newV);
+//     const customSettingsForIpc = JSON.parse(JSON.stringify(newV));
+
+//     window.electron.syncSetting(customSettingsForIpc);
+//   },
+//   { deep: true }
+// );
+// 注意不要传递代理对象，不能被序列化
+watchEffect(() => {
+  console.log(111);
+  const customSettingsForIpc = JSON.parse(JSON.stringify(customSettings.value));
+
+  window.electron.syncSetting(customSettingsForIpc);
+});
 </script>
 
 <template>
