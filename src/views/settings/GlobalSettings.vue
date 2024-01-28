@@ -27,11 +27,10 @@ const isSingleInput = () => {
 // 实时监听键盘的组合键并在输入框回显
 const beginKeyBoardListener = () => {
   const pressedKeys = new Array(); // 存储按下的键
-
   const keyDownHandler = (event) => {
     form.value[currentInput.value] = "";
     let bigKey = event.key;
-    // 转换成大写更好看
+    // 转换成大写更好看，也可以跟API对接
     if (event.key.length == 1) {
       bigKey = event.key.toUpperCase();
     }
@@ -45,8 +44,10 @@ const beginKeyBoardListener = () => {
       event.preventDefault(); // 阻止默认行为
     }
   };
+  // 捕捉不到Meta（win）弹起事件，特殊处理一下
   const keyUpHandler = (event) => {
-    pressedKeys.pop(event.key); // 释放键时移除
+    console.log("up", event.key);
+    pressedKeys.pop(); // 释放键时移除
   };
 
   // 添加键盘事件监听器
@@ -62,6 +63,8 @@ const beginKeyBoardListener = () => {
 
 // 定义点击事件 @params type 'fPomodoro'|'wPomodoro'|'fTimer'|'wTimer'
 const handleClick = (type) => {
+  // 先禁用所有快捷键
+  window.electron.disableAllShortcut();
   if (isSingleInput()) {
     // 做四件事，0：提醒用户。1：取消禁用输入框。2：更新当前输入框的值 3：开启键盘监听事件并回显到输入框
     Message.info("直接按下键盘即可记录 😎");
@@ -86,7 +89,7 @@ const updateForm = () => {
   form.value = customSettingsStore.customSettings.shortcutKeys;
 };
 // 定义保存事件 @params type 'fPomodoro'|'wPomodoro'|'fTimer'|'wTimer'
-const handleSave = (type) => {
+const handleSave = async (type) => {
   // 如果输入了不允许输入的值，就给用户提示
   for (const value of Object.values(form.value)) {
     if (
@@ -97,6 +100,16 @@ const handleSave = (type) => {
       Message.error("不允许设置  (｡•́︿•̀｡)");
       return; // 退出整个 handleSave 函数
     }
+  }
+  // 如果快捷键被占用了，给用户提示
+  const res = await window.electron.shortcutSetting(
+    JSON.parse(JSON.stringify(form.value))
+  );
+  if (res) {
+    Message.error("快捷键被占用  (｡•́︿•̀｡)");
+    // 把注册的快捷键先清空
+    window.electron.disableAllShortcut();
+    return;
   }
   // 重置状态
   currentInput.value = "";

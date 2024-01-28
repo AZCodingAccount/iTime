@@ -33,8 +33,16 @@ contextBridge.exposeInMainWorld("electron", {
   },
   // 退出窗口
   // 同步系统设置
-  syncSetting: (customSettings) => {
-    ipcRenderer.send("sync-setting", customSettings);
+  syncElseSetting: (customSettings) => {
+    ipcRenderer.send("sync-else-setting", customSettings);
+  },
+  // 禁用所有快捷键
+  disableAllShortcut: () => {
+    ipcRenderer.send("disable-all-shortcut");
+  },
+  // 启用所有快捷键
+  enableAllShortcut: () => {
+    ipcRenderer.send("enable-all-shortcut");
   },
 
   // 主进程向渲染进程发消息
@@ -63,4 +71,24 @@ contextBridge.exposeInMainWorld("electron", {
   // 保存文件
   saveFile: (type, originFilePath) =>
     ipcRenderer.invoke("save-file", type, originFilePath),
+  // 快捷键设置
+  shortcutSetting: (customSettingsForIpc) =>
+    ipcRenderer.invoke("shortcut-setting", customSettingsForIpc),
 });
+
+// shortcutKeys = {
+//   fPomodoro: "Control+Alt+0",
+//   wPomodoro: "Control+Alt+1",
+//   fTimer: "Control+Alt+2",
+//   wTimer: "Control+Alt+3",
+// };
+// async function invokeMessageToMain() {
+//   const replyMessage = await ipcRenderer.invoke(
+//     "shortcut-setting",
+//     shortcutKeys
+//   );
+//   console.log("replyMessage", replyMessage); // Promise<pending>
+//   const res = await window.electron.shortcutSetting(shortcutKeys);
+//   console.log("res", res); // res2
+// }
+// invokeMessageToMain();

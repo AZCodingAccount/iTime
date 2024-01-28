@@ -13,6 +13,8 @@ const fs = require("fs");
 
 // 创建一个窗口
 let win = null;
+let globalSettings = {}; // 用户全局配置
+
 const createWindow = () => {
   const winState = new WinState({
     defaultWidth: 2400,
@@ -227,31 +229,6 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-// 配置全局快捷键并清除之前的快捷键
-ipcMain.on("sync-setting", (event, settings) => {
-  globalShortcut.unregisterAll();
-  const keys = settings.shortcutKeys;
-  if (keys) {
-    // 4个快捷键
-    globalShortcut.register(keys.fPomodoro, () => {
-      // 全屏番茄钟
-      createPomodoroWindow();
-    });
-    globalShortcut.register(keys.wPomodoro, () => {
-      // 番茄钟挂件
-      createPomodoroWidgetWindow();
-    });
-    globalShortcut.register(keys.fTimer, () => {
-      // 全屏计时器
-      createTimerWindow();
-    });
-    globalShortcut.register(keys.wTimer, () => {
-      // 计时器挂件
-      createTimerWidgetWindow();
-    });
-  }
-});
-
 // 删除待办
 const removeToDo = (id) => {
   console.log("remove todo:", id);
@@ -401,3 +378,62 @@ ipcMain.handle("save-file", (event, type, originFilePath) => {
   }
   return null;
 });
+// 配置全局快捷键并清除之前的快捷键
+ipcMain.on("sync-else-setting", (event, settings) => {
+  // 更新全局的值即可
+  globalSettings = settings;
+  // console.log("globalSettings", globalSettings);
+});
+
+// 全局快捷键设置
+ipcMain.handle("shortcut-setting", async (event, keys) => {
+  globalShortcutSettings = keys;
+  let isOccupied = false; // 标记下方有没有被占用的快捷键
+  if (keys) {
+    // 挨个检查有没有注册过的快捷键
+    if (
+      !globalShortcut.register(keys.fPomodoro, () => {
+        // 全屏番茄钟
+        createPomodoroWindow();
+      })
+    ) {
+      isOccupied = true;
+      console.log(111);
+    }
+    if (
+      !globalShortcut.register(keys.wPomodoro, () => {
+        // 番茄钟挂件
+        createPomodoroWidgetWindow();
+      })
+    ) {
+      isOccupied = true;
+      console.log(222);
+    }
+    if (
+      !globalShortcut.register(keys.fTimer, () => {
+        // 全屏计时器
+        createTimerWindow();
+      })
+    ) {
+      isOccupied = true;
+      console.log(333);
+    }
+    if (
+      !globalShortcut.register(keys.wTimer, () => {
+        // 计时器挂件
+        createTimerWidgetWindow();
+      })
+    ) {
+      isOccupied = true;
+      console.log(444);
+    }
+  }
+  return isOccupied;
+});
+
+// 禁用所有快捷键
+ipcMain.on("disable-all-shortcut", () => {
+  globalShortcut.unregisterAll();
+});
+// 启用所有快捷键，不用启用，保存的时候自己就启用了
+// ipcMain.handle("enable-all-shortcut", () => {});

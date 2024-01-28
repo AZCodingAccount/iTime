@@ -43,25 +43,35 @@ console.log("设置成功~~~~", todoIcons.value);
 */
 // 同步配置信息
 const customSettings = ref(customSettingsStore.customSettings);
-
-// 立即生效是浪费性能的，因为我传递的是整个配置对象，但是为了用户体验，还是立即生效
-// watch(
-//   customSettings,
-//   (oldV, newV) => {
-//     console.log(newV);
-//     const customSettingsForIpc = JSON.parse(JSON.stringify(newV));
-
-//     window.electron.syncSetting(customSettingsForIpc);
-//   },
-//   { deep: true }
-// );
+console.log(customSettings.value.shortcutKeys);
+// 刚进来时候注册一次快捷键
+const customSettingsForIpc = JSON.parse(
+  JSON.stringify(customSettings.value.shortcutKeys)
+);
+const test = async () => {
+  const res = await window.electron.shortcutSetting(customSettingsForIpc);
+  console.log(res);
+};
+test()
+// 立即生效是比较麻烦的，但是用户体验大于一切，快捷键设置因为需要双向通信，就直接在组件中设置了
+watch(
+  [customSettings.value.position, customSettings.value.voice],
+  (oldV, newV) => {
+    console.log(oldV);
+    const customSettingsForIpc = JSON.parse(JSON.stringify(oldV));
+    // 需要更新全局配置
+    window.electron.syncElseSetting(customSettingsForIpc);
+  },
+  { immediate: true }
+  // { deep: true }
+);
 // 注意不要传递代理对象，不能被序列化
-watchEffect(() => {
-  console.log(111);
-  const customSettingsForIpc = JSON.parse(JSON.stringify(customSettings.value));
+// watchEffect(() => {
+//   console.log(111);
+//   const customSettingsForIpc = JSON.parse(JSON.stringify(customSettings.value));
 
-  window.electron.syncSetting(customSettingsForIpc);
-});
+//   window.electron.syncSetting(customSettingsForIpc);
+// });
 </script>
 
 <template>
