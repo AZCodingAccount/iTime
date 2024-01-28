@@ -19,6 +19,7 @@ const handleDBLClick = () => {
   // 隐藏下方内容
   isShowContent.value = !isShowContent.value;
 };
+
 </script>
 <template>
   <div

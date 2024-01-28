@@ -1,6 +1,6 @@
 <script setup>
 import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
-import { ref, computed, onMounted, onUnmounted ,h} from "vue";
+import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useRouter } from "vue-router";
 import { Message } from "@arco-design/web-vue";
 

@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { Message } from "@arco-design/web-vue";
-import { IconFullscreen } from "@arco-design/web-vue/es/icon";
+import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
 
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
@@ -26,14 +26,30 @@ const hintText = ref("待开始"); // 上方提示文字
 // 读取番茄钟配置
 const customSettingsStore = useCustomSettingsStore();
 backgroundImage.value = customSettingsStore.customSettings["w-pomodoro-bgi"];
-const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
-  customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
+// const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
+//   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
+// 测试使用
+const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } = {
+  duration: 0.1,
+  shortBreakDuration: 0.1,
+  longBreakDuration: 0.1,
+  longBreakInterval: 2,
+};
 // const pShortBreakDuration = ref(shortBreakDuration); // 短休息
 // const pLongBreakDuration = ref(longBreakDuration); // 长休息
 // const pLongBreakInterval = ref(longBreakInterval); // 长休息间隔
 // const pDuration = ref(duration); // 工作
 let step = ref(1); // 记录当前在第几轮
-
+// 播放器对象
+const audioShortBreakPlayer = ref(null);
+const audioLongBreakPlayer = ref(null);
+const audioFocusPlayer = ref(null);
+const role = computed(
+  () => customSettingsStore.customSettings.voice.pomodoroV ?? "default"
+); // 当前角色
+const isClosed = computed(
+  () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
+); //是否关闭(使用计算属性保持响应性)
 const startTimer = () => {
   !isEnding.value && (isEnding.value = true);
   if (isStart.value) {
@@ -66,15 +82,18 @@ const startTimer = () => {
         // TODO：调用原生弹窗给用户提示
         alert("时间到！");
 
-        // 更新状态
+        // 更新提示文字并播放音乐
         if (hintText.value === "专注中" && step.value !== longBreakInterval) {
+          !isClosed.value && audioShortBreakPlayer.value.play();
           hintText.value = "短休息";
         } else if (
           hintText.value === "专注中" &&
           step.value === longBreakInterval
         ) {
+          !isClosed.value && audioLongBreakPlayer.value.play();
           hintText.value = "长休息";
         } else if (hintText.value === "短休息" || hintText.value === "长休息") {
+          !isClosed.value && audioFocusPlayer.value.play();
           // 一个休息以后是一轮
           step.value === longBreakInterval
             ? (step.value = 1)
@@ -105,13 +124,14 @@ const endTimer = () => {
   isRunning.value = false;
   totalTime.value = 0;
   isEnding.value = false;
+  step.value = 1;
 };
 
 onMounted(() => {
-  //   Message.info({
-  //     content: "按F键即可进入全屏😎",
-  //     icon: () => h(IconFullscreen),
-  //   });
+  Message.info({
+    content: "按E键即可清除挂件😊",
+    icon: () => h(IconFullscreenExit),
+  });
   window.addEventListener("keydown", handleKeyDown);
 });
 
@@ -125,6 +145,17 @@ const handleKeyDown = (e) => {
     window.electron.removeWindow();
   }
 };
+
+window.addEventListener("storage", (event) => {
+  if (event.key === "customSettings") {
+    // 重新从localStorage加载状态
+    const updatedState = JSON.parse(event.newValue)?.customSettings;
+    if (updatedState) {
+      // 手动更新pinia的状态，因为打开新窗口默认又是一个应用，不会响应式更新了
+      customSettingsStore.customSettings = updatedState;
+    }
+  }
+});
 </script>
 <template>
   <div
@@ -201,6 +232,19 @@ const handleKeyDown = (e) => {
         ></a-button>
       </div>
     </div>
+    <!-- 播放音频 ：|轮到短休息|轮到长休息|轮到专注|-->
+    <audio
+      ref="audioShortBreakPlayer"
+      :src="`/voices/pomodoro/${role}/shortBreak.wav`"
+    ></audio>
+    <audio
+      ref="audioLongBreakPlayer"
+      :src="`/voices/pomodoro/${role}/longBreak.wav`"
+    ></audio>
+    <audio
+      ref="audioFocusPlayer"
+      :src="`/voices/pomodoro/${role}/focus.wav`"
+    ></audio>
   </div>
 </template>
 

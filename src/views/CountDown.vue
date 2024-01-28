@@ -68,8 +68,7 @@ onMounted(() => {
   // 可以在这里设置开始的默认状态
   window.addEventListener("keydown", handleKeyDown);
   Message.info({
-    content: "按F键即可进入全屏😎",
-    icon: () => h(IconFullscreen),
+    content: "按F键即可进入全屏、按A键可以发送小挂件😎",
   });
 });
 

@@ -32,7 +32,16 @@ const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
 // const pLongBreakInterval = ref(longBreakInterval); // 长休息间隔
 // const pDuration = ref(duration); // 工作
 let step = ref(1); // 记录当前在第几轮
-
+// 播放器对象
+const audioShortBreakPlayer = ref(null);
+const audioLongBreakPlayer = ref(null);
+const audioFocusPlayer = ref(null);
+const role = computed(
+  () => customSettingsStore.customSettings.voice.pomodoroV ?? "default"
+); // 当前角色
+const isClosed = computed(
+  () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
+); //是否关闭(使用计算属性保持响应性)
 const startTimer = () => {
   !isEnding.value && (isEnding.value = true);
   if (isStart.value) {
@@ -65,23 +74,24 @@ const startTimer = () => {
         // TODO：调用原生弹窗给用户提示
         alert("时间到！");
 
-        // 更新状态
+        // 更新提示文字并播放音乐
         if (hintText.value === "专注中" && step.value !== longBreakInterval) {
+          !isClosed.value && audioShortBreakPlayer.value.play();
           hintText.value = "短休息";
         } else if (
           hintText.value === "专注中" &&
           step.value === longBreakInterval
         ) {
+          !isClosed.value && audioLongBreakPlayer.value.play();
           hintText.value = "长休息";
         } else if (hintText.value === "短休息" || hintText.value === "长休息") {
+          !isClosed.value && audioFocusPlayer.value.play();
           // 一个休息以后是一轮
           step.value === longBreakInterval
             ? (step.value = 1)
             : (step.value = step.value + 1);
           hintText.value = "专注中";
         } // 修改上方提示文字
-        // console.log(longBreakInterval,typeof(longBreakInterval));
-        // console.log(step.value);
         isStart.value = true; // 标记下次再开启定时器是第一次开启
         startTimer(); //继续计时
       }
@@ -106,12 +116,12 @@ const endTimer = () => {
   isRunning.value = false;
   totalTime.value = 0;
   isEnding.value = false;
+  step.value = 1;
 };
 
 onMounted(() => {
   Message.info({
-    content: "按F键即可进入全屏😎",
-    icon: () => h(IconFullscreen),
+    content: "按F键即可进入全屏、按A键可以发送小挂件😎",
   });
   window.addEventListener("keydown", handleKeyDown);
 });
@@ -203,6 +213,19 @@ const handleKeyDown = (e) => {
               ></path></svg
           ></a-button>
         </div>
+        <!-- 播放音频 ：|轮到短休息|轮到长休息|轮到专注|-->
+        <audio
+          ref="audioShortBreakPlayer"
+          :src="`/voices/pomodoro/${role}/shortBreak.wav`"
+        ></audio>
+        <audio
+          ref="audioLongBreakPlayer"
+          :src="`/voices/pomodoro/${role}/longBreak.wav`"
+        ></audio>
+        <audio
+          ref="audioFocusPlayer"
+          :src="`/voices/pomodoro/${role}/focus.wav`"
+        ></audio>
       </div>
     </div>
   </div>

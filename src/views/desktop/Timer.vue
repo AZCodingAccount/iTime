@@ -1,7 +1,7 @@
 <script setup>
 import { Message } from "@arco-design/web-vue";
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
-import { IconFullscreen } from "@arco-design/web-vue/es/icon";
+import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
 
 const isRunning = ref(false);
 const percent = ref(0); // 定义进度条
@@ -65,11 +65,11 @@ const pauseTimer = () => {
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
 
-  // 可以在这里设置开始的默认状态
-  //   Message.info({
-  //     content: "按F键即可进入全屏😎",
-  //     icon: () => h(IconFullscreen),
-  //   });
+  Message.info({
+    position: "top",
+    content: "按E键即可清除挂件😊",
+    icon: () => h(IconFullscreenExit),
+  });
 });
 
 onUnmounted(() => {

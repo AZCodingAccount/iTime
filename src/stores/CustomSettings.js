@@ -7,11 +7,18 @@ export const useCustomSettingsStore = defineStore(
     const customSettings = ref({}); // 自定义设置，必须暴露出去，不然持久化不生效
     // 有自定义快捷键、自定义番茄钟设置，自定义字体设置
     // 默认番茄钟设置
+    // customSettings.value["pomodoroSettings"] = {
+    //   duration: 25,
+    //   shortBreakDuration: 5,
+    //   longBreakDuration: 15,
+    //   longBreakInterval: 4,
+    // };
+    // 测试设置
     customSettings.value["pomodoroSettings"] = {
-      duration: 25,
-      shortBreakDuration: 5,
-      longBreakDuration: 15,
-      longBreakInterval: 4,
+      duration: 0.1,
+      shortBreakDuration: 0.1,
+      longBreakDuration: 0.1,
+      longBreakInterval: 2,
     };
     // 默认番茄钟背景图设置
     customSettings.value["f-pomodoro-bgi"] = "/timeBGI.jpg";
@@ -40,9 +47,9 @@ export const useCustomSettingsStore = defineStore(
 
     // 提示语音设置
     customSettings.value["voice"] = {
-      pomodoroV: "默认",
-      timerV: "默认",
-      todoV: "默认",
+      pomodoroV: "default",
+      timerV: "default",
+      todoV: "default",
       isClosedV: false,
     };
     // 防止用户快捷键输入空值

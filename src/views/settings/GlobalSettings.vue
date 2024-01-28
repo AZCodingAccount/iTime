@@ -232,31 +232,31 @@ const resetVoiceForm = () => {
           style="width: 100px"
           v-model="voiceForm.pomodoroV"
         >
-          <a-option>默认</a-option>
-          <a-option>丁真</a-option>
-          <a-option>嘉然</a-option>
-          <a-option>科比</a-option>
+          <a-option value="default">东雪莲</a-option>
+          <a-option value="dingzhen">丁真</a-option>
+          <a-option value="jiaran">嘉然</a-option>
+          <a-option value="Kobe">科比</a-option>
         </a-select>
       </a-form-item>
 
       <a-form-item field="voiceForm.timerV" label="计时器">
         <a-select size="small" style="width: 100px" v-model="voiceForm.timerV">
-          <a-option>默认</a-option>
-          <a-option>丁真</a-option>
-          <a-option>嘉然</a-option>
-          <a-option>科比</a-option>
+          <a-option value="default">东雪莲</a-option>
+          <a-option value="dingzhen">丁真</a-option>
+          <a-option value="jiaran">嘉然</a-option>
+          <a-option value="Kobe">科比</a-option>
         </a-select>
       </a-form-item>
       <a-form-item field="voiceForm.todoV" label="待办">
         <a-select size="small" style="width: 100px" v-model="voiceForm.todoV">
-          <a-option>默认</a-option>
-          <a-option>丁真</a-option>
-          <a-option>嘉然</a-option>
-          <a-option>科比</a-option>
+          <a-option value="default">东雪莲</a-option>
+          <a-option value="dingzhen">丁真</a-option>
+          <a-option value="jiaran">嘉然</a-option>
+          <a-option value="Kobe">科比</a-option>
         </a-select>
       </a-form-item>
-      <a-form-item field="voiceForm.isClosed" label="关闭语音提示">
-        <a-switch v-model="voiceForm.isClosed" />
+      <a-form-item field="voiceForm.isClosedV" label="关闭语音提示">
+        <a-switch v-model="voiceForm.isClosedV" />
       </a-form-item>
       <a-form-item>
         <a-button @click="resetVoiceForm">恢复默认设置</a-button>
