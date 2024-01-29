@@ -42,7 +42,7 @@ const createWindow = () => {
   win.center(); // 使窗口居中
   win.setMenu(null);
   win.loadURL("http://localhost:5173");
-  // win.webContents.openDevTools(); // 打开开发者工具
+  win.webContents.openDevTools(); // 打开开发者工具
   // winState.manage(win); // 配置持久化
 
   win.webContents.setWindowOpenHandler(({ url }) => {
