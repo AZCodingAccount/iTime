@@ -15,6 +15,7 @@ console.log(111);
       >
         <div class="icon" style="font-size: 2.5em">🔜</div>
         <div class="contents" style="margin: 0 auto">
+          <div class="content">🖌️ 自定义主题</div>
           <div class="content">🆙 自定义字体大小</div>
           <div class="content">🌈 自定义桌面挂件颜色和透明度</div>
           <div class="content">🔄 自定义桌面挂件大小</div>

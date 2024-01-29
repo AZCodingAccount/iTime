@@ -3,6 +3,12 @@ import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
 import { Message } from "@arco-design/web-vue";
+import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+const hasVisitedBeforeStore = useHasVisitedBeforeStore();
+const isFirst = computed({
+  get: () => hasVisitedBeforeStore.fullScreenPomodoro,
+  set: (newValue) => (hasVisitedBeforeStore.fullScreenPomodoro = newValue),
+});
 
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
@@ -120,10 +126,13 @@ const endTimer = () => {
 
 onMounted(() => {
   backgroundImage.value = customSettingsStore.customSettings["f-pomodoro-bgi"];
-  Message.info({
-    content: "按F键即可退出全屏😊",
-    icon: () => h(IconFullscreenExit),
-  });
+  if (isFirst.value) {
+    Message.info({
+      content: "按F键即可退出全屏😊",
+      icon: () => h(IconFullscreenExit),
+    });
+    isFirst.value = false;
+  }
   window.addEventListener("keydown", handleKeyDown);
 });
 

@@ -3,6 +3,13 @@ import { Message } from "@arco-design/web-vue";
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { IconFullscreen } from "@arco-design/web-vue/es/icon";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
+import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+const hasVisitedBeforeStore = useHasVisitedBeforeStore();
+const isFirst = computed({
+  get: () => hasVisitedBeforeStore.appTimer,
+  set: (newValue) => (hasVisitedBeforeStore.appTimer = newValue),
+});
+
 const customSettingsStore = useCustomSettingsStore();
 
 const isRunning = ref(false);
@@ -81,9 +88,12 @@ const pauseTimer = () => {
 
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
-  Message.info({
-    content: "按F键即可进入全屏、按A键可以发送小挂件😎",
-  });
+  if (isFirst.value) {
+    Message.info({
+      content: "按F键即可进入全屏、按A键可以发送小挂件😎",
+    });
+    isFirst.value=false
+  }
 });
 
 onUnmounted(() => {

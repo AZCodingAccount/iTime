@@ -4,6 +4,13 @@ import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useRouter } from "vue-router";
 import { Message } from "@arco-design/web-vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
+import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+const hasVisitedBeforeStore = useHasVisitedBeforeStore();
+const isFirst = computed({
+  get: () => hasVisitedBeforeStore.fullScreenTimer,
+  set: (newValue) => (hasVisitedBeforeStore.fullScreenTimer = newValue),
+});
+
 const customSettingsStore = useCustomSettingsStore();
 
 const isRunning = ref(false);
@@ -82,10 +89,13 @@ const pauseTimer = () => {
 onMounted(() => {
   // 可以在这里设置开始的默认状态
   window.addEventListener("keydown", handleKeyDown);
-  Message.info({
-    content: "按F键即可退出全屏😊",
-    icon: () => h(IconFullscreenExit),
-  });
+  if (isFirst.value) {
+    Message.info({
+      content: "按F键即可退出全屏😊",
+      icon: () => h(IconFullscreenExit),
+    });
+    hasVisitedBeforeStore.fullScreenTimer = false;
+  }
 });
 
 onUnmounted(() => {
@@ -115,8 +125,8 @@ const handleKeyDown = (e) => {
 };
 const handleDBLClick = (event) => {
   // 双击定时器部分不应该有响应
-  if(event.target.closest('.pomodoro-timer')){
-    return
+  if (event.target.closest(".pomodoro-timer")) {
+    return;
   }
   window.electron.closeTimerWindow();
   router.push("/countdown");

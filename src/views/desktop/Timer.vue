@@ -3,6 +3,13 @@ import { Message } from "@arco-design/web-vue";
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
+import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+const hasVisitedBeforeStore = useHasVisitedBeforeStore();
+const isFirst = computed({
+  get: () => hasVisitedBeforeStore.widgetTimer,
+  set: (newValue) => (hasVisitedBeforeStore.widgetTimer = newValue),
+});
+
 const customSettingsStore = useCustomSettingsStore();
 const isRunning = ref(false);
 const percent = ref(0); // 定义进度条
@@ -78,11 +85,14 @@ const pauseTimer = () => {
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
 
-  Message.info({
-    position: "top",
-    content: "按E键即可清除挂件😊",
-    icon: () => h(IconFullscreenExit),
-  });
+  if (isFirst.value) {
+    Message.info({
+      position: "top",
+      content: "按E键即可清除挂件😊",
+      icon: () => h(IconFullscreenExit),
+    });
+    isFirst.value = false;
+  }
 });
 
 onUnmounted(() => {
@@ -213,7 +223,7 @@ const handleDBLClick = () => {
   cursor: pointer;
   font-size: 3em;
   color: white;
-  -webkit-app-region:no-drag
+  -webkit-app-region: no-drag;
 }
 
 button {

@@ -1,9 +1,15 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
+import { useCustomToDoStore } from "@/stores/CustomToDoStore";
 import { Message } from "@arco-design/web-vue";
 import { IconFullscreen } from "@arco-design/web-vue/es/icon";
-
+import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+const hasVisitedBeforeStore = useHasVisitedBeforeStore();
+const isFirst = computed({
+  get: () => hasVisitedBeforeStore.appPomodoro,
+  set: (newValue) => (hasVisitedBeforeStore.appPomodoro = newValue),
+});
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
 const isStart = ref(true); // 是不是第一次启动定时器
@@ -120,9 +126,13 @@ const endTimer = () => {
 };
 
 onMounted(() => {
-  Message.info({
-    content: "按F键即可进入全屏、按A键可以发送小挂件😎",
-  });
+  // 判断是不是第一次
+  if (isFirst.value) {
+    Message.info({
+      content: "按F键即可进入全屏、按A键可以发送小挂件😎",
+    });
+    isFirst.value = false;
+  }
   window.addEventListener("keydown", handleKeyDown);
 });
 

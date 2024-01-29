@@ -5,6 +5,14 @@ import { ref } from "vue";
 import { useToDoStore } from "@/stores/ToDo";
 import { Message } from "@arco-design/web-vue";
 import { v4 as uuidv4 } from "uuid";
+import { onMounted } from "vue";
+import { computed } from "vue";
+import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+const hasVisitedBeforeStore = useHasVisitedBeforeStore();
+const isFirst = computed({
+  get: () => hasVisitedBeforeStore.appToDo,
+  set: (newValue) => (hasVisitedBeforeStore.appToDo = newValue),
+});
 
 const addVisible = ref(false);
 const todoContent = ref(""); // 待办内容
@@ -18,19 +26,19 @@ const handleAdd = () => {
   addVisible.value = true;
 };
 const handleOk = () => {
-  // console.log(
-  //   todoContent.value,
-  //   todoTags.value,
-  //   todoDate.value,
-  //   todoTime.value
-  // );
-  // console.log(todoDate.value + " " + todoTime.value);
   let remindTime = new Date(todoDate.value + " " + todoTime.value);
-  const id = uuidv4();  // 生成一个uuid
+  const id = uuidv4(); // 生成一个uuid
   // 把待办信息存储到本地存储
   toDoStore.addToDo(id, todoContent.value, todoTags.value, remindTime);
   Message.success("添加成功！");
 };
+onMounted(() => {
+  console.log(isFirst);
+  if (isFirst.value) {
+    Message.info("Ctrl+Alt+'+'可以新增待办 😎");
+    isFirst.value = false;
+  }
+});
 </script>
 <template>
   <!-- 待办列表 -->

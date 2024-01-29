@@ -3,6 +3,12 @@ import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { Message } from "@arco-design/web-vue";
 import { IconFullscreenExit } from "@arco-design/web-vue/es/icon";
+import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+const hasVisitedBeforeStore = useHasVisitedBeforeStore();
+const isFirst = computed({
+  get: () => hasVisitedBeforeStore.widgetPomodoro,
+  set: (newValue) => (hasVisitedBeforeStore.widgetPomodoro = newValue),
+});
 
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
@@ -128,10 +134,13 @@ const endTimer = () => {
 };
 
 onMounted(() => {
-  Message.info({
-    content: "按E键即可清除挂件😊",
-    icon: () => h(IconFullscreenExit),
-  });
+  if (isFirst.value) {
+    Message.info({
+      content: "按E键即可清除挂件😊",
+      icon: () => h(IconFullscreenExit),
+    });
+    isFirst.value = false;
+  }
   window.addEventListener("keydown", handleKeyDown);
 });
 
