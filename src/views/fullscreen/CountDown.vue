@@ -95,17 +95,35 @@ onUnmounted(() => {
 const router = useRouter();
 // 添加监听事件
 const handleKeyDown = (e) => {
-  if (e.key === "f") {
-    // 先切换到主窗口，因为是spa
-    window.electron.switchToMainWindow();
+  if (e.key === "r") {
+    // r reset
+    // 恢复定时器初始状态
+    clearInterval(intervalId);
+    intervalId = null;
+    inputTime.value = 0;
+    totalTime.value = 0;
+    originTime.value = 0;
+    isRunning.value = false;
+    percent.value = 0;
+    isBegin.value = false;
+  } else if (e.key === "f") {
+    // 先关闭窗口，再跳
+    window.electron.closeTimerWindow();
     // 执行跳转逻辑，再跳回去，关闭全屏窗口
     router.push("/countdown");
-    // window.electron.closeTimerWindow();
   }
+};
+const handleDBLClick = (event) => {
+  // 双击定时器部分不应该有响应
+  if(event.target.closest('.pomodoro-timer')){
+    return
+  }
+  window.electron.closeTimerWindow();
+  router.push("/countdown");
 };
 </script>
 <template>
-  <div class="main">
+  <div class="main" @dblclick="handleDBLClick">
     <div class="pomodoro-timer">
       <!-- 输入框 -->
       <!-- 这个输入框是真的丑，但是我找了15分钟也没找到怎么修改灰色背景，就这样吧唉 -->
@@ -178,7 +196,7 @@ const handleKeyDown = (e) => {
 
 .main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: row;
   width: 100%;
@@ -194,6 +212,7 @@ const handleKeyDown = (e) => {
 }
 .pomodoro-timer {
   display: flex;
+  margin-top: 10%;
   align-items: center;
   justify-content: space-between;
   flex-direction: row;

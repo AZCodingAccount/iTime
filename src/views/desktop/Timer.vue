@@ -75,7 +75,6 @@ const pauseTimer = () => {
   intervalId = null;
   isRunning.value = false;
 };
-
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
 
@@ -103,6 +102,7 @@ const handleKeyDown = (e) => {
     originTime.value = 0;
     isRunning.value = false;
     percent.value = 0;
+    isBegin.value = false;
   } else if (e.key === "e") {
     // exit，退出
     window.electron.removeWindow();
@@ -119,6 +119,9 @@ window.addEventListener("storage", (event) => {
     }
   }
 });
+const handleDBLClick = () => {
+  window.electron.removeWindow();
+};
 </script>
 <template>
   <div class="pomodoro-timer">
@@ -146,7 +149,9 @@ window.addEventListener("storage", (event) => {
       color="rgb(12, 228, 140)"
       v-else
     />
-    <div class="timer-display">{{ minutes }}:{{ seconds }}</div>
+    <div class="timer-display" @dblclick="handleDBLClick">
+      {{ minutes }}:{{ seconds }}
+    </div>
     <div class="button">
       <a-button
         v-if="!isRunning"
@@ -205,8 +210,10 @@ window.addEventListener("storage", (event) => {
 }
 
 .timer-display {
+  cursor: pointer;
   font-size: 3em;
   color: white;
+  -webkit-app-region:no-drag
 }
 
 button {

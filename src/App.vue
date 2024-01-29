@@ -1,9 +1,9 @@
 <script setup>
-import { ref, watchEffect, watch, computed } from "vue";
+/* import { ref, watchEffect, watch, computed } from "vue";
 import { useCustomSettingsStore } from "./stores/CustomSettings";
 import { useToDoStore } from "./stores/ToDo";
 import { onUnmounted, onMounted } from "vue";
-/* const customSettingsStore = useCustomSettingsStore();
+const customSettingsStore = useCustomSettingsStore();
 const todoStore = useToDoStore();
 // 在这里定义一些全局样式;
 const todoIcons = ref(customSettingsStore.customSettings["todo-icons"]);

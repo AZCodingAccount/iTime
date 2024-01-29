@@ -14,10 +14,6 @@ contextBridge.exposeInMainWorld("electron", {
   openTimerWindow: (type) => {
     ipcRenderer.send("open-timer-window", type);
   },
-  // 切换到主窗口
-  switchToMainWindow: () => {
-    ipcRenderer.send("switch-to-main-window");
-  },
   // 关闭这个倒计时窗口
   closeTimerWindow: () => {
     ipcRenderer.send("close-timer-window");

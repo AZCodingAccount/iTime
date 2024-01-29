@@ -104,7 +104,11 @@ const handleKeyDown = (e) => {
   }
 };
 // 双击事件
-const handleDBLClick = () => {
+const handleDBLClick = (event) => {
+  // 双击定时器部分不应该有响应
+  if (event.target.closest(".pomodoro-timer")) {
+    return;
+  }
   window.electron.openTimerWindow("f");
 };
 let lastRightClickTime = "";
@@ -202,7 +206,7 @@ const handleContextMenu = (event) => {
 
 .main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: row;
   width: 100%;
@@ -217,6 +221,7 @@ const handleContextMenu = (event) => {
   background-position: center center; /* 图像居中显示 */
 }
 .pomodoro-timer {
+  margin-top: 10%;
   display: flex;
   align-items: center;
   justify-content: space-between;

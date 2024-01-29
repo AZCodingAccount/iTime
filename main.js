@@ -248,7 +248,7 @@ const editToDo = (id) => {
   win.webContents.send("edit-todo", id);
 };
 // 监听切换窗口事件
-ipcMain.on("switch-to-main-window", (event) => {
+ipcMain.on("close-timer-window", (event) => {
   const window = BrowserWindow.fromWebContents(event.sender);
   // 弹出信息对话框
   // dialog.showMessageBox({
