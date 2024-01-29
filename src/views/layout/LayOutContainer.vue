@@ -14,45 +14,45 @@ const currentRouteKey = computed(() => {
 <template>
   <div class="common-layout">
     <a-layout>
-      <a-layout-header class="header"
-        >✔easyToDo 简单的待办清单
-        <div class="search">
-          <a-input-search
-            :style="{ width: '320px' }"
-            placeholder="搜索待办内容（Ctrl+Fn+F）"
-          />
-        </div>
-      </a-layout-header>
-      <a-layout>
-        <a-layout-sider>
-          <a-menu :selectedKeys="[currentRouteKey]">
-            <router-link to="/today">
-              <a-menu-item key="/today"> 所有待办 </a-menu-item>
-            </router-link>
-            <router-link to="/categories">
-              <a-menu-item key="/categories"> 自定义待办 </a-menu-item>
-            </router-link>
-            <router-link to="/add/customtodo">
-              <a-menu-item key="/add/customtodo"> 添加自定义待办 </a-menu-item>
-            </router-link>
-            <a-divider margin="10px" />
-            <router-link to="/countdown">
-              <a-menu-item key="/countdown"> 倒计时 </a-menu-item>
-            </router-link>
-            <router-link to="/pomodoro">
-              <a-menu-item key="/pomodoro"> 番茄钟 </a-menu-item>
-            </router-link>
-            <a-divider margin="10px" />
-            <router-link to="/settings">
-              <a-menu-item key="/settings"> 自定义设置 </a-menu-item>
-            </router-link>
-            <router-link to="/about">
-              <a-menu-item key="/about"> 关于作者 </a-menu-item>
-            </router-link>
-          </a-menu></a-layout-sider
-        >
-        <a-layout-content> <router-view></router-view> </a-layout-content>
-      </a-layout>
+      <a-layout-sider>
+        <a-layout>
+          <a-layout-header class="header">
+            ✔easyToDo 简单的待办清单
+          </a-layout-header>
+          <a-layout-content
+            ><a-menu :selectedKeys="[currentRouteKey]">
+              <router-link to="/today">
+                <a-menu-item key="/today"> 标准待办 </a-menu-item>
+              </router-link>
+              <router-link to="/categories">
+                <a-menu-item key="/categories"> 自定义待办 </a-menu-item>
+              </router-link>
+              <router-link to="/add/customtodo">
+                <a-menu-item key="/add/customtodo">
+                  添加自定义待办
+                </a-menu-item>
+              </router-link>
+              <a-divider margin="10px" />
+              <router-link to="/countdown">
+                <a-menu-item key="/countdown"> 倒计时 </a-menu-item>
+              </router-link>
+              <router-link to="/pomodoro">
+                <a-menu-item key="/pomodoro"> 番茄钟 </a-menu-item>
+              </router-link>
+              <a-divider margin="10px" />
+              <router-link to="/settings">
+                <a-menu-item key="/settings"> 自定义设置 </a-menu-item>
+              </router-link>
+              <router-link to="/about">
+                <a-menu-item key="/about"> 关于 </a-menu-item>
+              </router-link>
+            </a-menu></a-layout-content
+          >
+        </a-layout>
+      </a-layout-sider>
+      <a-layout-content class="content">
+        <router-view></router-view>
+      </a-layout-content>
     </a-layout>
   </div>
 </template>
@@ -62,14 +62,14 @@ const currentRouteKey = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px;
+  margin: 1.5em;
   color: #333;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 0.8em;
   font-family: "Kaiti", "Kaiti SC", "SimKai", "楷体", serif;
 }
-.search {
-  margin: 0 auto;
+.content {
+  margin-top: 1.5em;
 }
 .common-layout {
   height: 100vh;

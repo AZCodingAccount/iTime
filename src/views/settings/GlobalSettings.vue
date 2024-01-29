@@ -259,7 +259,7 @@ const resetVoiceForm = () => {
         <a-switch v-model="voiceForm.isClosedV" />
       </a-form-item>
       <a-form-item>
-        <a-button @click="resetVoiceForm">恢复默认设置</a-button>
+        <a-button @click="resetVoiceForm">恢复默认</a-button>
       </a-form-item>
     </a-form>
   </div>

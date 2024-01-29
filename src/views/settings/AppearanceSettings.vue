@@ -4,7 +4,7 @@ console.log(111);
 </script>
 <template>
   <div class="app">
-    <a-card style="width: 40%; margin: 5em auto 0; font-size: 1.2em">
+    <a-card style="width: 400px; margin: 5em auto 0; font-size: 1.2em">
       <div
         class="features"
         style="

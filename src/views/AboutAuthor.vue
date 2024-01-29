@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 </script>
 
 <template>
-  <a-card style="width: 40%; margin: 2em auto 5em; font-size: 1.2em" hoverable>
+  <a-card style="width: 400px; margin: 2em auto 5em; font-size: 1.2em" hoverable>
     <!-- 项目详细文档 -->
     <div class="docs" style="text-align: center; margin-bottom: 1em">
       <a href="docs.bugdesigner.cn">📄 软件说明书</a>
@@ -90,7 +90,7 @@ import { onMounted, ref } from "vue";
       </div>
     </div>
   </a-card>
-  <a-card class="box-card" style="width: 40%; margin: 0 auto" :hoverable="true">
+  <a-card class="box-card" style="width: 400px; margin: 0 auto" :hoverable="true">
     <template #title>
       <div class="card-header" style="text-align: center">
         <span>联系我</span>
