@@ -68,24 +68,26 @@ onMounted(() => {
 <template>
   <!-- 折叠面板 -->
   <a-list max-height="80vh" style="border: none">
-    <a-collapse>
-      <a-collapse-item
-        @contextmenu="onRightClick($event, todo.id, todo.title, todo.content)"
-        v-for="todo in ToDoList"
-        :key="todo.id"
-        key="1"
-      >
-        <template #header>
-          <div class="header">
-            <div class="title">{{ todo.title }}</div>
-            <div class="createTime">
-              创建时间：{{ formattedDate(todo.createTime) }}
+    <template v-if="ToDoList&&ToDoList.length>0">
+      <a-collapse>
+        <a-collapse-item
+          @contextmenu="onRightClick($event, todo.id, todo.title, todo.content)"
+          v-for="todo in ToDoList"
+          :key="todo.id"
+          key="1"
+        >
+          <template #header>
+            <div class="header">
+              <div class="title">{{ todo.title }}</div>
+              <div class="createTime">
+                创建时间：{{ formattedDate(todo.createTime) }}
+              </div>
             </div>
-          </div>
-        </template>
-        <div v-html="todo.content"></div>
-      </a-collapse-item>
-    </a-collapse>
+          </template>
+          <div v-html="todo.content"></div>
+        </a-collapse-item>
+      </a-collapse>
+    </template>
   </a-list>
 </template>
 <style scoped>
