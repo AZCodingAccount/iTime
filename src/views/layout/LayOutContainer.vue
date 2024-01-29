@@ -3,7 +3,13 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const currentRouteKey = computed(() => route.path);
+// 适配二级高亮导航栏
+const currentRouteKey = computed(() => {
+  if (route.path.startsWith("/settings")) {
+    return "/settings";
+  }
+  return route.path;
+});
 </script>
 <template>
   <div class="common-layout">
