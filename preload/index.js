@@ -14,18 +14,10 @@ contextBridge.exposeInMainWorld("electron", {
   openTimerWindow: (type) => {
     ipcRenderer.send("open-timer-window", type);
   },
-  // 关闭这个倒计时窗口
-  closeTimerWindow: () => {
-    ipcRenderer.send("close-timer-window");
-  },
   // 打开一个番茄钟窗口
   // @params type 'f' 全屏|'a' 打开挂件
   openPomodoroWindow: (type) => {
     ipcRenderer.send("open-pomodoro-window", type);
-  },
-  // 关闭全屏番茄钟窗口
-  closePomodoroWindow: () => {
-    ipcRenderer.send("close-pomodoro-window");
   },
   // 退出窗口
   // 同步系统设置

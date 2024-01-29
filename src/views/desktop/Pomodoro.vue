@@ -13,10 +13,10 @@ const isFirst = computed({
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
 const isStart = ref(true); // 是不是第一次启动定时器
-let intervalId = null;
+let intervalId = null; // 计时器id
 let isEnding = ref(false); // 定义结束按钮是否显示隐藏
 
-const backgroundImage = ref("none");
+const backgroundImage = ref("none"); // 背景图路径
 
 // 计算分钟
 const minutes = computed(() =>
@@ -32,19 +32,8 @@ const hintText = ref("待开始"); // 上方提示文字
 // 读取番茄钟配置
 const customSettingsStore = useCustomSettingsStore();
 backgroundImage.value = customSettingsStore.customSettings["w-pomodoro-bgi"];
-// const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
-//   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
-// 测试使用
-const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } = {
-  duration: 0.1,
-  shortBreakDuration: 0.1,
-  longBreakDuration: 0.1,
-  longBreakInterval: 2,
-};
-// const pShortBreakDuration = ref(shortBreakDuration); // 短休息
-// const pLongBreakDuration = ref(longBreakDuration); // 长休息
-// const pLongBreakInterval = ref(longBreakInterval); // 长休息间隔
-// const pDuration = ref(duration); // 工作
+const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
+  customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
 let step = ref(1); // 记录当前在第几轮
 // 播放器对象
 const audioShortBreakPlayer = ref(null);
@@ -56,6 +45,7 @@ const role = computed(
 const isClosed = computed(
   () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
 ); //是否关闭(使用计算属性保持响应性)
+// 开启定时器
 const startTimer = () => {
   !isEnding.value && (isEnding.value = true);
   if (isStart.value) {
@@ -112,12 +102,12 @@ const startTimer = () => {
     }, 1000);
   }
 };
-
+// 暂停定时器
 const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
   isRunning.value = false;
-  isStart.value = false; // 标记暂停过
+  isStart.value = false; 
 };
 // 终止定时器
 const endTimer = () => {
@@ -132,7 +122,7 @@ const endTimer = () => {
   isEnding.value = false;
   step.value = 1;
 };
-
+// 挂载，做应用初始化工作
 onMounted(() => {
   if (isFirst.value) {
     Message.info({
@@ -143,18 +133,18 @@ onMounted(() => {
   }
   window.addEventListener("keydown", handleKeyDown);
 });
-
+// 注意应用的回收
 onUnmounted(() => {
   clearInterval(intervalId);
   window.removeEventListener("keydown", handleKeyDown);
 });
-// 添加监听事件
+// e间退出
 const handleKeyDown = (e) => {
   if (e.key === "e") {
     window.electron.removeWindow();
   }
 };
-
+// 手动同步自定义设置状态
 window.addEventListener("storage", (event) => {
   if (event.key === "customSettings") {
     // 重新从localStorage加载状态
@@ -165,6 +155,7 @@ window.addEventListener("storage", (event) => {
     }
   }
 });
+// 双击关闭
 const handleDBLClick = () => {
   window.electron.removeWindow();
 };

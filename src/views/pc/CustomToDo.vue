@@ -2,16 +2,13 @@
 // 这里是需要渲染所有的自定义代办
 import { useCustomToDoStore } from "@/stores/CustomToDoStore";
 import { Message } from "@arco-design/web-vue";
-import { onMounted, computed, ref, onBeforeUnmount } from "vue";
+import { onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-// 获取store
-const customToDoStore = useCustomToDoStore();
-const ToDoList = computed(() => customToDoStore.getToDoList());
-// 存储空值，注意空值的逻辑
-// const ToDoList = ref([]);
-// 格式化时间
+const customToDoStore = useCustomToDoStore(); // 获取store
+const ToDoList = computed(() => customToDoStore.getToDoList()); // 使用计算属性保持响应性
+// 格式化时间（自己实现的—后面用了dayjs）
 const formattedDate = (dateString) => {
   // console.log(date,typeof(date));
   const date = new Date(dateString);
@@ -28,47 +25,38 @@ const formattedDate = (dateString) => {
 // 右键菜单
 const onRightClick = (e, id, title, content) => {
   e.preventDefault(); // 阻止默认事件
-  console.log(content);
-  window.electron.showContextMenu("customToDo", id, title, content); // 调用主进程的方法
+  window.electron.showContextMenu("customToDo", id, title, content); // 调用主进程显示右键菜单
 };
 // 删除待办
 const handleRemoveToDo = (id) => {
   customToDoStore.removeToDo(id);
-  console.log("删除完成的列表", ToDoList.value);
   Message.success("删除成功🙂");
 };
 // 编辑待办
 const handleEditToDo = (id) => {
   // 跳转并且把id给他带过去
   router.push({
-    path: "/add/customtodo", // 使用路径而不是名称
+    path: "/add/customtodo", // 使置顶路径
     query: {
       id: id,
     },
   });
 };
-// 监听事件
+// 挂载成功的初始化，这里用到了单例的思想，不要重复注册
 onMounted(() => {
-  // 这个是值，不是响应式的，因此使用ref没办法响应式更新
-  ToDoList.value = customToDoStore.getToDoList();
-  console.log("挂载时候触发的", ToDoList.value);
   if (customToDoStore.isFirst) {
-    console.log("注册监听器");
     window.electron.editToDo(handleEditToDo);
     window.electron.removeToDo(handleRemoveToDo);
     customToDoStore.isFirst = false;
   }
 });
-// // 清除监听器
-// onBeforeUnmount(() => {
-//   console.log("清除监听器");
-//   window.electron.removeToDoListener(handleRemoveToDo, handleEditToDo);
-// });
+
 </script>
 <template>
-  <!-- 折叠面板 -->
-  <a-list max-height="80vh" style="border: none">
+  <!-- 列表，控制高度 -->
+  <a-list max-height="90vh" style="border: none">
     <template v-if="ToDoList&&ToDoList.length>0">
+      <!-- 折叠面板 -->
       <a-collapse>
         <a-collapse-item
           @contextmenu="onRightClick($event, todo.id, todo.title, todo.content)"
@@ -76,6 +64,7 @@ onMounted(() => {
           :key="todo.id"
           key="1"
         >
+        <!-- 展示标题和创建时间 -->
           <template #header>
             <div class="header">
               <div class="title">{{ todo.title }}</div>
@@ -84,6 +73,7 @@ onMounted(() => {
               </div>
             </div>
           </template>
+          <!-- 下面折叠的是内容 -->
           <div v-html="todo.content"></div>
         </a-collapse-item>
       </a-collapse>

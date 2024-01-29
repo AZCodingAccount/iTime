@@ -15,18 +15,12 @@ const fs = require("fs");
 let win = null;
 let globalSettings = []; // 用户全局配置 position:0|voice:1
 
+// 创建主窗口
 const createWindow = () => {
-  const winState = new WinState({
-    defaultWidth: 2400,
-    defaultHeight: 800,
-  });
+  const winState = new WinState({});
   win = new BrowserWindow({
     ...WinState.winOptions,
-    // 设置偏好
-    // frame: false, // 无边框窗口
-    // titleBarStyle: "hidden",
-    // titleBarOverlay: true,
-    // fullscreen: true,
+    icon: "public/icons/icon.png", // 指定图标路径
     webPreferences: {
       // 不安全，不建议使用
       // nodeIntegration: true, // 启用Node.js集成
@@ -35,48 +29,38 @@ const createWindow = () => {
       preload: path.resolve(__dirname, "./preload"), // 在预加载脚本中执行 Electron API
     },
   });
-  //隐藏顶部菜单
-
-  //   win.loadFile("index.html");
   win.setSize(1100, 700); // 显式设置窗口大小，因为之前的大小被缓存了
   win.center(); // 使窗口居中
-  win.setMenu(null);
+  win.setMenu(null); // 去掉窗口
+  //win.loadFile("index.html");
   win.loadURL("http://localhost:5173");
-  win.webContents.openDevTools(); // 打开开发者工具
-  // winState.manage(win); // 配置持久化
-
+  // win.webContents.openDevTools(); // 打开开发者工具
+  winState.manage(win); // 配置持久化
+  win.on("ready-to-show", () => {
+    win.show();
+  });
+  // 配置所有外部url都使用浏览器打开
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url); // 使用外部浏览器打开
     return { action: "deny" }; // 阻止 Electron 打开新窗口
   });
 };
-// let customSettings = {}; // 存储自定义设置
 // 创建待办小挂件窗口
 const addToDoToDesktop = (title, content) => {
   let todoWindow = new BrowserWindow({
-    // width: 1200,
-    // height: 800,
     width: 400,
     height: 300,
-    // fullscreen:true,
     transparent: true, // 透明
     frame: false, // 无边框窗口
-    // show: false, // 窗口不可见
-    // autoHideMenuBar: true, // 自动隐藏菜单栏
-    // titleBarStyle: "hidden",
-    // titleBarOverlay: true,
-
+    skipTaskbar: true, // 不在任务栏中显示
     webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation: false,
       sandbox: false, // 取消沙箱模式
-      preload: path.resolve(__dirname, "./preload"), // 在预加载脚本中执行 Electron API
+      preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
     },
   });
 
   // 加载本地文件（测试过程中通过url访问）
   todoWindow.loadURL("http://localhost:5173/desktop/customtodo");
-  // todoWindow.loadURL("C:\\Users\\Albert han\\Desktop\\easyToDo\\src\\views\\test\\test.html");
 
   // 等待加载完成以后并且延迟1ms发送消息
   todoWindow.webContents.on("did-finish-load", () => {
@@ -85,17 +69,18 @@ const addToDoToDesktop = (title, content) => {
       console.log("Message sent after delay!");
     }, 100); // 延迟时间，以毫秒为单位
   });
-  todoWindow.setAlwaysOnTop(globalSettings[0].todoP);
+  todoWindow.setAlwaysOnTop(globalSettings[0].todoP); // 动态配置是否置顶
 
   // todoWindow.webContents.openDevTools(); // 打开开发者工具
 
   todoWindow.on("closed", () => {
     todoWindow = null;
   });
+  // 优雅的打开窗口
   todoWindow.once("ready-to-show", () => {
     todoWindow.show();
   });
-  // hook这个消息，禁用窗口
+  // hook这个右键消息，禁用窗口
   todoWindow.hookWindowMessage(278, function (e) {
     todoWindow.setEnabled(false); //窗口禁用
     setTimeout(() => {
@@ -109,18 +94,18 @@ const createTimerWindow = () => {
   let timerWindow = new BrowserWindow({
     frame: false,
     fullscreen: true,
-    resizable: false,
+    resizable: false, // 不允许重新设置尺寸
+    skipTaskbar: true, // 不在任务栏中显示
     webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation: false,
       sandbox: false, // 取消沙箱模式
-      preload: path.resolve(__dirname, "./preload"),
+      preload: path.resolve(__dirname, "./preload"), // 预加载脚本
     },
   });
-  timerWindow.loadURL("http://localhost:5173/fullscreen/countdown");
+  timerWindow.loadURL("http://localhost:5173/fullscreen/timer");
   timerWindow.on("closed", () => {
     timerWindow = null;
   });
+  // 优雅的打开窗口
   timerWindow.on("ready-to-show", () => {
     timerWindow.show();
   });
@@ -130,29 +115,25 @@ const createTimerWidgetWindow = () => {
   let timerWidgetWindow = new BrowserWindow({
     width: 354,
     height: 84,
-    // width:1000,
-    // height:800,
     transparent: true, // 透明
     frame: false, // 无边框窗口
     skipTaskbar: true, // 不在任务栏中显示
-    resizable: false,
+    resizable: false, // 不允许重新设置尺寸
     webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation: false,
       sandbox: false, // 取消沙箱模式
-      preload: path.resolve(__dirname, "./preload"),
+      preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
     },
   });
   timerWidgetWindow.loadURL("http://localhost:5173/desktop/timer");
   timerWidgetWindow.on("closed", () => {
     timerWidgetWindow = null;
   });
-  // timerWidgetWindow.webContents.openDevTools();
+  // 优雅的打开窗口
   timerWidgetWindow.once("ready-to-show", () => {
     timerWidgetWindow.show();
   });
-  timerWidgetWindow.setAlwaysOnTop(globalSettings[0].timerP);
-  // hook这个消息，禁用窗口
+  timerWidgetWindow.setAlwaysOnTop(globalSettings[0].timerP); // 动态设置窗口位置
+  // hook这个右键消息，取消右键
   timerWidgetWindow.hookWindowMessage(278, function (e) {
     timerWidgetWindow.setEnabled(false); //窗口禁用
     setTimeout(() => {
@@ -168,19 +149,18 @@ const createPomodoroWindow = () => {
     fullscreen: true,
     resizable: false,
     webPreferences: {
-      webSecurity: false, // 允许加载本地文件
-      allowFileAccess: true, // 允许访问文件
-      // nodeIntegration: true,
-      // contextIsolation: false,
+      // webSecurity: false, // 允许加载本地文件
+      // allowFileAccess: true, // 允许访问文件
       sandbox: false, // 取消沙箱模式
       preload: path.resolve(__dirname, "./preload"),
     },
   });
   pomodoroWindow.loadURL("http://localhost:5173/fullscreen/pomodoro");
+  // 清除窗口状态
   pomodoroWindow.on("closed", () => {
     pomodoroWindow = null;
   });
-  // pomodoroWindow.webContents.openDevTools();
+  // 优雅的打开窗口
   pomodoroWindow.on("ready-to-show", () => {
     pomodoroWindow.show();
   });
@@ -188,8 +168,6 @@ const createPomodoroWindow = () => {
 // 创建番茄钟小挂件窗口
 const createPomodoroWidgetWindow = () => {
   let pomodoroWidgetWindow = new BrowserWindow({
-    // width: 1000,
-    // height: 800,
     width: 374,
     height: 104,
     transparent: true, // 透明
@@ -197,23 +175,21 @@ const createPomodoroWidgetWindow = () => {
     resizable: false,
     skipTaskbar: true, // 不在任务栏中显示
     webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation: false,
       sandbox: false, // 取消沙箱模式
-      preload: path.resolve(__dirname, "./preload"),
+      preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
     },
   });
   pomodoroWidgetWindow.loadURL("http://localhost:5173/desktop/pomodoro");
   pomodoroWidgetWindow.on("closed", () => {
     pomodoroWidgetWindow = null;
   });
-  pomodoroWidgetWindow.setAlwaysOnTop(globalSettings[0].pomodoroP);
+  pomodoroWidgetWindow.setAlwaysOnTop(globalSettings[0].pomodoroP); // 动态设置窗口位置
 
   // pomodoroWidgetWindow.webContents.openDevTools();
   pomodoroWidgetWindow.once("ready-to-show", () => {
     pomodoroWidgetWindow.show();
   });
-  // hook这个消息，禁用窗口
+  // hook这个右键消息，禁用右键菜单
   pomodoroWidgetWindow.hookWindowMessage(278, function (e) {
     pomodoroWidgetWindow.setEnabled(false); //窗口禁用
     setTimeout(() => {
@@ -231,7 +207,7 @@ app.whenReady().then(() => {
     }
   });
 });
-
+// 适配mac
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -239,37 +215,12 @@ app.on("window-all-closed", () => {
 });
 // 删除待办
 const removeToDo = (id) => {
-  console.log("remove todo:", id);
   win.webContents.send("remove-todo", id);
 };
 // 编辑待办
 const editToDo = (id) => {
-  console.log("edit-todo", id);
   win.webContents.send("edit-todo", id);
 };
-// 监听切换窗口事件
-ipcMain.on("close-timer-window", (event) => {
-  const window = BrowserWindow.fromWebContents(event.sender);
-  // 弹出信息对话框
-  // dialog.showMessageBox({
-  //   type: "info",
-  //   title: "信息",
-  //   message: "正在切换到主窗口...",
-  // });
-  if (window) {
-    window.close();
-  }
-  // if (win) {
-  //   win.show();
-  // }
-});
-// 移除窗口
-ipcMain.on("remove-window", (event) => {
-  const window = BrowserWindow.fromWebContents(event.sender);
-  if (window) {
-    window.close();
-  }
-});
 let contextMenu = null;
 // 创建右键菜单
 ipcMain.on("show-context-menu", (event, type, id, title, content) => {
@@ -280,10 +231,6 @@ ipcMain.on("show-context-menu", (event, type, id, title, content) => {
       label: "将待办添加到桌面",
       click: () => {
         addToDoToDesktop(title, content);
-        // dialog.showMessageBox({
-        //   message: content,
-        //   buttons: ["OK"],
-        // });
       },
     });
     menuTemplate.push({
@@ -296,33 +243,19 @@ ipcMain.on("show-context-menu", (event, type, id, title, content) => {
     menuTemplate.push({
       label: "删除待办",
       click: () => {
-        // console.log("click event", id);
         // 发送消息告诉本地存储里面的东西可以删除了
         removeToDo(id);
       },
     });
-  } else if (type === "type2") {
-    menuTemplate.push({
-      label: "操作A",
-      click: () => {
-        console.log("操作A");
-      },
-    });
-    menuTemplate.push({
-      label: "操作B",
-      click: () => {
-        console.log("操作B");
-      },
-    });
   }
 
-  // 如果菜单不存在，则创建它
+  // 创建菜单
   contextMenu = Menu.buildFromTemplate(menuTemplate);
 
-  contextMenu.popup(BrowserWindow.fromWebContents(event.sender));
+  contextMenu.popup(BrowserWindow.fromWebContents(event.sender)); // 弹出菜单
 });
 
-// 打开倒计时窗口
+// 打开倒计时窗口 @params type |f:全屏|a: add widget
 ipcMain.on("open-timer-window", (event, type) => {
   if (type === "f") {
     createTimerWindow();
@@ -331,7 +264,7 @@ ipcMain.on("open-timer-window", (event, type) => {
     createTimerWidgetWindow();
   }
 });
-// 打开番茄钟窗口
+// 打开番茄钟窗口 @params type |f:全屏|a: add widget
 ipcMain.on("open-pomodoro-window", (event, type) => {
   if (type === "f") {
     createPomodoroWindow();
@@ -340,10 +273,9 @@ ipcMain.on("open-pomodoro-window", (event, type) => {
     createPomodoroWidgetWindow();
   }
 });
-// 关闭番茄钟窗口
-ipcMain.on("close-pomodoro-window", (event) => {
+// 移除窗口
+ipcMain.on("remove-window", (event) => {
   const window = BrowserWindow.fromWebContents(event.sender);
-
   if (window) {
     window.close();
   }
@@ -359,7 +291,7 @@ ipcMain.handle("save-file", (event, type, originFilePath) => {
     const fileName = type + fileExtension; // 构造新文件名
     const newFilePath = path.join(__dirname, pathDir, fileName);
     console.log(newFilePath);
-    // 确保 'backgrounds' 目录存在
+    // 确保backgrounds目录存在
     if (!fs.existsSync(path.join(__dirname, pathDir))) {
       fs.mkdirSync(path.join(__dirname, pathDir), { recursive: true });
     }
@@ -386,11 +318,10 @@ ipcMain.handle("save-file", (event, type, originFilePath) => {
   }
   return null;
 });
-// 配置全局快捷键并清除之前的快捷键
+// 同步全局配置
 ipcMain.on("sync-else-setting", (event, settings) => {
   // 更新全局的值即可
   globalSettings = settings;
-  // console.log(globalSettings);
 });
 
 // 全局快捷键设置
@@ -406,7 +337,6 @@ ipcMain.handle("shortcut-setting", async (event, keys) => {
       })
     ) {
       isOccupied = true;
-      console.log(111);
     }
     if (
       !globalShortcut.register(keys.wPomodoro, () => {
@@ -415,7 +345,6 @@ ipcMain.handle("shortcut-setting", async (event, keys) => {
       })
     ) {
       isOccupied = true;
-      console.log(222);
     }
     if (
       !globalShortcut.register(keys.fTimer, () => {
@@ -424,7 +353,6 @@ ipcMain.handle("shortcut-setting", async (event, keys) => {
       })
     ) {
       isOccupied = true;
-      console.log(333);
     }
     if (
       !globalShortcut.register(keys.wTimer, () => {
@@ -433,7 +361,6 @@ ipcMain.handle("shortcut-setting", async (event, keys) => {
       })
     ) {
       isOccupied = true;
-      console.log(444);
     }
   }
   return isOccupied;
@@ -443,5 +370,3 @@ ipcMain.handle("shortcut-setting", async (event, keys) => {
 ipcMain.on("disable-all-shortcut", () => {
   globalShortcut.unregisterAll();
 });
-// 启用所有快捷键，不用启用，保存的时候自己就启用了
-// ipcMain.handle("enable-all-shortcut", () => {});

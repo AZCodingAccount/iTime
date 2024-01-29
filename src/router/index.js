@@ -7,16 +7,16 @@ const router = createRouter({
       // 软件主界面
       path: "/",
       component: () => import("@/views/layout/LayOutContainer.vue"), // 使用箭头函数可以懒加载
-      redirect: "/today",
+      redirect: "/plain/todo",
       children: [
-        { path: "/today", component: () => import("@/views/TodayToDo.vue") },
+        { path: "/plain/todo", component: () => import("@/views/pc/PlainToDo.vue") },
         {
           path: "/add/customtodo",
-          component: () => import("@/views/AddCustomToDo.vue"),
+          component: () => import("@/views/pc/AddCustomToDo.vue"),
         },
         {
-          path: "/categories",
-          component: () => import("@/views/MyCategory.vue"),
+          path: "/custom/todo",
+          component: () => import("@/views/pc/CustomToDo.vue"),
         },
         {
           path: "/settings",
@@ -42,17 +42,15 @@ const router = createRouter({
             },
           ],
         },
-        { path: "/about", component: () => import("@/views/AboutAuthor.vue") },
+        { path: "/about", component: () => import("@/views/pc/About.vue") },
         {
-          path: "/countdown",
-          component: () => import("@/views/CountDown.vue"),
+          path: "/timer",
+          component: () => import("@/views/pc/Timer.vue"),
         },
-        { path: "/pomodoro", component: () => import("@/views/Pomodoro.vue") },
+        { path: "/pomodoro", component: () => import("@/views/pc/Pomodoro.vue") },
       ],
-      // 待办界面（悬浮在桌面的）
     },
-    { path: "/todo", component: () => import("@/views/ToDo.vue") },
-    // 下面是桌面用的三个路径
+    // 桌面用的三个路径
     {
       path: "/desktop/customtodo",
       component: () => import("@/views/desktop/CustomToDo.vue"),
@@ -67,8 +65,8 @@ const router = createRouter({
     },
     // 全屏跳转的路径
     {
-      path: "/fullscreen/countdown",
-      component: () => import("@/views/fullscreen/CountDown.vue"),
+      path: "/fullscreen/timer",
+      component: () => import("@/views/fullscreen/Timer.vue"),
     },
     {
       path: "/fullscreen/pomodoro",

@@ -21,5 +21,5 @@ export const useHasVisitedBeforeStore = defineStore(
       widgetTimer,
     };
   },
-  { persist: true } // 持久化
+  { persist: true } // 持久化，必须持久化，不然那4个创建新窗口的页面没办法共享pinia值，除非你存储到sqlLite这种数据库里面
 );

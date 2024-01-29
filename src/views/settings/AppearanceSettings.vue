@@ -1,9 +1,8 @@
 <script setup>
-import { ref, reactive } from "vue";
-console.log(111);
 </script>
 <template>
   <div class="app">
+    <!-- 展示的卡片 -->
     <a-card style="width: 400px; margin: 5em auto 0; font-size: 1.2em">
       <div
         class="features"
@@ -25,9 +24,11 @@ console.log(111);
   </div>
 </template>
 <style scoped>
+/* 设置间距 */
 .content{
   margin-bottom: 0.5em;
 }
+/* 取消最后一行的间距 */
 .content:last-child{
   margin-bottom: 0;
 }

@@ -1,9 +1,9 @@
 <script setup>
 import { Message } from "@arco-design/web-vue";
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
-import { IconFullscreen } from "@arco-design/web-vue/es/icon";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+// 确定用户是否到过这个页面
 const hasVisitedBeforeStore = useHasVisitedBeforeStore();
 const isFirst = computed({
   get: () => hasVisitedBeforeStore.appTimer,
@@ -12,24 +12,24 @@ const isFirst = computed({
 
 const customSettingsStore = useCustomSettingsStore();
 
-const isRunning = ref(false);
+const isRunning = ref(false); // 是否在运行—控制按钮的显示吟唱
 const percent = ref(0); // 定义进度条
 const originTime = ref(0); // 记录选择的时间
 const isBegin = ref(false); // 定义是否开始
 const inputTime = ref(0); // 输入的时间
 const totalTime = ref(0); // 计算成的秒数
 let intervalId = null;
+// 同步输入框和计时器的值
 const handleChange = () => {
-  console.log(totalTime.value, originTime.value);
   totalTime.value = inputTime.value * 60;
-  console.log(totalTime.value, originTime.value);
 };
-
+// 计算分钟
 const minutes = computed(() =>
   Math.floor(totalTime.value / 60)
     .toString()
     .padStart(2, "0")
 );
+// 计算秒
 const seconds = computed(() =>
   (totalTime.value % 60).toString().padStart(2, "0")
 );
@@ -43,6 +43,7 @@ const role = computed(
 const isClosed = computed(
   () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
 ); //是否关闭(使用计算属性保持响应性)
+// 开启定时器（但是不一定成功）
 const startTimer = () => {
   // 首先把数字输入框隐藏，显示进度条
   isBegin.value = true;
@@ -79,49 +80,47 @@ const startTimer = () => {
     }, 1000);
   }
 };
-
+// 暂停定时器
 const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
   isRunning.value = false;
 };
-
+// 应用开始的初始化工作
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
   if (isFirst.value) {
     Message.info({
       content: "按F键即可进入全屏、按A键可以发送小挂件😎",
     });
-    isFirst.value=false
+    isFirst.value = false;
   }
 });
-
+// 应用结束的收尾工作
 onUnmounted(() => {
   clearInterval(intervalId);
   window.removeEventListener("keydown", handleKeyDown);
 });
 
-// 添加监听事件
+// 监听键盘监听事件
 const handleKeyDown = (e) => {
   if (e.key === "f") {
-    // fullscreen 全屏
-    // 执行跳转逻辑，向主进程发送消息打开新窗口
+    // fullscreen 全屏 执行跳转逻辑，向主进程发送消息打开新窗口
     window.electron.openTimerWindow("f");
   } else if (e.key === "a") {
-    // add 添加
-    // 打开新窗口
+    // add 添加  打开新窗口
     window.electron.openTimerWindow("a");
   }
 };
 // 双击事件
 const handleDBLClick = (event) => {
   // 双击定时器部分不应该有响应
-  if (event.target.closest(".pomodoro-timer")) {
+  if (event.target.closest(".timer")) {
     return;
   }
   window.electron.openTimerWindow("f");
 };
-let lastRightClickTime = "";
+let lastRightClickTime = ""; // 记录上次右键的时间
 // 右键双击
 const handleContextMenu = (event) => {
   if (event.button === 2) {
@@ -144,9 +143,8 @@ const handleContextMenu = (event) => {
     @dblclick="handleDBLClick"
     @contextmenu.prevent="handleContextMenu"
   >
-    <div class="pomodoro-timer">
+    <div class="timer">
       <!-- 输入框 -->
-      <!-- 这个输入框是真的丑，但是我找了15分钟也没找到怎么修改灰色背景，就这样吧唉 -->
       <a-input-number
         v-model="inputTime"
         :style="{ width: '125px' }"
@@ -159,7 +157,6 @@ const handleContextMenu = (event) => {
         @change="handleChange"
       />
       <!-- 进度条 -->
-      <!-- :show-text="false" -->
       <a-progress
         status="warning"
         :percent="percent"
@@ -213,7 +210,7 @@ const handleContextMenu = (event) => {
 <style scoped>
 /* 在CSS文件中使用@import引入Roboto字体 */
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
-
+/* 主界面样式 */
 .main {
   display: flex;
   align-items: flex-start;
@@ -230,7 +227,8 @@ const handleContextMenu = (event) => {
   background-repeat: no-repeat; /* 不重复 */
   background-position: center center; /* 图像居中显示 */
 }
-.pomodoro-timer {
+/* 番茄钟样式 */
+.timer {
   margin-top: 10%;
   display: flex;
   align-items: center;
@@ -242,11 +240,11 @@ const handleContextMenu = (event) => {
   border-radius: 10px;
   padding: 0 15px;
 }
-
+/* 展示的字体样式 */
 .timer-display {
   font-size: 3em;
 }
-
+/* 按钮样式 */
 button {
   cursor: pointer;
 }

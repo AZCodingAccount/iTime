@@ -1,16 +1,16 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { onMounted } from "vue";
 import { Message } from "@arco-design/web-vue";
 const form = ref({
   olIcon: "1.",
   ulIcon: "●",
-});
+}); // 下拉框的表单对象
 const selfForm = ref({
   olIcon: "1.",
   ulIcon: "●",
-});
+}); // 输入框的表单对象
 const customSettingsStore = useCustomSettingsStore();
 const todoIcons = customSettingsStore.customSettings["todo-icons"];
 onMounted(() => {
@@ -32,6 +32,7 @@ const resetForm = () => {
 </script>
 <template>
   <div class="app">
+    <!-- 下拉框的表单 -->
     <a-form :model="form" :style="{ width: '600px' }">
       <a-form-item field="form.olIcon" label="有序列表">
         <a-select
@@ -59,7 +60,7 @@ const resetForm = () => {
       </a-form-item>
     </a-form>
     <a-divider></a-divider>
-    <!-- 自定义输入 -->
+    <!-- 自定义输入的表单 -->
     <a-form :model="selfForm" :style="{ width: '600px' }">
       <a-form-item field="selfForm.olIcon" label="有序列表">
         <a-input
@@ -84,6 +85,7 @@ const resetForm = () => {
   </div>
 </template>
 <style scoped>
+/* 设置整个页面的上间距 */
 .app {
   margin-top: 2em;
 }

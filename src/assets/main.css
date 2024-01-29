@@ -1,3 +1,4 @@
+/* 全局样式 */
 html,
 body {
   width: 100%;
@@ -7,9 +8,6 @@ body {
   border: 0;
   /*   或者灰色,#f5f5f5 */
   /* background-color: #f5f5f5;  */
-  /* background-color: rgba(0, 0, 0, 0); */
-}
-body {
   /* background-color: rgba(0, 0, 0, 0); */
 }
 * {
@@ -29,7 +27,7 @@ a {
   border: 0;
 }
 html {
-  /* 禁用html的滚动条，因为用的无框架窗口，默认就会有一个滚动条，所以去掉 */
+  /* 禁用滚动条，因为用的无框架窗口，默认就会有一个滚动条，所以去掉 */
   overflow-y: hidden;
 }
 
@@ -75,9 +73,6 @@ li {
   content: var(--ulIcon, "●") !important;
 }
 
-/* ul li::before {
-  content: 🙂;
-} */
 /* h1 原本0.67em */
 h1 {
   margin: 0.2em 0;

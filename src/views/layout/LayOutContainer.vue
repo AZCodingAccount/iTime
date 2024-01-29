@@ -1,15 +1,9 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import {
-  IconSchedule,
-  IconClockCircle,
-  IconSettings,
-  IconBook,
-} from "@arco-design/web-vue/es/icon";
 
 const route = useRoute();
-// 适配二级高亮导航栏
+// 实现高亮并适配二级高亮导航栏
 const currentRouteKey = computed(() => {
   if (route.path.startsWith("/settings")) {
     return "/settings";
@@ -20,17 +14,18 @@ const currentRouteKey = computed(() => {
 <template>
   <div class="common-layout">
     <a-layout>
+      <!-- 侧边栏 -->
       <a-layout-sider>
         <a-layout>
           <a-layout-header class="header">
-            ✔easyToDo 简单的待办清单
+            iTime 让每一秒都刚刚好
           </a-layout-header>
           <a-layout-content
             ><a-menu :selectedKeys="[currentRouteKey]">
-              <router-link to="/today">
+              <router-link to="/plain/todo">
                 <a-menu-item
-                  key="/today"
-                  :class="{ highlight: currentRouteKey === '/today' }"
+                  key="/plain/todo"
+                  :class="{ highlight: currentRouteKey === '/plain/todo' }"
                 >
                   <template #icon
                     ><svg
@@ -52,10 +47,10 @@ const currentRouteKey = computed(() => {
                   标准待办
                 </a-menu-item>
               </router-link>
-              <router-link to="/categories">
+              <router-link to="/custom/todo">
                 <a-menu-item
-                  key="/categories"
-                  :class="{ highlight: currentRouteKey === '/categories' }"
+                  key="/custom/todo"
+                  :class="{ highlight: currentRouteKey === '/custom/todo' }"
                 >
                   <template #icon>
                     <svg
@@ -107,10 +102,10 @@ const currentRouteKey = computed(() => {
                 </a-menu-item>
               </router-link>
               <a-divider margin="10px" />
-              <router-link to="/countdown">
+              <router-link to="/timer">
                 <a-menu-item
-                  key="/countdown"
-                  :class="{ highlight: currentRouteKey === '/countdown' }"
+                  key="/timer"
+                  :class="{ highlight: currentRouteKey === '/timer' }"
                   ><template #icon
                     ><svg
                       t="1706536845495"
@@ -189,10 +184,11 @@ const currentRouteKey = computed(() => {
                 </a-menu-item>
               </router-link>
               <router-link to="/about">
-                <a-menu-item key="/about">
-                  <template
-                    #icon
-                    :class="{ highlight: currentRouteKey === '/about' }"
+                <a-menu-item
+                  key="/about"
+                  :class="{ highlight: currentRouteKey === '/about' }"
+                >
+                  <template #icon
                     ><svg
                       t="1706536999715"
                       class="icon"
@@ -223,6 +219,7 @@ const currentRouteKey = computed(() => {
           >
         </a-layout>
       </a-layout-sider>
+      <!-- 内容部分 -->
       <a-layout-content class="content">
         <router-view></router-view>
       </a-layout-content>
@@ -230,6 +227,10 @@ const currentRouteKey = computed(() => {
   </div>
 </template>
 <style scoped>
+/* 定义主样式 */
+.common-layout {
+  height: 100vh;
+}
 /* 定义头部字体样式 */
 .header {
   display: flex;
@@ -238,20 +239,18 @@ const currentRouteKey = computed(() => {
   margin: 1.5em;
   color: #333;
   font-weight: bold;
-  font-size: 0.8em;
+  font-size: 1em;
   font-family: "Kaiti", "Kaiti SC", "SimKai", "楷体", serif;
 }
 /* 自定义图标高亮*/
 .highlight svg path {
   fill: rgb(57, 134, 253);
 }
+/* 定义内容距离顶部间距*/
 .content {
   margin-top: 1.5em;
 }
-.common-layout {
-  height: 100vh;
-  /* background-color: pink; */
-}
+
 /* 隐藏溢出的东西 */
 .common-layout :deep(.arco-layout-sider-children) {
   overflow: hidden;

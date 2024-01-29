@@ -1,16 +1,14 @@
 <script setup>
-import { ref, nextTick, watch } from "vue";
+import { ref, nextTick } from "vue";
 import { useCustomToDoStore } from "@/stores/CustomToDoStore";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { v4 as uuidv4 } from "uuid";
 import { useRoute } from "vue-router";
-
-// import '@vueup/vue-quill/dist/vue-quill.bubble.css';
 import { Message } from "@arco-design/web-vue";
-
 import { onMounted } from "vue";
 import { onUnmounted } from "vue";
+
 // toolbar标题，hover提示文字
 const titleConfig = [
   { Choice: ".ql-insertMetric", title: "跳转配置" },
@@ -106,7 +104,43 @@ const content = ref(""); // 定义一个变量接收编辑器的属性
 const todoTitle = ref(""); // TODO标题
 const aRef = ref(null); // 输入框对象
 const isModalVisible = ref(false); // 弹框的显隐
-// 检查快捷键
+
+const route = useRoute();
+const customToDoStore = useCustomToDoStore();
+const fakeId = ref(""); // 记录是不是从自定义待办那个页面跳转过来的
+const quill = ref(null); // 编辑器对象
+// 执行存储的逻辑
+const handleOk = () => {
+  if (todoTitle.value === "" || content.value === "") {
+    Message.error("填写的信息不足哦 (｡╯︵╰｡)");
+    return;
+  }
+  // 这里判断是不是从编辑待办那里过来的，是的话要删除之前的待办
+  if (fakeId.value !== "") {
+    customToDoStore.removeToDo(fakeId.value);
+  }
+  const id = uuidv4(); // 生成一个随机id
+  customToDoStore.addToDo(id, todoTitle.value, content.value, new Date());
+  quill.value.setText("");
+  todoTitle.value = "";
+  // 告诉用户添加成功，清空文本框的内容
+  Message.success("添加成功！");
+  isModalVisible.value = false;
+};
+// 处理可能是路由跳转的情况
+const handleEdit = () => {
+  if (route.query.id) {
+    const id = route.query.id; // 取出id并赋值
+    const todo = customToDoStore
+      .getToDoList()
+      .filter((item) => item.id === id)[0]; // 返回的是一个对象
+    fakeId.value = id;
+    content.value = todo.content;
+    todoTitle.value = todo.title;
+  }
+};
+
+// 快捷键配置
 const handleKeydown = (e) => {
   // 检查是否同时按下了 Ctrl、Alt 和 Enter 键
   if (e.ctrlKey && e.altKey && e.key === "Enter") {
@@ -121,44 +155,14 @@ const handleKeydown = (e) => {
     handleOk(); // 按了确认键并且模态框已经显示出来了
   }
 };
-
-const route = useRoute();
-const customToDoStore = useCustomToDoStore();
-const fakeId = ref(""); // 记录是不是跳转的
-const quill = ref(null); // 编辑器对象
-// 执行存储的逻辑
-const handleOk = () => {
-  // 这里判断是不是从编辑待办那里过来的，是的话要删除之前的待办
-  if (fakeId.value !== "") {
-    customToDoStore.removeToDo(fakeId.value);
-  }
-  const id = uuidv4(); // 生成一个随机id
-  customToDoStore.addToDo(id, todoTitle.value, content.value, new Date());
-  quill.value.setText("");
-  todoTitle.value = "";
-  // 告诉用户添加成功，清空文本框的内容
-  Message.success("添加成功！");
-  isModalVisible.value = false;
-};
-// 路由跳转需要的函数
-const handleEdit = () => {
-  if (route.query.id) {
-    const id = route.query.id; // 取出id并赋值
-    const todo = customToDoStore
-      .getToDoList()
-      .filter((item) => item.id === id)[0]; // 返回的是一个对象
-    fakeId.value = id;
-    content.value = todo.content;
-    todoTitle.value = todo.title;
-  }
-};
-// 挂载完成以后执行添加属性的函数
+// 挂载完成以后进行初始化
 onMounted(() => {
   initTitle();
   handleEdit();
   window.addEventListener("keydown", handleKeydown);
-  quill.value.focus()
+  quill.value.focus(); // 自动聚焦
 });
+// 最后清除逻辑
 onUnmounted(() => {
   window.removeEventListener("keydown", handleKeydown);
 });

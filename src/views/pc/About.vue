@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref } from "vue";
 </script>
 
 <template>
+  <!-- 上方介绍卡片 -->
   <a-card style="width: 400px; margin: 2em auto 5em; font-size: 1.2em" hoverable>
     <!-- 项目详细文档 -->
     <div class="docs" style="text-align: center; margin-bottom: 1em">
@@ -90,6 +90,7 @@ import { onMounted, ref } from "vue";
       </div>
     </div>
   </a-card>
+  <!-- 个人联系方式 -->
   <a-card class="box-card" style="width: 400px; margin: 0 auto" :hoverable="true">
     <template #title>
       <div class="card-header" style="text-align: center">
@@ -234,6 +235,7 @@ import { onMounted, ref } from "vue";
 .icons svg {
   margin: 0px 15px;
 }
+/* 使用说明书hover效果 */
 .docs:hover {
   color: rgb(252, 106, 0);
 }

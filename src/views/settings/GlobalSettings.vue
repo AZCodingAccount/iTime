@@ -1,9 +1,10 @@
 <script setup>
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
-import { List, Message } from "@arco-design/web-vue";
+import { Message } from "@arco-design/web-vue";
 const customSettingsStore = useCustomSettingsStore();
-let form = ref({ ...customSettingsStore.customSettings.shortcutKeys });
+
+let form = ref({ ...customSettingsStore.customSettings.shortcutKeys }); // 解构避免对象出现响应性
 
 // 定义控制是否可以输入的变量
 const fPomodoroDisabled = ref(true);
@@ -13,7 +14,7 @@ const wTimerDisabled = ref(true);
 // 定义当前允许输入的输入框，后续还需要根据这个值更新
 const currentInput = ref(""); // 可以是 'fPomodoro', 'wPomodoro', 'fTimer', 'wTimer' 或者 ""
 
-const removeListener = ref(null); // 一个函数，移除监听器
+const removeListener = ref(null); // 一个函数，用来移除监听器
 
 // 处理这些按钮点击的事件
 // 每次只允许一个输入框是可输入的
@@ -44,7 +45,7 @@ const beginKeyBoardListener = () => {
       event.preventDefault(); // 阻止默认行为
     }
   };
-  // 捕捉不到Meta（win）弹起事件，特殊处理一下
+  // 捕捉键盘弹起时间
   const keyUpHandler = (event) => {
     console.log("up", event.key);
     pressedKeys.pop(); // 释放键时移除
@@ -63,7 +64,7 @@ const beginKeyBoardListener = () => {
 
 // 定义点击事件 @params type 'fPomodoro'|'wPomodoro'|'fTimer'|'wTimer'
 const handleClick = (type) => {
-  // 先禁用所有快捷键
+  // 先禁用应用内的所有快捷键
   window.electron.disableAllShortcut();
   if (isSingleInput()) {
     // 做四件事，0：提醒用户。1：取消禁用输入框。2：更新当前输入框的值 3：开启键盘监听事件并回显到输入框
@@ -85,6 +86,7 @@ const handleClick = (type) => {
     beginKeyBoardListener();
   }
 };
+// 手动重新渲染
 const updateForm = () => {
   form.value = customSettingsStore.customSettings.shortcutKeys;
 };
@@ -111,7 +113,7 @@ const handleSave = async (type) => {
     window.electron.disableAllShortcut();
     return;
   }
-  // 重置状态
+  // 禁用输入框
   currentInput.value = "";
   if (type == "fPomodoro") {
     fPomodoroDisabled.value = true;
@@ -124,7 +126,6 @@ const handleSave = async (type) => {
   }
   // 手动更新本地存储的值;
   customSettingsStore.customSettings.shortcutKeys = { ...form.value };
-  // updateForm(); // 更新表单显示的值
   Message.success("保存成功    (˃ᴗ˂)");
 };
 // 恢复默认设置
@@ -134,10 +135,10 @@ const resetForm = () => {
   Message.success("重置成功🙂");
 };
 
-// 位置设置
+// 挂件位置设置
 const positionForm = ref(null);
 positionForm.value = customSettingsStore.customSettings.position;
-
+// 重置挂件位置表单
 const resetPositionForm = () => {
   customSettingsStore.resetPositionSettings();
   positionForm.value = customSettingsStore.customSettings.position;
@@ -148,6 +149,7 @@ const resetPositionForm = () => {
 // 语音设置
 const voiceForm = ref(null);
 voiceForm.value = customSettingsStore.customSettings.voice;
+// 重置语音设置表单
 const resetVoiceForm = () => {
   customSettingsStore.resetVoiceSettings();
   voiceForm.value = customSettingsStore.customSettings.voice;

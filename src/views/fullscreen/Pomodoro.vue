@@ -13,9 +13,9 @@ const isFirst = computed({
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
 const isStart = ref(true); // 是不是第一次启动定时器
-let intervalId = null;
+let intervalId = null;  // 定时器id
 let isEnding = ref(false); // 定义结束按钮是否显示隐藏
-const backgroundImage = ref("");
+const backgroundImage = ref("");  // 背景图url
 // 计算分钟
 const minutes = computed(() =>
   Math.floor(totalTime.value / 60)
@@ -32,10 +32,6 @@ const customSettingsStore = useCustomSettingsStore();
 
 const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
-// const pShortBreakDuration = ref(shortBreakDuration); // 短休息
-// const pLongBreakDuration = ref(longBreakDuration); // 长休息
-// const pLongBreakInterval = ref(longBreakInterval); // 长休息间隔
-// const pDuration = ref(duration); // 工作
 let step = ref(1); // 记录当前在第几轮
 // 播放器对象
 const audioShortBreakPlayer = ref(null);
@@ -47,6 +43,7 @@ const role = computed(
 const isClosed = computed(
   () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
 ); //是否关闭(使用计算属性保持响应性)
+// 开启定时器
 const startTimer = () => {
   !isEnding.value && (isEnding.value = true);
   if (isStart.value) {
@@ -104,6 +101,7 @@ const startTimer = () => {
   }
 };
 
+// 暂停定时器
 const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
@@ -123,7 +121,7 @@ const endTimer = () => {
   isEnding.value = false;
   step.value = 1;
 };
-
+// 应用初始化
 onMounted(() => {
   backgroundImage.value = customSettingsStore.customSettings["f-pomodoro-bgi"];
   if (isFirst.value) {
@@ -136,26 +134,27 @@ onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
 });
 
+// 应用结束的收尾工作
 onUnmounted(() => {
   clearInterval(intervalId);
   window.removeEventListener("keydown", handleKeyDown);
 });
-// 添加监听事件
+// 快捷键退出窗口
 const handleKeyDown = (e) => {
   if (e.key === "f") {
     // 关闭窗口并跳转
-    window.electron.closePomodoroWindow();
+    window.electron.removeWindow();
     router.push("/pomodoro");
   }
 };
-// 双击事件
+// 双击事件退出窗口
 const handleDBLClick = (event) => {
   // 双击定时器部分不应该有响应
   if (event.target.closest(".pomodoro-timer")) {
     return;
   }
   // 关闭窗口并跳转
-  window.electron.closePomodoroWindow();
+  window.electron.removeWindow();
   router.push("/pomodoro");
 };
 </script>

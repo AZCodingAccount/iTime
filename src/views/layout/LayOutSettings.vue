@@ -3,11 +3,13 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
+// 高亮导航栏
 const currentRouteKey = computed(() => route.path);
 </script>
 
 <template>
   <div class="menu">
+    <!-- 导航栏 -->
     <a-menu mode="horizontal" :selectedKeys="[currentRouteKey]">
       <router-link to="/settings/global">
         <a-menu-item key="/settings/global">全局设置</a-menu-item>
@@ -22,6 +24,7 @@ const currentRouteKey = computed(() => route.path);
         <a-menu-item key="/settings/appearance">外观设置</a-menu-item>
       </router-link>
     </a-menu>
+    <!-- 内容 -->
     <router-view></router-view>
   </div>
 </template>

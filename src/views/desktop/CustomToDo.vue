@@ -1,6 +1,5 @@
 <script setup>
-import { Message } from "@arco-design/web-vue";
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 const todoTitle = ref(""); // 待办标题
 const todoContent = ref(""); // 页面渲染的内容
 // 使用preload暴露出来的函数
@@ -75,12 +74,10 @@ const handleDBLClick = () => {
       </div>
     </div>
 
-    <!-- <a-divider  style="color: black"></a-divider> -->
     <hr v-if="isShowContent" />
     <!-- 内容部分 -->
     <div v-html="todoContent" class="content" v-if="isShowContent"></div>
   </div>
-  <!-- <div class="card draggable">{{ todoContent }}</div> -->
 </template>
 <style scoped>
 .slide-fade-enter-active,
@@ -122,7 +119,7 @@ const handleDBLClick = () => {
 .draggable {
   -webkit-app-region: drag;
 }
-/* 提取button公共的样式，会有hover效果具体不知道为啥 */
+/* 提取button公共的样式 */
 .buttonStyle {
   width: 1.5em;
   height: 1.5em;

@@ -17,16 +17,18 @@ const originTime = ref(0); // 记录选择的时间
 const isBegin = ref(false); // 定义是否开始
 const inputTime = ref(0); // 输入的时间
 const totalTime = ref(0); // 计算成的秒数
-let intervalId = null;
+let intervalId = null;  // 定时器id
+// 同步输入框和定时器的值
 const handleChange = () => {
   totalTime.value = inputTime.value * 60;
 };
-
+// 计算分钟
 const minutes = computed(() =>
   Math.floor(totalTime.value / 60)
     .toString()
     .padStart(2, "0")
 );
+// 计算秒
 const seconds = computed(() =>
   (totalTime.value % 60).toString().padStart(2, "0")
 );
@@ -77,11 +79,14 @@ const startTimer = () => {
   }
 };
 
+// 暂停定时器
 const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
   isRunning.value = false;
 };
+
+// 挂载，应用初始化
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
 
@@ -95,6 +100,7 @@ onMounted(() => {
   }
 });
 
+// 结束时收尾工作
 onUnmounted(() => {
   clearInterval(intervalId);
   window.removeEventListener("keydown", handleKeyDown);
@@ -119,6 +125,7 @@ const handleKeyDown = (e) => {
   }
 };
 
+// 手动同步本地存储状态到pinia
 window.addEventListener("storage", (event) => {
   if (event.key === "customSettings") {
     // 重新从localStorage加载状态
@@ -129,14 +136,14 @@ window.addEventListener("storage", (event) => {
     }
   }
 });
+// 双击事件
 const handleDBLClick = () => {
   window.electron.removeWindow();
 };
 </script>
 <template>
-  <div class="pomodoro-timer">
+  <div class="timer">
     <!-- 输入框 -->
-    <!-- 这个输入框是真的丑，但是我找了15分钟也没找到怎么修改灰色背景，就这样吧唉 -->
     <a-input-number
       v-model="inputTime"
       :style="{ width: '125px' }"
@@ -150,7 +157,6 @@ const handleDBLClick = () => {
       style="-webkit-app-region: no-drag"
     />
     <!-- 进度条 -->
-    <!-- :show-text="false" -->
     <a-progress
       status="warning"
       :percent="percent"
@@ -159,9 +165,11 @@ const handleDBLClick = () => {
       color="rgb(12, 228, 140)"
       v-else
     />
+    <!-- 时间展示 -->
     <div class="timer-display" @dblclick="handleDBLClick">
       {{ minutes }}:{{ seconds }}
     </div>
+    <!-- 操作按钮 -->
     <div class="button">
       <a-button
         v-if="!isRunning"
@@ -205,7 +213,8 @@ const handleDBLClick = () => {
 <style scoped>
 /* 在CSS文件中使用@import引入Roboto字体 */
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
-.pomodoro-timer {
+/* 番茄钟样式 */
+.timer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -219,13 +228,14 @@ const handleDBLClick = () => {
   -webkit-app-region: drag;
 }
 
+/* 时间样式 */
 .timer-display {
   cursor: pointer;
   font-size: 3em;
   color: white;
   -webkit-app-region: no-drag;
 }
-
+/* 按钮样式 */
 button {
   cursor: pointer;
   -webkit-app-region: no-drag;

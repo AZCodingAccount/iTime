@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { IconEdit, IconPlus } from "@arco-design/web-vue/es/icon";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
 import { Message } from "@arco-design/web-vue";
@@ -10,7 +10,7 @@ const defaultForm = {
   shortBreakDuration: 5,
   longBreakDuration: 15,
   longBreakInterval: 4,
-}; // 表单对象
+}; // 默认表单对象属性值，可以使用这种方式，但一般还是在pinia里面存储
 const form = ref({
   duration: 25,
   shortBreakDuration: 5,
@@ -21,7 +21,7 @@ const form = ref({
 const fFile = ref(null); // 文件对象
 const wFile = ref(null); // 文件对象
 
-// 绑定响应式对象
+// 绑定对象——双向，直接是引用
 if (customSettingsStore.customSettings.pomodoroSettings) {
   form.value = customSettingsStore.customSettings.pomodoroSettings;
 }
@@ -55,9 +55,8 @@ const longBreakIntervalMarks = {
   5: "5",
   6: "6",
 };
-const handleSubmit = (data) => {
-  console.log(data);
-};
+
+// 重置表单
 const resetForm = () => {
   Object.assign(form.value, { ...defaultForm });
   Message.success("重置成功🙂");
@@ -66,9 +65,7 @@ const resetForm = () => {
 const onFChange = (_, currentFile) => {
   fFile.value = {
     ...currentFile,
-    // url: URL.createObjectURL(currentFile.file),
   };
-  //   console.log(file.value.file.path);   // 本地路径
   //   此时把文件传递过去让node保存到本地
   window.electron
     .saveFile("f-pomodoro", fFile.value.file.path)
@@ -89,9 +86,7 @@ const onFChange = (_, currentFile) => {
 const onWChange = (_, currentFile) => {
   wFile.value = {
     ...currentFile,
-    // url: URL.createObjectURL(currentFile.file),
   };
-  //   console.log(file.value.file.path);   // 图片路径
   //   此时把文件传递过去让node保存到本地
   window.electron
     .saveFile("w-pomodoro", wFile.value.file.path)
@@ -116,6 +111,7 @@ const onWProgress = (currentFile) => {
   wFile.value = currentFile;
 };
 
+// 重置背景图——就是使用store提供的方法重置规范一点
 const resetBGI = () => {
   customSettingsStore.resetPomodoroBGI();
   Message.success("重置成功🙂");
@@ -308,20 +304,17 @@ const resetBGI = () => {
   </div>
 </template>
 <style scoped>
+/* 背景图设置部分样式 */
 .background {
   display: flex;
-  /* align-items: center; */
   margin: 40px 0px 0px 0px;
 }
+/* 对arco design的组件间距进行微调 */
 >>> .arco-form-item-label-col {
   line-height: 60px;
 }
 >>> .arco-form-item {
   margin-bottom: 0px;
 }
-/* /deep/ .menu .arco-menu-horizontal .arco-menu-inner {
-  display: flex;
-  align-items: center;
-  padding: 7px 20px !important;
-} */
+
 </style>

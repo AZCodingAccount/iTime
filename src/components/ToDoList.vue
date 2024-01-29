@@ -1,5 +1,5 @@
 <script setup>
-import { IconEdit, IconDelete, IconCheck } from "@arco-design/web-vue/es/icon";
+import { IconDelete, IconCheck } from "@arco-design/web-vue/es/icon";
 import { ref } from "vue";
 import { useToDoStore } from "@/stores/ToDo";
 import { onMounted } from "vue";
@@ -8,11 +8,11 @@ import { Message } from "@arco-design/web-vue";
 
 const toDoStore = useToDoStore();
 const todoList = ref([]); // 代表所有待办
+// 挂载完成同步所有待办值
 onMounted(() => {
   todoList.value = toDoStore.getToDoList();
 });
-
-// const isFinish = ref(true);
+// 标签颜色数组
 const colors = [
   "orangered",
   "orange",
@@ -27,7 +27,7 @@ const colors = [
   "magenta",
   "gray",
 ];
-// 待办完成
+// 完成待办
 const handleFinish = (id) => {
   const index = todoList.value.findIndex((todo) => todo.id === id);
   if (index !== -1) {
@@ -41,7 +41,7 @@ const handleFinish = (id) => {
   }
 };
 
-// 监听双击鼠标事件
+// 双击鼠标完成待办
 const handleDBLClick = (id) => {
   handleFinish(id);
 };
@@ -57,7 +57,7 @@ const handleDelete = (id) => {
 </script>
 
 <template>
-  <a-list size="small" class="list" max-height="80vh">
+  <a-list size="small" class="list" max-height="90vh">
     <!-- 待办列表 -->
     <a-list-item
       @dblclick="handleDBLClick(todo.id)"
@@ -66,7 +66,7 @@ const handleDelete = (id) => {
       class="item"
     >
       <a-list-item-meta>
-        <!-- 标题 -->
+        <!-- 标题——待办内容 -->
         <template #title>
           <div
             class="content"
@@ -79,7 +79,7 @@ const handleDelete = (id) => {
             {{ todo.content }}
           </div>
         </template>
-        <!-- 描述 -->
+        <!-- 描述——待办标签和时间 -->
         <template #description>
           <div
             class="des"
@@ -143,6 +143,7 @@ const handleDelete = (id) => {
         </template>
       </a-list-item-meta>
 
+      <!-- 悬浮时的删除按钮 -->
       <template #actions>
         <icon-delete
           class="action-icon"
@@ -155,7 +156,7 @@ const handleDelete = (id) => {
 </template>
 
 <style scoped>
-/* 美化列表 */
+/* 美化列表和列表项 */
 .list {
   margin: 0 10px;
 }
@@ -165,13 +166,13 @@ const handleDelete = (id) => {
   border-radius: 5px;
 }
 
-/* 去除上下的边框，必须穿透，不然因为scoped不会作用 */
+/* 去除列表上下的边框，必须穿透，不然因为scoped不会作用 */
 >>> .arco-list-bordered {
   border: none;
 }
 
 .item:hover {
-  /* 一些hover颜色，真的不会配色......  */
+  /* hover颜色，真的不会配色......  */
   /* 非常淡的浅蓝色:f0f7ff|f7fbff 。更深一点的e6f7ff*/
   background-color: #e6f7ff;
   cursor: pointer;
@@ -187,13 +188,14 @@ const handleDelete = (id) => {
   display: inline;
 }
 
+/* 待办时间 */
 .time {
   display: flex;
   align-items: center;
   color: gray;
   margin-right: 70%;
 }
-
+/* 微调组件间距 */
 .arco-list-small .arco-list-content-wrapper .arco-list-footer,
 .arco-list-small
   .arco-list-content-wrapper
@@ -222,9 +224,11 @@ const handleDelete = (id) => {
 .arco-btn-size-medium svg {
   color: white;
 }
+/*避免和flex布局冲突*/
 >>> .arco-space {
   display: none;
 }
+/* 兼容自定义的flex布局 */
 >>> .arco-list-item-meta-content {
   width: 100%;
 }

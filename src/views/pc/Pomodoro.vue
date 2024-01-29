@@ -1,21 +1,21 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { useCustomSettingsStore } from "@/stores/CustomSettings";
-import { useCustomToDoStore } from "@/stores/CustomToDoStore";
 import { Message } from "@arco-design/web-vue";
-import { IconFullscreen } from "@arco-design/web-vue/es/icon";
 import { useHasVisitedBeforeStore } from "@/stores/HasVisitedBefore";
+// 记录用户是不是第一次到这个页面
 const hasVisitedBeforeStore = useHasVisitedBeforeStore();
 const isFirst = computed({
   get: () => hasVisitedBeforeStore.appPomodoro,
   set: (newValue) => (hasVisitedBeforeStore.appPomodoro = newValue),
 });
+
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
 const isStart = ref(true); // 是不是第一次启动定时器
 let intervalId = null;
 let isEnding = ref(false); // 定义结束按钮是否显示隐藏
-const backgroundImage = ref("/timeBGI");
+const backgroundImage = ref("/timeBGI"); // 默认背景图
 
 // 计算分钟
 const minutes = computed(() =>
@@ -33,10 +33,7 @@ const customSettingsStore = useCustomSettingsStore();
 backgroundImage.value = customSettingsStore.customSettings["f-pomodoro-bgi"];
 const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
-// const pShortBreakDuration = ref(shortBreakDuration); // 短休息
-// const pLongBreakDuration = ref(longBreakDuration); // 长休息
-// const pLongBreakInterval = ref(longBreakInterval); // 长休息间隔
-// const pDuration = ref(duration); // 工作
+
 let step = ref(1); // 记录当前在第几轮
 // 播放器对象
 const audioShortBreakPlayer = ref(null);
@@ -48,8 +45,10 @@ const role = computed(
 const isClosed = computed(
   () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
 ); //是否关闭(使用计算属性保持响应性)
+
+// 开启计时器（但不一定开启成功）
 const startTimer = () => {
-  !isEnding.value && (isEnding.value = true);
+  !isEnding.value && (isEnding.value = true); // 是false的话设置成true，控制结束按钮的显示隐藏
   if (isStart.value) {
     // 第一次进来，就更新
     if (hintText.value === "待开始" || hintText.value === "专注中") {
@@ -58,12 +57,10 @@ const startTimer = () => {
       totalTime.value = shortBreakDuration * 60; // 短休息
     } else if (hintText.value === "长休息") {
       totalTime.value = longBreakDuration * 60; // 长休息
+    } else if (hintText.value === "待开始") {
+      hintText.value = "专注中";
     }
   }
-  if (hintText.value === "待开始") {
-    hintText.value = "专注中";
-  }
-
   // 当前没有定时器在运行
   if (intervalId === null) {
     isRunning.value = true;
@@ -105,6 +102,7 @@ const startTimer = () => {
   }
 };
 
+// 暂停定时器
 const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
@@ -124,7 +122,7 @@ const endTimer = () => {
   isEnding.value = false;
   step.value = 1;
 };
-
+// 挂载完成的初始化工作
 onMounted(() => {
   // 判断是不是第一次
   if (isFirst.value) {
@@ -135,7 +133,7 @@ onMounted(() => {
   }
   window.addEventListener("keydown", handleKeyDown);
 });
-
+// 结束的收尾工作
 onUnmounted(() => {
   clearInterval(intervalId);
   window.removeEventListener("keydown", handleKeyDown);
@@ -158,7 +156,7 @@ const handleDBLClick = (event) => {
   }
   window.electron.openPomodoroWindow("f");
 };
-let lastRightClickTime = "";
+let lastRightClickTime = "";  // 存储上次右键点击的时间
 // 右键双击
 const handleContextMenu = (event) => {
   if (event.button === 2) {
@@ -272,7 +270,7 @@ const handleContextMenu = (event) => {
 <style scoped>
 /* 在CSS文件中使用@import引入Roboto字体 */
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
-/* 定义主界面 */
+/* 定义主界面样式 */
 .main {
   display: flex;
   align-items: flex-start;

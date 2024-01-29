@@ -13,24 +13,25 @@ const isFirst = computed({
 
 const customSettingsStore = useCustomSettingsStore();
 
-const isRunning = ref(false);
+const isRunning = ref(false); // 是否正在运行——控制按钮显隐
 const percent = ref(0); // 定义进度条
 const originTime = ref(0); // 记录选择的时间
 const isBegin = ref(false); // 定义是否开始
 const inputTime = ref(0); // 输入的时间
 const totalTime = ref(0); // 计算成的秒数
-let intervalId = null;
+let intervalId = null; // 定时器id
+// 同步输入框和定时器的时间
 const handleChange = () => {
-  console.log(totalTime.value, originTime.value);
   totalTime.value = inputTime.value * 60;
-  console.log(totalTime.value, originTime.value);
 };
 
+// 计算分值
 const minutes = computed(() =>
   Math.floor(totalTime.value / 60)
     .toString()
     .padStart(2, "0")
 );
+// 计算秒
 const seconds = computed(() =>
   (totalTime.value % 60).toString().padStart(2, "0")
 );
@@ -44,6 +45,8 @@ const role = computed(
 const isClosed = computed(
   () => customSettingsStore.customSettings.voice.isClosedV ?? "false"
 ); //是否关闭(使用计算属性保持响应性)
+
+// 开启定时器
 const startTimer = () => {
   // 首先把数字输入框隐藏，显示进度条
   isBegin.value = true;
@@ -80,12 +83,15 @@ const startTimer = () => {
     }, 1000);
   }
 };
+
+// 暂停定时器
 const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
   isRunning.value = false;
 };
 
+// 应用的初始化工作
 onMounted(() => {
   // 可以在这里设置开始的默认状态
   window.addEventListener("keydown", handleKeyDown);
@@ -98,12 +104,13 @@ onMounted(() => {
   }
 });
 
+// 应用结束的收尾工作
 onUnmounted(() => {
   clearInterval(intervalId);
   window.removeEventListener("keydown", handleKeyDown);
 });
 const router = useRouter();
-// 添加监听事件
+// 键盘监听——重置定时器、退出窗口
 const handleKeyDown = (e) => {
   if (e.key === "r") {
     // r reset
@@ -118,25 +125,25 @@ const handleKeyDown = (e) => {
     isBegin.value = false;
   } else if (e.key === "f") {
     // 先关闭窗口，再跳
-    window.electron.closeTimerWindow();
+    window.electron.removeWindow();
     // 执行跳转逻辑，再跳回去，关闭全屏窗口
     router.push("/countdown");
   }
 };
+// 双击事件—退出窗口
 const handleDBLClick = (event) => {
   // 双击定时器部分不应该有响应
-  if (event.target.closest(".pomodoro-timer")) {
+  if (event.target.closest(".timer")) {
     return;
   }
-  window.electron.closeTimerWindow();
+  window.electron.removeWindow();
   router.push("/countdown");
 };
 </script>
 <template>
   <div class="main" @dblclick="handleDBLClick">
-    <div class="pomodoro-timer">
+    <div class="timer">
       <!-- 输入框 -->
-      <!-- 这个输入框是真的丑，但是我找了15分钟也没找到怎么修改灰色背景，就这样吧唉 -->
       <a-input-number
         v-model="inputTime"
         :style="{ width: '125px' }"
@@ -149,7 +156,6 @@ const handleDBLClick = (event) => {
         @change="handleChange"
       />
       <!-- 进度条 -->
-      <!-- :show-text="false" -->
       <a-progress
         status="warning"
         :percent="percent"
@@ -158,7 +164,9 @@ const handleDBLClick = (event) => {
         color="rgb(12, 228, 140)"
         v-else
       />
+      <!-- 时间展示 -->
       <div class="timer-display">{{ minutes }}:{{ seconds }}</div>
+      <!-- 操作按钮 -->
       <div class="button">
         <a-button
           v-if="!isRunning"
@@ -203,7 +211,7 @@ const handleDBLClick = (event) => {
 <style scoped>
 /* 在CSS文件中使用@import引入Roboto字体 */
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
-
+/* 整个界面 */
 .main {
   display: flex;
   align-items: flex-start;
@@ -220,7 +228,8 @@ const handleDBLClick = (event) => {
   background-repeat: no-repeat; /* 不重复 */
   background-position: center center; /* 图像居中显示 */
 }
-.pomodoro-timer {
+/* 定时器 */
+.timer {
   display: flex;
   margin-top: 10%;
   align-items: center;
@@ -232,11 +241,13 @@ const handleDBLClick = (event) => {
   border-radius: 10px;
   padding: 0 15px;
 }
+/* 字体 */
 
 .timer-display {
   font-size: 3em;
 }
 
+/* 按钮 */
 button {
   cursor: pointer;
 }
