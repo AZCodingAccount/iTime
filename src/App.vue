@@ -51,7 +51,12 @@ window.electron.shortcutSetting(customSettingsForIpc);
 watch(
   [customSettings.value.position, customSettings.value.voice],
   (newV, oldV) => {
-    const customSettingsForIpc = JSON.parse(JSON.stringify(oldV));
+    // 刚进来时候oldV是underfined
+    if (typeof oldV === undefined) {
+      const customSettingsForIpc = JSON.parse(JSON.stringify(oldV));
+      window.electron.syncElseSetting(customSettingsForIpc);
+    }
+    const customSettingsForIpc = JSON.parse(JSON.stringify(newV));
     // 需要更新全局配置
     window.electron.syncElseSetting(customSettingsForIpc);
   },

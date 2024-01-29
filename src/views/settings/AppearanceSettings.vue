@@ -17,7 +17,7 @@
           <div class="content">🖌️ 自定义主题</div>
           <div class="content">🆙 自定义字体大小</div>
           <div class="content">🌈 自定义桌面挂件颜色和透明度</div>
-          <div class="content">🔄 自定义桌面挂件大小</div>
+          <div class="content">🔄 自定义桌面挂件宽高</div>
         </div>
       </div></a-card
     >
