@@ -99,9 +99,9 @@ export const useCustomSettingsStore = defineStore(
     // 重置语音提示设置
     const resetVoiceSettings = () => {
       customSettings.value["voice"] = {
-        pomodoroV: "默认",
-        timerV: "默认",
-        todoV: "默认",
+        pomodoroV: "default",
+        timerV: "default",
+        todoV: "default",
         isClosedV: false,
       };
     };

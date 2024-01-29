@@ -158,7 +158,7 @@ const resetVoiceForm = () => {
 <template>
   <div class="app">
     <!-- 全局快捷键设置 -->
-    <a-form :model="form" :style="{ width: '600px' }">
+    <a-form :model="form" :style="{ width: '600px', 'margin-left': '1em' }">
       <div
         class="hin"
         style="

@@ -1,9 +1,11 @@
 <script setup>
 import { ref, watchEffect, watch, computed } from "vue";
 import { useCustomSettingsStore } from "./stores/CustomSettings";
-import { onMounted } from "vue";
+import { useToDoStore } from "./stores/ToDo";
+import { onUnmounted, onMounted } from "vue";
 const customSettingsStore = useCustomSettingsStore();
-/*  在这里定义一些全局样式
+const todoStore = useToDoStore();
+// 在这里定义一些全局样式;
 const todoIcons = ref(customSettingsStore.customSettings["todo-icons"]);
 
 // 使用 watchEffect 来响应式地更新 CSS 变量
@@ -40,20 +42,16 @@ const ulIconValue = getComputedStyle(document.documentElement)
 console.log(ulIconValue); // 输出 --ulIcon 的当前值
 
 console.log("设置成功~~~~", todoIcons.value);
-*/
+
 // 同步配置信息
 const customSettings = ref(customSettingsStore.customSettings);
-console.log(customSettings.value.shortcutKeys);
 // 刚进来时候注册一次快捷键
 const customSettingsForIpc = JSON.parse(
   JSON.stringify(customSettings.value.shortcutKeys)
 );
-const test = async () => {
-  const res = await window.electron.shortcutSetting(customSettingsForIpc);
-  console.log(res);
-};
-test()
+window.electron.shortcutSetting(customSettingsForIpc);
 // 立即生效是比较麻烦的，但是用户体验大于一切，快捷键设置因为需要双向通信，就直接在组件中设置了
+// 注意不要传递代理对象，不能被序列化
 watch(
   [customSettings.value.position, customSettings.value.voice],
   (oldV, newV) => {
@@ -64,13 +62,59 @@ watch(
   { immediate: true }
   // { deep: true }
 );
-// 注意不要传递代理对象，不能被序列化
-// watchEffect(() => {
-//   console.log(111);
-//   const customSettingsForIpc = JSON.parse(JSON.stringify(customSettings.value));
+// 设置提示信息
+const intervalIds = []; // 用于存储所有定时器的ID，以便稍后清理
 
-//   window.electron.syncSetting(customSettingsForIpc);
-// });
+// 如果todoList发生改变了，更新forEach
+const todoList = ref(todoStore.todoList);
+const watchToDos = (todoList) => {
+  // 清除之前的定时器
+  intervalIds.forEach(clearInterval);
+  intervalIds.value = [];
+  // 挨个注册定时器
+  todoList.forEach((todo) => {
+    const remindTime = ref(todo.remindTime); // 用户选择的时间（ISO 8601格式）
+    const music = new Audio(
+      `/voices/todos/${customSettings.value?.voice?.todoV}/remind.wav`
+    ); // 音乐文件
+
+    // 播放音乐
+    const playMusic = () => {
+      !customSettings.value?.voice?.isClosedV && music.play();
+    };
+    console.log("注册待办", todo);
+
+    // 定期检查当前时间是否接近用户设置的时间
+    const intervalId = setInterval(() => {
+      const currentTime = new Date(); // 当前时间
+      const targetTime = new Date(remindTime.value); // 将用户设置的时间转换为Date对象
+      console.log(currentTime, targetTime);
+
+      // 检查当前时间是否在目标时间前后一分钟内
+      if (Math.abs(currentTime - targetTime) < 60000) {
+        playMusic();
+        clearInterval(intervalId);
+      }
+    }, 1000 * 60); // 每1分钟检查一次
+    intervalIds.value.push(intervalId);
+  });
+};
+// 进来先注册一次
+watchToDos(todoList.value);
+// 使用watch来侦听todoList的变化，并重新设置定时器
+watch(
+  todoList,
+  (newTodoList) => {
+    watchToDos(newTodoList);
+  },
+  {
+    deep: true, // 监听内部值
+  }
+);
+// 清理所有定时器
+onUnmounted(() => {
+  intervalIds.forEach(clearInterval);
+});
 </script>
 
 <template>
