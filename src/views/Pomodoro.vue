@@ -140,9 +140,37 @@ const handleKeyDown = (e) => {
     window.electron.openPomodoroWindow("a");
   }
 };
+// 双击事件
+const handleDBLClick = (event) => {
+  // 双击定时器部分不应该有响应
+  if (event.target.closest(".pomodoro-timer")) {
+    return;
+  }
+  window.electron.openPomodoroWindow("f");
+};
+let lastRightClickTime = "";
+// 右键双击
+const handleContextMenu = (event) => {
+  if (event.button === 2) {
+    // 检查右键单击
+    const now = new Date().getTime();
+    if (!lastRightClickTime || now - lastRightClickTime > 300) {
+      // 大于300毫秒，认为是右键单击
+      lastRightClickTime = now;
+    } else {
+      // 小于300毫秒，认为是右键双击
+      window.electron.openPomodoroWindow("a");
+    }
+  }
+};
 </script>
 <template>
-  <div class="main" :style="{ backgroundImage: `url(${backgroundImage})` }">
+  <div
+    class="main"
+    :style="{ backgroundImage: `url(${backgroundImage})` }"
+    @contextmenu.prevent="handleContextMenu"
+    @dblclick="handleDBLClick"
+  >
     <div class="pomodoro-timer">
       <!-- 上方提示文字 （专注中、短休息、长休息）-->
       <div class="hint">
@@ -237,7 +265,7 @@ const handleKeyDown = (e) => {
 /* 定义主界面 */
 .main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: row;
   width: 100%;
@@ -252,6 +280,7 @@ const handleKeyDown = (e) => {
 }
 /* 定义定时器盒子样式 */
 .pomodoro-timer {
+  margin-top: 10%;
   width: 340px;
   height: 100px;
   display: flex;

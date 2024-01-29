@@ -139,9 +139,23 @@ const handleKeyDown = (e) => {
     router.push("/pomodoro");
   }
 };
+// 双击事件
+const handleDBLClick = (event) => {
+  // 双击定时器部分不应该有响应
+  if (event.target.closest(".pomodoro-timer")) {
+    return;
+  }
+  // 关闭窗口并跳转
+  window.electron.closePomodoroWindow();
+  router.push("/pomodoro");
+};
 </script>
 <template>
-  <div class="main" :style="{ backgroundImage: `url(${backgroundImage})` }">
+  <div
+    class="main"
+    :style="{ backgroundImage: `url(${backgroundImage})` }"
+    @dblclick="handleDBLClick"
+  >
     <div class="pomodoro-timer">
       <!-- 上方提示文字 （专注中、短休息、长休息）-->
       <div class="hint">
@@ -236,7 +250,7 @@ const handleKeyDown = (e) => {
 /* 定义主界面 */
 .main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: row;
   width: 100%;
@@ -251,6 +265,7 @@ const handleKeyDown = (e) => {
 }
 /* 定义定时器盒子样式 */
 .pomodoro-timer {
+  margin-top: 10%;
   width: 340px;
   height: 100px;
   display: flex;

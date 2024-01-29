@@ -1,5 +1,5 @@
 <script setup>
-/* import { ref, watchEffect, watch, computed } from "vue";
+import { ref, watchEffect, watch, computed } from "vue";
 import { useCustomSettingsStore } from "./stores/CustomSettings";
 import { useToDoStore } from "./stores/ToDo";
 import { onUnmounted, onMounted } from "vue";
@@ -114,7 +114,7 @@ watch(
 // 清理所有定时器
 onUnmounted(() => {
   intervalIds.forEach(clearInterval);
-}); */
+});
 </script>
 
 <template>

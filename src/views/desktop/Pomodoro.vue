@@ -156,6 +156,9 @@ window.addEventListener("storage", (event) => {
     }
   }
 });
+const handleDBLClick = () => {
+  window.electron.removeWindow();
+};
 </script>
 <template>
   <div
@@ -173,7 +176,9 @@ window.addEventListener("storage", (event) => {
         {{ step }}
       </div>
       <!-- 时间 -->
-      <div class="timer-display">{{ minutes }}:{{ seconds }}</div>
+      <div class="timer-display" @dblclick="handleDBLClick">
+        {{ minutes }}:{{ seconds }}
+      </div>
       <!-- 开始暂停按钮 -->
       <div class="button">
         <a-button
@@ -288,6 +293,7 @@ window.addEventListener("storage", (event) => {
 .timer-display {
   text-align: center;
   padding-right: 40px;
+  -webkit-app-region: no-drag;
 }
 .step {
   flex: 1;
