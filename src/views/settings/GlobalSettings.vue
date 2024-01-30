@@ -28,7 +28,7 @@ const isSingleInput = () => {
 // 实时监听键盘的组合键并在输入框回显
 const beginKeyBoardListener = () => {
   const pressedKeys = new Array(); // 存储按下的键
-  const keyDownHandler = (event) => {
+  const keyDownHandler = async (event) => {
     form.value[currentInput.value] = "";
     let bigKey = event.key;
     // 转换成大写更好看，也可以跟API对接

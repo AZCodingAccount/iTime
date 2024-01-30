@@ -37,6 +37,12 @@ export const useCustomSettingsStore = defineStore(
       fTimer: "Control+Alt+2",
       wTimer: "Control+Alt+3",
     };
+    let defaultShortcutKeys = ref({
+      fPomodoro: "Control+Alt+0",
+      wPomodoro: "Control+Alt+1",
+      fTimer: "Control+Alt+2",
+      wTimer: "Control+Alt+3",
+    });
 
     // 默认位置设置，是否在顶层
     customSettings.value["position"] = {
@@ -81,12 +87,7 @@ export const useCustomSettingsStore = defineStore(
     };
     // 重置快捷键设置
     const resetShortcutKeys = () => {
-      customSettings.value["shortcutKeys"] = {
-        fPomodoro: "Control+Alt+0",
-        wPomodoro: "Control+Alt+1",
-        fTimer: "Control+Alt+2",
-        wTimer: "Control+Alt+3",
-      };
+      customSettings.value["shortcutKeys"] = defaultShortcutKeys;
     };
     // 重置位置设置
     const resetPositionSettings = () => {
@@ -107,6 +108,7 @@ export const useCustomSettingsStore = defineStore(
     };
     return {
       customSettings,
+      defaultShortcutKeys,
       resetPomodoroBGI,
       resetForm,
       resetShortcutKeys,

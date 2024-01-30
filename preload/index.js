@@ -61,6 +61,8 @@ contextBridge.exposeInMainWorld("electron", {
   // 快捷键设置
   shortcutSetting: (customSettingsForIpc) =>
     ipcRenderer.invoke("shortcut-setting", customSettingsForIpc),
+  // 获取当前系统
+  getCurrentOS: () => ipcRenderer.invoke("get-current-os"),
 });
 
 // shortcutKeys = {

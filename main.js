@@ -35,7 +35,7 @@ const createWindow = () => {
   win.setMenu(null); // 去掉窗口
   //win.loadFile("index.html");
   win.loadURL("http://localhost:5173");
-  // win.webContents.openDevTools(); // 打开开发者工具
+  win.webContents.openDevTools(); // 打开开发者工具
   winState.manage(win); // 配置持久化
   win.on("ready-to-show", () => {
     win.show();
@@ -46,6 +46,7 @@ const createWindow = () => {
     return { action: "deny" }; // 阻止 Electron 打开新窗口
   });
 };
+
 // 创建待办小挂件窗口
 const addToDoToDesktop = (title, content) => {
   let todoWindow = new BrowserWindow({
@@ -214,6 +215,10 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+// 获取当前操作系统
+ipcMain.handle("get-current-os", async (event) => {
+  return process.platform;
+});
 // 删除待办
 const removeToDo = (id) => {
   win.webContents.send("remove-todo", id);
@@ -371,6 +376,7 @@ ipcMain.handle("shortcut-setting", async (event, keys) => {
 ipcMain.on("disable-all-shortcut", () => {
   globalShortcut.unregisterAll();
 });
+
 // 调用原生api给用户通知
 // @params type |pomodoro-shortBreak|pomodoro-longBreak|pomodoro-work|timer-half|timer-full|todo
 ipcMain.on("notification-user", (event, type) => {

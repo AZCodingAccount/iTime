@@ -6,6 +6,27 @@ import { onUnmounted, onMounted } from "vue";
 // 获取两个pinia仓库
 const customSettingsStore = useCustomSettingsStore();
 const todoStore = useToDoStore();
+const fitMac = async () => {
+  // 兼容mac    Control => Command
+  const os = await window.electron.getCurrentOS(); // 其实存到本地存储好一点，这样就不用每次都获取了
+  if (os === "darwin") {
+    alert(111)
+    customSettingsStore.customSettings["shortcutKeys"] = {
+      fPomodoro: "Command+Alt+0",
+      wPomodoro: "Command+Alt+1",
+      fTimer: "Command+Alt+2",
+      wTimer: "Command+Alt+3",
+    };
+    customSettingsStore.defaultShortcutKeys = {
+      fPomodoro: "Command+Alt+0",
+      wPomodoro: "Command+Alt+1",
+      fTimer: "Command+Alt+2",
+      wTimer: "Command+Alt+3",
+    };
+  }
+};
+fitMac();
+
 // 定义一些全局样式——自定义icon;
 const todoIcons = ref(customSettingsStore.customSettings["todo-icons"]);
 
@@ -99,7 +120,7 @@ const watchToDos = (todoList) => {
       // 检查当前时间是否在目标时间前后一分钟内
       if (Math.abs(currentTime - targetTime) < 60000) {
         playMusic();
-        window.electron.notificationUser("todo")
+        window.electron.notificationUser("todo");
         clearInterval(intervalId);
       }
     }, 1000 * 60); // 每1分钟检查一次
