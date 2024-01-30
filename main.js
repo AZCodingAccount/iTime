@@ -6,6 +6,7 @@ const {
   ipcMain,
   shell,
   globalShortcut,
+  Notification,
 } = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
@@ -369,4 +370,58 @@ ipcMain.handle("shortcut-setting", async (event, keys) => {
 // 禁用所有快捷键
 ipcMain.on("disable-all-shortcut", () => {
   globalShortcut.unregisterAll();
+});
+// 调用原生api给用户通知
+// @params type |pomodoro-shortBreak|pomodoro-longBreak|pomodoro-work|timer-half|timer-full|todo
+ipcMain.on("notification-user", (event, type) => {
+  // 也可以传进来title和body，考虑扩展性
+  if (Notification.isSupported()) {
+    let notification = null;
+    switch (type) {
+      case "pomodoro-shortBreak":
+        notification = new Notification({
+          title: "短休息时间到",
+          body: "时间到了，短短的休息一会儿吧",
+          silent: true, // 静音通知
+        });
+        break;
+      case "pomodoro-longBreak":
+        notification = new Notification({
+          title: "长休息时间到",
+          body: "你太棒了，接下来是长休息时间",
+          silent: true, // 静音通知
+        });
+        break;
+      case "pomodoro-work":
+        notification = new Notification({
+          title: "专注时间到",
+          body: "好了，开始专注吧",
+          silent: true, // 静音通知
+        });
+        break;
+      case "timer-half":
+        notification = new Notification({
+          title: "倒计时过半",
+          body: "时间已经过去一半了",
+          silent: true, // 静音通知
+        });
+        break;
+      case "timer-full":
+        notification = new Notification({
+          title: "倒计时结束",
+          body: "倒计时结束了",
+          silent: true, // 静音通知
+        });
+        break;
+      case "todo":
+        notification = new Notification({
+          title: "待办提醒",
+          body: "您现在有计划的安排，提醒您一下哈",
+          silent: true, // 静音通知
+        });
+        break;
+    }
+
+    notification.show();
+  }
 });

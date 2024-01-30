@@ -51,7 +51,7 @@ window.electron.shortcutSetting(customSettingsForIpc);
 watch(
   [customSettings.value.position, customSettings.value.voice],
   (newV, oldV) => {
-    // 刚进来时候oldV是underfined
+    // 刚进来时候oldV是undefined
     if (typeof oldV === undefined) {
       const customSettingsForIpc = JSON.parse(JSON.stringify(oldV));
       window.electron.syncElseSetting(customSettingsForIpc);
@@ -99,6 +99,7 @@ const watchToDos = (todoList) => {
       // 检查当前时间是否在目标时间前后一分钟内
       if (Math.abs(currentTime - targetTime) < 60000) {
         playMusic();
+        window.electron.notificationUser("todo")
         clearInterval(intervalId);
       }
     }, 1000 * 60); // 每1分钟检查一次

@@ -57,9 +57,10 @@ const startTimer = () => {
       totalTime.value = shortBreakDuration * 60; // 短休息
     } else if (hintText.value === "长休息") {
       totalTime.value = longBreakDuration * 60; // 长休息
-    } else if (hintText.value === "待开始") {
-      hintText.value = "专注中";
     }
+  }
+  if (hintText.value === "待开始") {
+    hintText.value = "专注中";
   }
   // 当前没有定时器在运行
   if (intervalId === null) {
@@ -74,21 +75,21 @@ const startTimer = () => {
         clearInterval(intervalId);
         intervalId = null;
 
-        // TODO：调用原生弹窗给用户提示
-        alert("时间到！");
-
         // 更新提示文字并播放音乐
         if (hintText.value === "专注中" && step.value !== longBreakInterval) {
           !isClosed.value && audioShortBreakPlayer.value.play();
+          window.electron.notificationUser("pomodoro-shortBreak");
           hintText.value = "短休息";
         } else if (
           hintText.value === "专注中" &&
           step.value === longBreakInterval
         ) {
           !isClosed.value && audioLongBreakPlayer.value.play();
+          window.electron.notificationUser("pomodoro-longBreak");
           hintText.value = "长休息";
         } else if (hintText.value === "短休息" || hintText.value === "长休息") {
           !isClosed.value && audioFocusPlayer.value.play();
+          window.electron.notificationUser("pomodoro-work");
           // 一个休息以后是一轮
           step.value === longBreakInterval
             ? (step.value = 1)
@@ -96,7 +97,7 @@ const startTimer = () => {
           hintText.value = "专注中";
         } // 修改上方提示文字
         isStart.value = true; // 标记下次再开启定时器是第一次开启
-        startTimer(); //继续计时
+        startTimer(); // 继续计时
       }
     }, 1000);
   }
@@ -156,7 +157,7 @@ const handleDBLClick = (event) => {
   }
   window.electron.openPomodoroWindow("f");
 };
-let lastRightClickTime = "";  // 存储上次右键点击的时间
+let lastRightClickTime = ""; // 存储上次右键点击的时间
 // 右键双击
 const handleContextMenu = (event) => {
   if (event.button === 2) {

@@ -5,7 +5,7 @@ contextBridge.exposeInMainWorld("electron", {
   // 展示右键菜单
   showContextMenu: (type, id, title, content) =>
     ipcRenderer.send("show-context-menu", type, id, title, content),
-  // 移除窗口，好像都可以使用这个方法
+  // 移除窗口，都可以使用这个方法
   removeWindow: () => {
     ipcRenderer.send("remove-window");
   },
@@ -28,9 +28,8 @@ contextBridge.exposeInMainWorld("electron", {
   disableAllShortcut: () => {
     ipcRenderer.send("disable-all-shortcut");
   },
-  // 启用所有快捷键
-  enableAllShortcut: () => {
-    ipcRenderer.send("enable-all-shortcut");
+  notificationUser: (type) => {
+    ipcRenderer.send("notification-user", type);
   },
 
   // 主进程向渲染进程发消息

@@ -73,21 +73,22 @@ const startTimer = () => {
         clearInterval(intervalId);
         intervalId = null;
 
-        // TODO：调用原生弹窗给用户提示
-        alert("时间到！");
-
+       
         // 更新提示文字并播放音乐
         if (hintText.value === "专注中" && step.value !== longBreakInterval) {
           !isClosed.value && audioShortBreakPlayer.value.play();
+          window.electron.notificationUser("pomodoro-shortBreak")
           hintText.value = "短休息";
         } else if (
           hintText.value === "专注中" &&
           step.value === longBreakInterval
         ) {
           !isClosed.value && audioLongBreakPlayer.value.play();
+          window.electron.notificationUser("pomodoro-longBreak")
           hintText.value = "长休息";
         } else if (hintText.value === "短休息" || hintText.value === "长休息") {
           !isClosed.value && audioFocusPlayer.value.play();
+          window.electron.notificationUser("pomodoro-work")
           // 一个休息以后是一轮
           step.value === longBreakInterval
             ? (step.value = 1)

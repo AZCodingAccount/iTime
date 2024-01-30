@@ -67,13 +67,13 @@ const startTimer = () => {
         ); //更新进度条
         if (percent.value == 0.5) {
           !isClosed.value && audioHalfTimePlayer.value.play();
+          window.electron.notificationUser("timer-half")
         }
       } else {
         // 时间结束，做最后的工作
         clearInterval(intervalId);
-        // TODO：调用原生弹窗给用户提示
-        alert("时间到！");
         !isClosed.value && audioFullTimePlayer.value.play();
+        window.electron.notificationUser("timer-full")
         // 恢复到之前的状态
         isBegin.value = false;
         isRunning.value = false;
