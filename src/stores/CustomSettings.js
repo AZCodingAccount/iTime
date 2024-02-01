@@ -20,8 +20,21 @@ export const useCustomSettingsStore = defineStore(
       longBreakDuration: 0.1,
       longBreakInterval: 2,
     };
+
+    const currentPath = window.electron.getAppPath();
+
+    // customSettings.value["f-pomodoro-bgi"] =
+    //   "file:///C:/Users/Albert%20han/Desktop/easyToDo/dist_electron/win-unpacked/resources/assets/defaultBGI.jpg";
+    // 对windows做处理
+    // "C:\\Users\\Albert han\\Desktop\\easyToDo\\dist_electron\\win-unpacked\\resources/assets/defaultBGI.jpg"
+    // 首先加上file前缀 file:///  如果包含\\，替换成/   如果包含空格、替换成%20
+    const originValue = `${currentPath}/assets/defaultBGI.jpg`;
+    const formattedValue = originValue
+      .replace(/\\/g, "/")
+      .replace(/\s/g, "%20");
+    const targetValue = `file:///${formattedValue}`;
     // 默认番茄钟背景图设置
-    customSettings.value["f-pomodoro-bgi"] = "/timeBGI.jpg";
+    customSettings.value["f-pomodoro-bgi"] = targetValue;
     customSettings.value["w-pomodoro-bgi"] = "none";
 
     // 待办图标样式
@@ -75,7 +88,12 @@ export const useCustomSettingsStore = defineStore(
     });
     // 重置番茄钟背景图
     const resetPomodoroBGI = () => {
-      customSettings.value["f-pomodoro-bgi"] = "/timeBGI.jpg";
+      const originValue = `${currentPath}/assets/defaultBGI.jpg`;
+      const formattedValue = originValue
+        .replace(/\\/g, "/")
+        .replace(/\s/g, "%20");
+      const targetValue = `file:///${formattedValue}`;
+      customSettings.value["f-pomodoro-bgi"] = targetValue;
       customSettings.value["w-pomodoro-bgi"] = "none";
     };
     // 重置待办图标
@@ -87,7 +105,8 @@ export const useCustomSettingsStore = defineStore(
     };
     // 重置快捷键设置
     const resetShortcutKeys = () => {
-      customSettings.value["shortcutKeys"] = defaultShortcutKeys;
+      console.log({ ...defaultShortcutKeys.value });
+      customSettings.value["shortcutKeys"] = { ...defaultShortcutKeys.value };
     };
     // 重置位置设置
     const resetPositionSettings = () => {

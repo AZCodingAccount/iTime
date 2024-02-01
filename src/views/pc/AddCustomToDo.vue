@@ -78,7 +78,7 @@ const initTitle = () => {
 // 自定义编辑器的选项
 const editorOptions = {
   placeholder:
-    "请输入您的待办（支持常见快捷键如Ctrl+B加粗、-加空格无序列表、1.加空格有序列表。输入完毕使用Ctrl+Alt+Enter即可保存）",
+    "请输入您的待办（-加空格无序列表、1.加空格有序列表。输入完毕使用Ctrl+Alt+Enter即可保存）",
   theme: "snow", //主题 snow/bubble，bubble好像不行
   modules: {
     // 工具栏

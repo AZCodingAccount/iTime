@@ -11,6 +11,13 @@ const {
 const path = require("path");
 const WinState = require("electron-win-state").default;
 const fs = require("fs");
+let isDev = false;
+// async function checkIsDev() {
+//   const module = await import("electron-is-dev");
+//   isDev = module.default;
+// }
+// checkIsDev();
+// setTimeout(() => {}, 1000);
 
 // 创建一个窗口
 let win = null;
@@ -23,6 +30,8 @@ const createWindow = () => {
     ...WinState.winOptions,
     icon: "public/icons/icon.png", // 指定图标路径
     webPreferences: {
+      webSecurity: false, // 禁用 Web 安全策略
+      nodeIntegration: true, // 启用集成
       // 不安全，不建议使用
       // nodeIntegration: true, // 启用Node.js集成
       // contextIsolation: false, // 取消上下文隔离
@@ -33,8 +42,12 @@ const createWindow = () => {
   win.setSize(1100, 700); // 显式设置窗口大小，因为之前的大小被缓存了
   win.center(); // 使窗口居中
   win.setMenu(null); // 去掉窗口
-  //win.loadFile("index.html");
-  win.loadURL("http://localhost:5173");
+  console.log("test", isDev);
+  if (isDev) {
+    win.loadURL("http://localhost:5173");
+  } else {
+    win.loadFile(path.join("dist", "index.html"));
+  }
   win.webContents.openDevTools(); // 打开开发者工具
   winState.manage(win); // 配置持久化
   win.on("ready-to-show", () => {
@@ -62,7 +75,21 @@ const addToDoToDesktop = (title, content) => {
   });
 
   // 加载本地文件（测试过程中通过url访问）
-  todoWindow.loadURL("http://localhost:5173/desktop/customtodo");
+  if (isDev) {
+    todoWindow.loadURL("http://localhost:5173/desktop/customtodo");
+  } else {
+    // 生产模式：加载打包后的 index.html 文件，并通过哈希路由导航到特定页面
+    todoWindow.loadFile(path.join(__dirname, "dist", "index.html")).then(() => {
+      // 导航到特定路由
+      todoWindow.loadURL(
+        `file://${path.join(
+          __dirname,
+          "dist",
+          "index.html"
+        )}#/desktop/customtodo`
+      );
+    });
+  }
 
   // 等待加载完成以后并且延迟1ms发送消息
   todoWindow.webContents.on("did-finish-load", () => {
@@ -103,7 +130,21 @@ const createTimerWindow = () => {
       preload: path.resolve(__dirname, "./preload"), // 预加载脚本
     },
   });
-  timerWindow.loadURL("http://localhost:5173/fullscreen/timer");
+  if (isDev) {
+    timerWindow.loadURL("http://localhost:5173/fullscreen/timer");
+  } else {
+    timerWindow
+      .loadFile(path.join(__dirname, "dist", "index.html"))
+      .then(() => {
+        timerWindow.loadURL(
+          `file://${path.join(
+            __dirname,
+            "dist",
+            "index.html"
+          )}#/fullscreen/timer`
+        );
+      });
+  }
   timerWindow.on("closed", () => {
     timerWindow = null;
   });
@@ -126,7 +167,17 @@ const createTimerWidgetWindow = () => {
       preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
     },
   });
-  timerWidgetWindow.loadURL("http://localhost:5173/desktop/timer");
+  if (isDev) {
+    timerWidgetWindow.loadURL("http://localhost:5173/desktop/timer");
+  } else {
+    timerWidgetWindow
+      .loadFile(path.join(__dirname, "dist", "index.html"))
+      .then(() => {
+        timerWidgetWindow.loadURL(
+          `file://${path.join(__dirname, "dist", "index.html")}#/desktop/timer`
+        );
+      });
+  }
   timerWidgetWindow.on("closed", () => {
     timerWidgetWindow = null;
   });
@@ -157,8 +208,21 @@ const createPomodoroWindow = () => {
       preload: path.resolve(__dirname, "./preload"),
     },
   });
-  pomodoroWindow.loadURL("http://localhost:5173/fullscreen/pomodoro");
-  // 清除窗口状态
+  if (isDev) {
+    pomodoroWindow.loadURL("http://localhost:5173/fullscreen/pomodoro");
+  } else {
+    pomodoroWindow
+      .loadFile(path.join(__dirname, "dist", "index.html"))
+      .then(() => {
+        pomodoroWindow.loadURL(
+          `file://${path.join(
+            __dirname,
+            "dist",
+            "index.html"
+          )}#/fullscreen/pomodoro`
+        );
+      });
+  } // 清除窗口状态
   pomodoroWindow.on("closed", () => {
     pomodoroWindow = null;
   });
@@ -181,7 +245,24 @@ const createPomodoroWidgetWindow = () => {
       preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
     },
   });
-  pomodoroWidgetWindow.loadURL("http://localhost:5173/desktop/pomodoro");
+  if (isDev) {
+    pomodoroWidgetWindow.loadURL("http://localhost:5173/desktop/pomodoro");
+  } else {
+    pomodoroWidgetWindow
+      .loadFile(path.join(__dirname, "dist", "index.html"))
+      .then(() => {
+        pomodoroWidgetWindow.loadURL(
+          `file://${path.join(
+            __dirname,
+            "dist",
+            "index.html"
+          )}#/desktop/pomodoro`
+        );
+      });
+  } // 清除窗口状态
+  pomodoroWidgetWindow.on("closed", () => {
+    pomodoroWidgetWindow = null;
+  });
   pomodoroWidgetWindow.on("closed", () => {
     pomodoroWidgetWindow = null;
   });
@@ -202,6 +283,11 @@ const createPomodoroWidgetWindow = () => {
 };
 app.whenReady().then(() => {
   createWindow();
+  // // 获取应用的根目录路径
+  // const appPath = app.getAppPath();
+
+  // // 将这个路径存储在全局变量中
+  // global.sharedObject = { appPath };
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -234,7 +320,7 @@ ipcMain.on("show-context-menu", (event, type, id, title, content) => {
   // 根据类型添加不同的菜单项
   if (type === "customToDo") {
     menuTemplate.push({
-      label: "将待办添加到桌面",
+      label: "添加待办挂件",
       click: () => {
         addToDoToDesktop(title, content);
       },
@@ -295,11 +381,13 @@ ipcMain.handle("save-file", (event, type, originFilePath) => {
     // 获取原始文件的扩展名
     const fileExtension = path.extname(originFilePath);
     const fileName = type + fileExtension; // 构造新文件名
-    const newFilePath = path.join(__dirname, pathDir, fileName);
+    const newFilePath = path.join(process.resourcesPath, pathDir, fileName);
     console.log(newFilePath);
     // 确保backgrounds目录存在
-    if (!fs.existsSync(path.join(__dirname, pathDir))) {
-      fs.mkdirSync(path.join(__dirname, pathDir), { recursive: true });
+    if (!fs.existsSync(path.join(process.resourcesPath, pathDir))) {
+      fs.mkdirSync(path.join(process.resourcesPath, pathDir), {
+        recursive: true,
+      });
     }
 
     return new Promise((resolve, reject) => {
@@ -431,3 +519,14 @@ ipcMain.on("notification-user", (event, type) => {
     notification.show();
   }
 });
+
+// try {
+// } catch (error) {
+//   dialog.showMessageBox({
+//     type: "error", // 对话框类型
+//     title: "未知错误", // 标题栏文本
+//     message: "未知错误，请联系开发者", // 主消息文本
+//     detail: error.message, // 详细错误信息
+//     buttons: ["确定"], // 对话框按钮
+//   });
+// }

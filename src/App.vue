@@ -1,8 +1,8 @@
 <script setup>
-import { ref, watchEffect, watch, computed } from "vue";
+import { ref, watchEffect, watch } from "vue";
 import { useCustomSettingsStore } from "./stores/CustomSettings";
 import { useToDoStore } from "./stores/ToDo";
-import { onUnmounted, onMounted } from "vue";
+import { onUnmounted } from "vue";
 // 获取两个pinia仓库
 const customSettingsStore = useCustomSettingsStore();
 const todoStore = useToDoStore();
@@ -10,7 +10,6 @@ const fitMac = async () => {
   // 兼容mac    Control => Command
   const os = await window.electron.getCurrentOS(); // 其实存到本地存储好一点，这样就不用每次都获取了
   if (os === "darwin") {
-    alert(111)
     customSettingsStore.customSettings["shortcutKeys"] = {
       fPomodoro: "Command+Alt+0",
       wPomodoro: "Command+Alt+1",
@@ -101,8 +100,10 @@ const watchToDos = (todoList) => {
     }
 
     const remindTime = ref(todo.remindTime); // 用户选择的时间（ISO 8601格式）
+    const currentPath = window.electron.getAppPath(); // 当前应用的工作路径
+
     const music = new Audio(
-      `/voices/todos/${customSettings.value?.voice?.todoV}/remind.wav`
+      `${currentPath}/assets/voices/todos/${customSettings.value?.voice?.todoV}/remind.wav`
     ); // 音乐文件
 
     // 播放音乐

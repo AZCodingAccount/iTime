@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, app } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", {
   // 渲染进程向主进程发消息
@@ -62,22 +62,8 @@ contextBridge.exposeInMainWorld("electron", {
   shortcutSetting: (customSettingsForIpc) =>
     ipcRenderer.invoke("shortcut-setting", customSettingsForIpc),
   // 获取当前系统
-  getCurrentOS: () => ipcRenderer.invoke("get-current-os"),
-});
+  getCurrentOS: () => ipcRenderer.invoke("get-current-os"), // 直接在预加载进程也可以访问到
 
-// shortcutKeys = {
-//   fPomodoro: "Control+Alt+0",
-//   wPomodoro: "Control+Alt+1",
-//   fTimer: "Control+Alt+2",
-//   wTimer: "Control+Alt+3",
-// };
-// async function invokeMessageToMain() {
-//   const replyMessage = await ipcRenderer.invoke(
-//     "shortcut-setting",
-//     shortcutKeys
-//   );
-//   console.log("replyMessage", replyMessage); // Promise<pending>
-//   const res = await window.electron.shortcutSetting(shortcutKeys);
-//   console.log("res", res); // res2
-// }
-// invokeMessageToMain();
+  // getAppPath: () => global.sharedObject.appPath, // 获取app路径
+  getAppPath: () => process.resourcesPath,
+});

@@ -73,13 +73,14 @@ const onFChange = (_, currentFile) => {
       if (filepath) {
         Message.success(`背景图设置成功 ٩(◕‿◕｡)۶`);
         // 保存到pinia里面
-        if (customSettingsStore.customSettings["f-pomodoro-bgi"]) {
-          customSettingsStore.customSettings["f-pomodoro-bgi"] = filepath;
-        }
+        customSettingsStore.customSettings["f-pomodoro-bgi"] = handlePath(
+          window.electron.getAppPath() + filepath
+        );
       }
     })
     .catch((error) => {
-      console.log("背景图设置失败 (｡•́︿•̀｡)");
+      console.log(error);
+      Message.error("背景图设置失败 (｡•́︿•̀｡)");
     });
 };
 // 存储小部件背景图(widget)
@@ -87,6 +88,7 @@ const onWChange = (_, currentFile) => {
   wFile.value = {
     ...currentFile,
   };
+  console.log(wFile.value.file.path);
   //   此时把文件传递过去让node保存到本地
   window.electron
     .saveFile("w-pomodoro", wFile.value.file.path)
@@ -94,14 +96,20 @@ const onWChange = (_, currentFile) => {
       if (filepath) {
         Message.success(`背景图设置成功 ٩(◕‿◕｡)۶`);
         // 保存到pinia里面
-        if (customSettingsStore.customSettings["w-pomodoro-bgi"]) {
-          customSettingsStore.customSettings["w-pomodoro-bgi"] = filepath;
-        }
+        customSettingsStore.customSettings["w-pomodoro-bgi"] = handlePath(
+          window.electron.getAppPath() + filepath
+        );
       }
     })
     .catch((error) => {
-      console.log("背景图设置失败 (｡•́︿•̀｡)");
+      console.log(error);
+      Message.error("背景图设置失败 (｡•́︿•̀｡)");
     });
+};
+// 处理路径
+const handlePath = (originPath) => {
+  const formattedValue = originPath.replace(/\\/g, "/").replace(/\s/g, "%20");
+  return `file:///${formattedValue}`;
 };
 // 显示上传进度
 const onFProgress = (currentFile) => {
@@ -316,5 +324,4 @@ const resetBGI = () => {
 >>> .arco-form-item {
   margin-bottom: 0px;
 }
-
 </style>

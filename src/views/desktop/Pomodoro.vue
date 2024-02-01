@@ -9,6 +9,7 @@ const isFirst = computed({
   get: () => hasVisitedBeforeStore.widgetPomodoro,
   set: (newValue) => (hasVisitedBeforeStore.widgetPomodoro = newValue),
 });
+const currentPath = window.electron.getAppPath(); // 当前应用的工作路径
 
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
@@ -75,22 +76,21 @@ const startTimer = () => {
         clearInterval(intervalId);
         intervalId = null;
 
-
         // 更新提示文字并播放音乐
         if (hintText.value === "专注中" && step.value !== longBreakInterval) {
           !isClosed.value && audioShortBreakPlayer.value.play();
-          window.electron.notificationUser("pomodoro-shortBreak")
+          window.electron.notificationUser("pomodoro-shortBreak");
           hintText.value = "短休息";
         } else if (
           hintText.value === "专注中" &&
           step.value === longBreakInterval
         ) {
           !isClosed.value && audioLongBreakPlayer.value.play();
-          window.electron.notificationUser("pomodoro-longBreak")
+          window.electron.notificationUser("pomodoro-longBreak");
           hintText.value = "长休息";
         } else if (hintText.value === "短休息" || hintText.value === "长休息") {
           !isClosed.value && audioFocusPlayer.value.play();
-          window.electron.notificationUser("pomodoro-work")
+          window.electron.notificationUser("pomodoro-work");
           // 一个休息以后是一轮
           step.value === longBreakInterval
             ? (step.value = 1)
@@ -108,7 +108,7 @@ const pauseTimer = () => {
   clearInterval(intervalId);
   intervalId = null;
   isRunning.value = false;
-  isStart.value = false; 
+  isStart.value = false;
 };
 // 终止定时器
 const endTimer = () => {
@@ -241,22 +241,20 @@ const handleDBLClick = () => {
     <!-- 播放音频 ：|轮到短休息|轮到长休息|轮到专注|-->
     <audio
       ref="audioShortBreakPlayer"
-      :src="`/voices/pomodoro/${role}/shortBreak.wav`"
+      :src="`${currentPath}/assets/voices/pomodoro/${role}/shortBreak.wav`"
     ></audio>
     <audio
       ref="audioLongBreakPlayer"
-      :src="`/voices/pomodoro/${role}/longBreak.wav`"
+      :src="`${currentPath}/assets/voices/pomodoro/${role}/longBreak.wav`"
     ></audio>
     <audio
       ref="audioFocusPlayer"
-      :src="`/voices/pomodoro/${role}/focus.wav`"
+      :src="`${currentPath}/assets/voices/pomodoro/${role}/focus.wav`"
     ></audio>
   </div>
 </template>
 
 <style scoped>
-/* 在CSS文件中使用@import引入Roboto字体 */
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 /* 定义主界面 */
 /* 定义定时器盒子样式 */
 .pomodoro-timer {

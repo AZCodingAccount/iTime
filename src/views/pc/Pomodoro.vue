@@ -10,12 +10,13 @@ const isFirst = computed({
   set: (newValue) => (hasVisitedBeforeStore.appPomodoro = newValue),
 });
 
+const currentPath = window.electron.getAppPath(); // 当前应用的工作路径
+
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
 const isStart = ref(true); // 是不是第一次启动定时器
 let intervalId = null;
 let isEnding = ref(false); // 定义结束按钮是否显示隐藏
-const backgroundImage = ref("/timeBGI"); // 默认背景图
 
 // 计算分钟
 const minutes = computed(() =>
@@ -30,7 +31,10 @@ const seconds = computed(() =>
 const hintText = ref("待开始"); // 上方提示文字
 // 读取番茄钟配置
 const customSettingsStore = useCustomSettingsStore();
-backgroundImage.value = customSettingsStore.customSettings["f-pomodoro-bgi"];
+const backgroundImage = computed(
+  () => customSettingsStore.customSettings["f-pomodoro-bgi"]
+); // 背景图
+
 const { duration, shortBreakDuration, longBreakDuration, longBreakInterval } =
   customSettingsStore.customSettings["pomodoroSettings"]; // 解构出来
 
@@ -123,6 +127,7 @@ const endTimer = () => {
   isEnding.value = false;
   step.value = 1;
 };
+
 // 挂载完成的初始化工作
 onMounted(() => {
   // 判断是不是第一次
@@ -132,6 +137,15 @@ onMounted(() => {
     });
     isFirst.value = false;
   }
+  /*   const main = document.querySelector(".main"); // 选中元素
+  main.style.setProperty("--backgroundImage", `url(${backgroundImage.value})`); // 设置 CSS 变量
+  alert(backgroundImage.value);
+  console.log(main);
+  // 获取元素的属性值——调试使用
+  const value = getComputedStyle(main)
+    .getPropertyValue("--backgroundImage")
+    .trim();
+  console.log(value); */
   window.addEventListener("keydown", handleKeyDown);
 });
 // 结束的收尾工作
@@ -176,9 +190,9 @@ const handleContextMenu = (event) => {
 <template>
   <div
     class="main"
-    :style="{ backgroundImage: `url(${backgroundImage})` }"
     @contextmenu.prevent="handleContextMenu"
     @dblclick="handleDBLClick"
+    :style="{ backgroundImage: `url(${backgroundImage})` }"
   >
     <div class="pomodoro-timer">
       <!-- 上方提示文字 （专注中、短休息、长休息）-->
@@ -253,15 +267,15 @@ const handleContextMenu = (event) => {
         <!-- 播放音频 ：|轮到短休息|轮到长休息|轮到专注|-->
         <audio
           ref="audioShortBreakPlayer"
-          :src="`/voices/pomodoro/${role}/shortBreak.wav`"
+          :src="`${currentPath}/assets/voices/pomodoro/${role}/shortBreak.wav`"
         ></audio>
         <audio
           ref="audioLongBreakPlayer"
-          :src="`/voices/pomodoro/${role}/longBreak.wav`"
+          :src="`${currentPath}/assets/voices/pomodoro/${role}/longBreak.wav`"
         ></audio>
         <audio
           ref="audioFocusPlayer"
-          :src="`/voices/pomodoro/${role}/focus.wav`"
+          :src="`${currentPath}/assets/voices/pomodoro/${role}/focus.wav`"
         ></audio>
       </div>
     </div>
@@ -269,8 +283,6 @@ const handleContextMenu = (event) => {
 </template>
 
 <style scoped>
-/* 在CSS文件中使用@import引入Roboto字体 */
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 /* 定义主界面样式 */
 .main {
   display: flex;
@@ -280,7 +292,7 @@ const handleContextMenu = (event) => {
   width: 100%;
   height: 100%;
   text-align: center;
-  font-family: "Roboto", sans-serif;
+  font-family:  sans-serif;
   color: white;
   font-weight: 700;
   background-size: cover; /* 覆盖整个容器 */

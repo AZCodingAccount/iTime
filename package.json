@@ -1,17 +1,51 @@
 {
-  "name": "easytodo",
-  "version": "0.0.0",
+  "name": "iTime",
+  "version": "1.0.0",
+  "description": "基于electron+vue3+arco design开发的桌面效率工具",
+  "author": "AlbertZhang<han892577@qq.com>",
   "private": true,
   "main": "main.js",
+  "homepage": "./",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "nodemon --exec electron . --watch ./ --ext .js,.html,.css,.vue"
+    "start": "nodemon --exec electron . --watch ./ --ext .js,.html,.css,.vue",
+    "electron:build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.albertzhang.itime",
+    "productName": "iTime",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "extraFiles": [{
+      "from": "src/assets",
+      "to": "resources/assets"
+    }],
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "dist/icons/icon.png"
+    },
+    "mac": {
+      "target": "dmg"
+    }
   },
   "dependencies": {
+    "@arco-design/web-vue": "^2.54.3",
     "@vueup/vue-quill": "^1.2.0",
     "dayjs": "^1.11.10",
+    "electron-is-dev": "^3.0.1",
     "electron-win-state": "^1.1.22",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
@@ -21,9 +55,9 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
-    "@arco-design/web-vue": "^2.54.3",
     "@vitejs/plugin-vue": "^4.5.2",
     "electron": "^28.1.4",
+    "electron-builder": "^24.9.1",
     "unplugin-auto-import": "^0.17.3",
     "vite": "^5.0.10"
   }

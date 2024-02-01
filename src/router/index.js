@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       // 软件主界面
@@ -9,7 +9,10 @@ const router = createRouter({
       component: () => import("@/views/layout/LayOutContainer.vue"), // 使用箭头函数可以懒加载
       redirect: "/plain/todo",
       children: [
-        { path: "/plain/todo", component: () => import("@/views/pc/PlainToDo.vue") },
+        {
+          path: "/plain/todo",
+          component: () => import("@/views/pc/PlainToDo.vue"),
+        },
         {
           path: "/add/customtodo",
           component: () => import("@/views/pc/AddCustomToDo.vue"),
@@ -47,7 +50,10 @@ const router = createRouter({
           path: "/timer",
           component: () => import("@/views/pc/Timer.vue"),
         },
-        { path: "/pomodoro", component: () => import("@/views/pc/Pomodoro.vue") },
+        {
+          path: "/pomodoro",
+          component: () => import("@/views/pc/Pomodoro.vue"),
+        },
       ],
     },
     // 桌面用的三个路径

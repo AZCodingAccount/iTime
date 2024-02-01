@@ -10,7 +10,12 @@ const isFirst = computed({
   set: (newValue) => (hasVisitedBeforeStore.appTimer = newValue),
 });
 
+const currentPath = window.electron.getAppPath(); // 当前应用的工作路径
 const customSettingsStore = useCustomSettingsStore();
+
+const backgroundImage = computed(
+  () => customSettingsStore.customSettings["f-pomodoro-bgi"]
+); // 背景图
 
 const isRunning = ref(false); // 是否在运行—控制按钮的显示吟唱
 const percent = ref(0); // 定义进度条
@@ -64,13 +69,13 @@ const startTimer = () => {
         ); //更新进度条
         if (percent.value == 0.5) {
           !isClosed.value && audioHalfTimePlayer.value.play();
-          window.electron.notificationUser("timer-half")
+          window.electron.notificationUser("timer-half");
         }
       } else {
         // 时间结束，做最后的工作
         clearInterval(intervalId);
         !isClosed.value && audioFullTimePlayer.value.play();
-        window.electron.notificationUser("timer-full")
+        window.electron.notificationUser("timer-full");
         // 恢复到之前的状态
         isBegin.value = false;
         isRunning.value = false;
@@ -142,6 +147,7 @@ const handleContextMenu = (event) => {
     class="main"
     @dblclick="handleDBLClick"
     @contextmenu.prevent="handleContextMenu"
+    :style="{ backgroundImage: `url(${backgroundImage})` }"
   >
     <div class="timer">
       <!-- 输入框 -->
@@ -198,18 +204,16 @@ const handleContextMenu = (event) => {
     <!-- 播放音频 |时间过半|时间到|-->
     <audio
       ref="audioHalfTimePlayer"
-      :src="`/voices/timer/${role}/halfTime.wav`"
+      :src="`${currentPath}/assets/voices/timer/${role}/halfTime.wav`"
     ></audio>
     <audio
       ref="audioFullTimePlayer"
-      :src="`/voices/timer/${role}/fullTime.wav`"
+      :src="`${currentPath}/assets/voices/timer/${role}/fullTime.wav`"
     ></audio>
   </div>
 </template>
 
 <style scoped>
-/* 在CSS文件中使用@import引入Roboto字体 */
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 /* 主界面样式 */
 .main {
   display: flex;
@@ -219,10 +223,9 @@ const handleContextMenu = (event) => {
   width: 100%;
   height: 100%;
   text-align: center;
-  font-family: "Roboto", sans-serif;
+  font-family: "sans-serif";
   color: white;
   font-weight: 700;
-  background-image: url(/timeBGI.jpg);
   background-size: cover; /* 覆盖整个容器 */
   background-repeat: no-repeat; /* 不重复 */
   background-position: center center; /* 图像居中显示 */

@@ -9,9 +9,13 @@ const hasVisitedBeforeStore = useHasVisitedBeforeStore();
 const isFirst = computed({
   get: () => hasVisitedBeforeStore.fullScreenTimer,
   set: (newValue) => (hasVisitedBeforeStore.fullScreenTimer = newValue),
-});
+}); // 记录是否访问过这个页面
+
+const currentPath = window.electron.getAppPath(); // 当前应用的工作路径
+const backgroundImage = ref(""); // 背景图
 
 const customSettingsStore = useCustomSettingsStore();
+backgroundImage.value = customSettingsStore.customSettings["f-pomodoro-bgi"];
 
 const isRunning = ref(false); // 是否正在运行——控制按钮显隐
 const percent = ref(0); // 定义进度条
@@ -67,13 +71,13 @@ const startTimer = () => {
         ); //更新进度条
         if (percent.value == 0.5) {
           !isClosed.value && audioHalfTimePlayer.value.play();
-          window.electron.notificationUser("timer-half")
+          window.electron.notificationUser("timer-half");
         }
       } else {
         // 时间结束，做最后的工作
         clearInterval(intervalId);
         !isClosed.value && audioFullTimePlayer.value.play();
-        window.electron.notificationUser("timer-full")
+        window.electron.notificationUser("timer-full");
         // 恢复到之前的状态
         isBegin.value = false;
         isRunning.value = false;
@@ -141,7 +145,11 @@ const handleDBLClick = (event) => {
 };
 </script>
 <template>
-  <div class="main" @dblclick="handleDBLClick">
+  <div
+    class="main"
+    @dblclick="handleDBLClick"
+    :style="{ backgroundImage: `url(${backgroundImage})` }"
+  >
     <div class="timer">
       <!-- 输入框 -->
       <a-input-number
@@ -199,18 +207,16 @@ const handleDBLClick = (event) => {
     <!-- 播放音频 |时间过半|时间到|-->
     <audio
       ref="audioHalfTimePlayer"
-      :src="`/voices/timer/${role}/halfTime.wav`"
+      :src="`${currentPath}/assets/voices/timer/${role}/halfTime.wav`"
     ></audio>
     <audio
       ref="audioFullTimePlayer"
-      :src="`/voices/timer/${role}/fullTime.wav`"
+      :src="`${currentPath}/assets/voices/timer/${role}/fullTime.wav`"
     ></audio>
   </div>
 </template>
 
 <style scoped>
-/* 在CSS文件中使用@import引入Roboto字体 */
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 /* 整个界面 */
 .main {
   display: flex;
@@ -220,10 +226,9 @@ const handleDBLClick = (event) => {
   width: 100%;
   height: 100%;
   text-align: center;
-  font-family: "Roboto", sans-serif;
+  font-family:  "sans-serif";
   color: white;
   font-weight: 700;
-  background-image: url(/timeBGI.jpg);
   background-size: cover; /* 覆盖整个容器 */
   background-repeat: no-repeat; /* 不重复 */
   background-position: center center; /* 图像居中显示 */

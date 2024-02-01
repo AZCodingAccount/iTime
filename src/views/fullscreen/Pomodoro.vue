@@ -9,6 +9,8 @@ const isFirst = computed({
   get: () => hasVisitedBeforeStore.fullScreenPomodoro,
   set: (newValue) => (hasVisitedBeforeStore.fullScreenPomodoro = newValue),
 });
+const currentPath = window.electron.getAppPath(); // 当前应用的工作路径
+
 
 const isRunning = ref(false); // 控制按钮显示隐藏
 let totalTime = ref(0); // 计算成的秒数
@@ -240,22 +242,20 @@ const handleDBLClick = (event) => {
     <!-- 播放音频 ：|轮到短休息|轮到长休息|轮到专注|-->
     <audio
       ref="audioShortBreakPlayer"
-      :src="`/voices/pomodoro/${role}/shortBreak.wav`"
+      :src="`${currentPath}/assets/voices/pomodoro/${role}/shortBreak.wav`"
     ></audio>
     <audio
       ref="audioLongBreakPlayer"
-      :src="`/voices/pomodoro/${role}/longBreak.wav`"
+      :src="`${currentPath}/assets/voices/pomodoro/${role}/longBreak.wav`"
     ></audio>
     <audio
       ref="audioFocusPlayer"
-      :src="`/voices/pomodoro/${role}/focus.wav`"
+      :src="`${currentPath}/assets/voices/pomodoro/${role}/focus.wav`"
     ></audio>
   </div>
 </template>
 
 <style scoped>
-/* 在CSS文件中使用@import引入Roboto字体 */
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 /* 定义主界面 */
 .main {
   display: flex;
@@ -265,7 +265,7 @@ const handleDBLClick = (event) => {
   width: 100%;
   height: 100%;
   text-align: center;
-  font-family: "Roboto", sans-serif;
+  font-family:  "sans-serif";
   color: white;
   font-weight: 700;
   background-size: cover; /* 覆盖整个容器 */
