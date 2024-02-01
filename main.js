@@ -33,6 +33,9 @@ async function checkIsDev() {
 checkIsDev();
 
 const work = () => {
+  if (process.platform === "win32") {
+    app.setAppUserModelId(app.name);
+  }
   // 创建一个窗口
   let win = null;
   let globalSettings = []; // 用户全局配置 position:0|voice:1

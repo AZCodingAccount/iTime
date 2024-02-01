@@ -27,6 +27,7 @@ let intervalId = null;
 // 同步输入框和计时器的值
 const handleChange = () => {
   totalTime.value = inputTime.value * 60;
+  originTime.value = totalTime.value; // 兼容重置功能
 };
 // 计算分钟
 const minutes = computed(() =>

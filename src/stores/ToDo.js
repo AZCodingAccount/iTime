@@ -17,7 +17,7 @@ export const useToDoStore = defineStore(
     };
     // 删除待办
     const deleteToDo = (id) => {
-      todoList.value = todoList.value.filter(() => {
+      todoList.value = todoList.value.filter((todo) => {
         if (todo.id === id) {
           return false;
         }

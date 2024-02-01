@@ -88,7 +88,9 @@ const intervalIds = []; // 用于存储所有定时器的ID，以便稍后清理
 
 // 如果todoList发生改变了，重新遍历更新
 const todoList = ref(todoStore.todoList);
+let num = 0; //调试使用
 const watchToDos = (todoList) => {
+  num += 1;
   // 清除之前的定时器
   intervalIds.forEach(clearInterval);
   intervalIds.value = [];
@@ -110,13 +112,13 @@ const watchToDos = (todoList) => {
     const playMusic = () => {
       !customSettings.value?.voice?.isClosedV && music.play();
     };
-    // console.log("注册待办", todo);
+    console.log("注册待办", num, todo);
 
     // 定期检查当前时间是否接近用户设置的时间
     const intervalId = setInterval(() => {
       const currentTime = new Date(); // 当前时间
       const targetTime = new Date(remindTime.value); // 将用户设置的时间转换为Date对象
-      console.log(currentTime, targetTime);
+      console.log("检查时间", currentTime, targetTime);
 
       // 检查当前时间是否在目标时间前后一分钟内
       if (Math.abs(currentTime - targetTime) < 60000) {
@@ -132,7 +134,7 @@ const watchToDos = (todoList) => {
 watchToDos(todoList.value);
 // 使用watch来侦听todoList的变化，并重新设置定时器
 watch(
-  todoList,
+  () => todoStore.todoList,
   (newTodoList) => {
     watchToDos(newTodoList);
   },
