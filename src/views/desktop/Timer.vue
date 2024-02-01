@@ -119,9 +119,8 @@ const handleKeyDown = (e) => {
     // 恢复定时器初始状态
     clearInterval(intervalId);
     intervalId = null;
-    totalTime.value = 0;
-    inputTime.value = originTime.value;
-    originTime.value = 0;
+    inputTime.value = originTime.value / 60;
+    totalTime.value = originTime.value;
     isRunning.value = false;
     percent.value = 0;
     isBegin.value = false;

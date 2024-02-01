@@ -121,9 +121,8 @@ const handleKeyDown = (e) => {
     // 恢复定时器初始状态
     clearInterval(intervalId);
     intervalId = null;
-    inputTime.value = 0;
-    totalTime.value = 0;
-    originTime.value = 0;
+    inputTime.value = originTime.value / 60;
+    totalTime.value = originTime.value;
     isRunning.value = false;
     percent.value = 0;
     isBegin.value = false;
@@ -226,7 +225,7 @@ const handleDBLClick = (event) => {
   width: 100%;
   height: 100%;
   text-align: center;
-  font-family:  "sans-serif";
+  font-family: "sans-serif";
   color: white;
   font-weight: 700;
   background-size: cover; /* 覆盖整个容器 */

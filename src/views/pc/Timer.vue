@@ -115,6 +115,16 @@ const handleKeyDown = (e) => {
   } else if (e.key === "a") {
     // add 添加  打开新窗口
     window.electron.openTimerWindow("a");
+  } else if (e.key === "r") {
+    // r reset
+    // 恢复定时器初始状态
+    clearInterval(intervalId);
+    intervalId = null;
+    inputTime.value = originTime.value / 60;
+    totalTime.value = originTime.value;
+    isRunning.value = false;
+    percent.value = 0;
+    isBegin.value = false;
   }
 };
 // 双击事件
