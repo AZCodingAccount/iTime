@@ -1,12 +1,19 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <!-- 上方介绍卡片 -->
-  <a-card style="width: 400px; margin: 2em auto 5em; font-size: 1.2em" hoverable>
+  <a-card
+    style="width: 400px; margin: 2em auto 5em; font-size: 1.2em"
+    hoverable
+  >
     <!-- 项目详细文档 -->
     <div class="docs" style="text-align: center; margin-bottom: 1em">
-      <a href="https://docs.bugdesigner.cn/docs/tools/iTime_docs.html">📄 软件使用说明书</a>
+      <a
+        href="https://docs.bugdesigner.cn/docs/tools/iTime_docs.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        >📄 软件使用说明书</a
+      >
     </div>
     <!-- 群组 -->
     <div
@@ -74,7 +81,7 @@
           p-id="5011"
         ></path>
       </svg>
-      <div class="hint"> 交流群:753963039</div>
+      <div class="hint">交流群:753963039</div>
     </div>
     <br />
 
@@ -91,7 +98,11 @@
     </div>
   </a-card>
   <!-- 个人联系方式 -->
-  <a-card class="box-card" style="width: 400px; margin: 0 auto" :hoverable="true">
+  <a-card
+    class="box-card"
+    style="width: 400px; margin: 0 auto"
+    :hoverable="true"
+  >
     <template #title>
       <div class="card-header" style="text-align: center">
         <span>联系我</span>
