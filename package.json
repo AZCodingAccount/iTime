@@ -16,6 +16,7 @@
   "build": {
     "appId": "com.albertzhang.itime",
     "productName": "iTime",
+    "asar": true,
     "directories": {
       "output": "dist_electron"
     },
@@ -23,15 +24,19 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
-    "extraFiles": [{
-      "from": "src/assets",
-      "to": "resources/assets"
-    }],
+    "extraFiles": [
+      {
+        "from": "src/assets",
+        "to": "resources/assets"
+      }
+    ],
+    "afterPack": "scripts/afterPack.js",
     "files": [
       "dist/**/*",
       "main.js",
       "preload/**/*",
-      "package.json"
+      "package.json",
+      "scripts/**/*"
     ],
     "win": {
       "target": "nsis",

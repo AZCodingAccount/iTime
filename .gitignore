@@ -13,7 +13,10 @@ dist
 dist-ssr
 coverage
 *.local
+
+.vscode
 dist_electron
+
 
 /cypress/videos/
 /cypress/screenshots/
