@@ -12,6 +12,13 @@ const {
 const path = require("path");
 const WinState = require("electron-win-state").default;
 const fs = require("fs");
+// 检查是否已经有一个实例运行
+const isSingleInstance = app.requestSingleInstanceLock();
+
+if (!isSingleInstance) {
+  // 如果已经有一个实例在运行，关闭当前实例并退出
+  app.quit();
+}
 let isDev = false;
 async function checkIsDev() {
   const module = await import("electron-is-dev");
@@ -42,11 +49,16 @@ const work = () => {
 
   // 创建主窗口
   const createWindow = () => {
+    // 防止打开两个主窗口程序
+    if (win != null) {
+      return;
+    }
     const winState = new WinState({});
     win = new BrowserWindow({
       ...WinState.winOptions,
       icon: "public/icons/icon.png", // 指定图标路径
       webPreferences: {
+        devTools: false,
         webSecurity: false, // 禁用 Web 安全策略
         nodeIntegration: true, // 启用集成
         // 不安全，不建议使用
@@ -305,11 +317,6 @@ const work = () => {
   };
   app.whenReady().then(() => {
     createWindow();
-    // // 获取应用的根目录路径
-    // const appPath = app.getAppPath();
-
-    // // 将这个路径存储在全局变量中
-    // global.sharedObject = { appPath };
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) {
