@@ -38,6 +38,11 @@ const handleOk = () => {
   const id = uuidv4(); // 生成一个uuid
   // 把待办信息存储到本地存储
   toDoStore.addToDo(id, todoContent.value, todoTags.value, remindTime);
+  // 清空输入框内容
+  todoContent.value = "";
+  todoTags.value = [];
+  todoDate.value = "";
+  todoTime.value = "";
   Message.success("添加成功！");
 };
 // 挂载完成以后的初始化工作
