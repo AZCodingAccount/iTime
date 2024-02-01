@@ -111,8 +111,8 @@ export const useCustomSettingsStore = defineStore(
     // 重置位置设置
     const resetPositionSettings = () => {
       customSettings.value["position"] = {
-        pomodoroP: false,
-        timerP: false,
+        pomodoroP: true,
+        timerP: true,
         todoP: false,
       };
     };

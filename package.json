@@ -22,12 +22,17 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true
     },
     "extraFiles": [
       {
         "from": "src/assets",
         "to": "resources/assets"
+      },
+      {
+        "from": "软件使用说明书.md",
+        "to": "软件使用说明书.md"
       }
     ],
     "afterPack": "scripts/afterPack.js",
