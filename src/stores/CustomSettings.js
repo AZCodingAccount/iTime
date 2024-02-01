@@ -7,19 +7,19 @@ export const useCustomSettingsStore = defineStore(
     const customSettings = ref({}); // 自定义设置，必须暴露出去，不然持久化不生效
     // 有自定义快捷键、自定义番茄钟设置，自定义字体设置
     // 默认番茄钟设置
-    // customSettings.value["pomodoroSettings"] = {
-    //   duration: 25,
-    //   shortBreakDuration: 5,
-    //   longBreakDuration: 15,
-    //   longBreakInterval: 4,
-    // };
-    // 测试设置
     customSettings.value["pomodoroSettings"] = {
-      duration: 0.1,
-      shortBreakDuration: 0.1,
-      longBreakDuration: 0.1,
-      longBreakInterval: 2,
+      duration: 25,
+      shortBreakDuration: 5,
+      longBreakDuration: 15,
+      longBreakInterval: 4,
     };
+    // // 测试设置
+    // customSettings.value["pomodoroSettings"] = {
+    //   duration: 0.1,
+    //   shortBreakDuration: 0.1,
+    //   longBreakDuration: 0.1,
+    //   longBreakInterval: 2,
+    // };
 
     const currentPath = window.electron.getAppPath();
 
@@ -46,22 +46,22 @@ export const useCustomSettingsStore = defineStore(
     // 默认快捷键设置
     customSettings.value["shortcutKeys"] = {
       fPomodoro: "Control+Alt+0",
-      wPomodoro: "Control+Alt+1",
-      fTimer: "Control+Alt+2",
-      wTimer: "Control+Alt+3",
+      wPomodoro: "Control+Alt+9",
+      fTimer: "Control+Alt+8",
+      wTimer: "Control+Alt+7",
     };
     let defaultShortcutKeys = ref({
       fPomodoro: "Control+Alt+0",
-      wPomodoro: "Control+Alt+1",
-      fTimer: "Control+Alt+2",
-      wTimer: "Control+Alt+3",
+      wPomodoro: "Control+Alt+9",
+      fTimer: "Control+Alt+8",
+      wTimer: "Control+Alt+7",
     });
 
     // 默认位置设置，是否在顶层
     customSettings.value["position"] = {
       pomodoroP: false,
-      timerP: false,
-      todoP: false,
+      timerP: true,
+      todoP: true,
     };
 
     // 提示语音设置

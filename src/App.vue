@@ -12,15 +12,15 @@ const fitMac = async () => {
   if (os === "darwin") {
     customSettingsStore.customSettings["shortcutKeys"] = {
       fPomodoro: "Command+Alt+0",
-      wPomodoro: "Command+Alt+1",
-      fTimer: "Command+Alt+2",
-      wTimer: "Command+Alt+3",
+      wPomodoro: "Command+Alt+9",
+      fTimer: "Command+Alt+8",
+      wTimer: "Command+Alt+7",
     };
     customSettingsStore.defaultShortcutKeys = {
       fPomodoro: "Command+Alt+0",
-      wPomodoro: "Command+Alt+1",
-      fTimer: "Command+Alt+2",
-      wTimer: "Command+Alt+3",
+      wPomodoro: "Command+Alt+9",
+      fTimer: "Command+Alt+8",
+      wTimer: "Command+Alt+7",
     };
   }
 };
@@ -84,18 +84,21 @@ watch(
 );
 
 // 给用户有关待办的提示(这个定时器的注册一定要慎重一点，必须注意释放资源，不然应用就会像百度网盘一样卡)
-const intervalIds = []; // 用于存储所有定时器的ID，以便稍后清理
 
 // 如果todoList发生改变了，重新遍历更新
-const todoList = ref(todoStore.todoList);
+const todoList = todoStore.todoList;
 let num = 0; //调试使用
-const watchToDos = (todoList) => {
+let intervalIds = []; // 用于存储所有定时器的ID，以便稍后清理
+const watchToDos = (newTodoList) => {
   num += 1;
   // 清除之前的定时器
-  intervalIds.forEach(clearInterval);
-  intervalIds.value = [];
+  intervalIds.forEach((id) => {
+    clearInterval(id);
+    console.log("清除定时器ID:", id);
+  });
+  intervalIds = [];
   // 挨个注册定时器
-  todoList.forEach((todo) => {
+  newTodoList.forEach((todo) => {
     // 两种情况不注册定时器 1：设置的时间已经发生过了   2：待办已经被标记为完成了
     if (todo.isFinish || new Date(todo.remindTime) < new Date()) {
       return;
@@ -127,11 +130,11 @@ const watchToDos = (todoList) => {
         clearInterval(intervalId);
       }
     }, 1000 * 60); // 每1分钟检查一次
-    intervalIds.value.push(intervalId);
+    intervalIds.push(intervalId);
   });
 };
 // 进来先注册一次
-watchToDos(todoList.value);
+watchToDos(todoList);
 // 使用watch来侦听todoList的变化，并重新设置定时器
 watch(
   () => todoStore.todoList,
