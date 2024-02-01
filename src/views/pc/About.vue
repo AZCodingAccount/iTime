@@ -6,7 +6,7 @@
   <a-card style="width: 400px; margin: 2em auto 5em; font-size: 1.2em" hoverable>
     <!-- 项目详细文档 -->
     <div class="docs" style="text-align: center; margin-bottom: 1em">
-      <a href="docs.bugdesigner.cn">📄 软件使用说明书</a>
+      <a href="https://docs.bugdesigner.cn/docs/tools/iTime_docs.html">📄 软件使用说明书</a>
     </div>
     <!-- 群组 -->
     <div
