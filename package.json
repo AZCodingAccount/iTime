@@ -36,6 +36,7 @@
       }
     ],
     "afterPack": "scripts/afterPack.js",
+    "artifactBuildCompleted": "scripts/rename.js",
     "files": [
       "dist/**/*",
       "main.js",
