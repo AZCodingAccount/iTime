@@ -59,9 +59,9 @@ export const useCustomSettingsStore = defineStore(
 
     // 默认位置设置，是否在顶层
     customSettings.value["position"] = {
-      pomodoroP: false,
+      pomodoroP: true,
       timerP: true,
-      todoP: true,
+      todoP: false,
     };
 
     // 提示语音设置
