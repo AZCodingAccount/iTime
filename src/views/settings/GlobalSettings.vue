@@ -45,7 +45,7 @@ const beginKeyBoardListener = () => {
       event.preventDefault(); // 阻止默认行为
     }
   };
-  // 捕捉键盘弹起时间
+  // 捕捉键盘弹起事件
   const keyUpHandler = (event) => {
     console.log("up", event.key);
     pressedKeys.pop(); // 释放键时移除
