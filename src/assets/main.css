@@ -68,7 +68,7 @@ ol li{
 } 
 /* 原本没有间距 */
 li {
-  margin: 0.7em 0;
+  margin: 0.8em 0;
 }
 /* marker用于定制元素的样式（比如大小颜色），before用于改变样式，比如改变标点符号,必须加！important，不然会被覆盖 */
 /* 无序列表 */

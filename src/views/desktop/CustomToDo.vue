@@ -6,6 +6,7 @@ const todoContent = ref(""); // 页面渲染的内容
 window.electron.loadHtmlContent((title, content) => {
   todoTitle.value = title;
   todoContent.value = content;
+  console.log(todoContent.value);
 });
 const draggable = ref(true);
 const isShowContent = ref(true);
@@ -18,7 +19,6 @@ const handleDBLClick = () => {
   // 隐藏下方内容
   isShowContent.value = !isShowContent.value;
 };
-
 </script>
 <template>
   <div
@@ -76,7 +76,12 @@ const handleDBLClick = () => {
 
     <hr v-if="isShowContent" />
     <!-- 内容部分 -->
-    <div v-html="todoContent" class="content" v-if="isShowContent"></div>
+    <div
+      v-html="todoContent"
+      style="white-space: pre-wrap"
+      class="content"
+      v-if="isShowContent"
+    ></div>
   </div>
 </template>
 <style scoped>
@@ -114,6 +119,8 @@ const handleDBLClick = () => {
 }
 .content {
   padding: 8px 1vw;
+  font-family: Helvetica, Arial, sans-serif;
+  tab-size: 4;
 }
 /* 可拖拽 */
 .draggable {
