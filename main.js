@@ -235,6 +235,7 @@ const work = () => {
       frame: false,
       fullscreen: true,
       resizable: false,
+      skipTaskbar: true, // 不在任务栏中显示
       webPreferences: {
         // webSecurity: false, // 允许加载本地文件
         // allowFileAccess: true, // 允许访问文件
