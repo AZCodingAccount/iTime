@@ -76,7 +76,7 @@ const work = () => {
     } else {
       win.loadFile(path.join("dist", "index.html"));
     }
-    win.webContents.openDevTools(); // 打开开发者工具
+    // win.webContents.openDevTools(); // 打开开发者工具
     winState.manage(win); // 配置持久化
     win.on("ready-to-show", () => {
       win.show();
@@ -126,7 +126,7 @@ const work = () => {
       setTimeout(() => {
         todoWindow.webContents.send("load-html-content", title, content);
         console.log("Message sent after delay!");
-      }, 100); // 延迟时间，以毫秒为单位
+      }, 1000); // 延迟时间，以毫秒为单位
     });
     todoWindow.setAlwaysOnTop(globalSettings[0].todoP); // 动态配置是否置顶
 
