@@ -14,7 +14,7 @@ const selfForm = ref({
 const customSettingsStore = useCustomSettingsStore();
 const todoIcons = customSettingsStore.customSettings["todo-icons"];
 onMounted(() => {
-  // 双向绑定
+  // 双向绑定，这里不知道为啥没生效......对象的话应该是引用
   if (todoIcons) {
     form.value = todoIcons;
     selfForm.value = todoIcons;
@@ -22,8 +22,8 @@ onMounted(() => {
 });
 // 重置表单
 const resetForm = () => {
-  const todoIcons = customSettingsStore.customSettings["todo-icons"];
   customSettingsStore.resetForm();
+  const todoIcons = customSettingsStore.customSettings["todo-icons"];
   // 手动赋值
   form.value = todoIcons;
   selfForm.value = todoIcons;

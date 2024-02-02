@@ -24,6 +24,8 @@ const isBegin = ref(false); // 定义是否开始
 const inputTime = ref(0); // 输入的时间
 const totalTime = ref(0); // 计算成的秒数
 let intervalId = null; // 定时器id
+let halfFirst = true; // 标记提醒的是不是第一次half
+
 // 同步输入框和定时器的时间
 const handleChange = () => {
   totalTime.value = inputTime.value * 60;
@@ -69,7 +71,8 @@ const startTimer = () => {
         percent.value = Number(
           (1 - totalTime.value / originTime.value).toFixed(2)
         ); //更新进度条
-        if (percent.value == 0.5) {
+        if (percent.value == 0.5 && halfFirst == true) {
+          halfFirst = false;
           !isClosed.value && audioHalfTimePlayer.value.play();
           window.electron.notificationUser("timer-half");
         }
