@@ -25,9 +25,11 @@ git pull https://github.com/AZCodingAccount/iTime.git
 
 - 运行项目
 
+
+
 ```bash
 cd 拉取项目目录
-pnpm i	   # 安装依赖
+pnpm i	    # 安装依赖
 pnpm dev    # 运行vue程序
 pnpm start	# 运行electron桌面程序
 ```
