@@ -54,11 +54,18 @@ html {
 /* 在这里自定义一些html全局样式，其实需要定义的也不算多，就一个列表和标题。需要自己把握间距了~~~ */
 /* 原本40px */
 ul {
-  padding-inline-start: 25px;
+  padding-inline-start: 17px;
 }
 ol {
   padding-inline-start: 25px;
 }
+ul li{
+  padding-left: 4px;
+}
+
+ol li{
+    padding-left: 2px;
+} 
 /* 原本没有间距 */
 li {
   margin: 0.7em 0;
