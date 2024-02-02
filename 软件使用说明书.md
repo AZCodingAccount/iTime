@@ -67,7 +67,6 @@
 <img src="https://my-picture-bed1-1321100201.cos.ap-beijing.myqcloud.com/mypictures/%E5%BE%85%E5%8A%9E%E8%AE%BE%E7%BD%AE%E6%BC%94%E7%A4%BA.gif" alt="待办设置演示" style="zoom:33%;" />
 
 - 待办列表项设置🗃️。您可以自定义有序列表和无序列表前面显示的图标。
-  -
 
 <img src="https://my-picture-bed1-1321100201.cos.ap-beijing.myqcloud.com/mypictures/%E6%97%B6%E9%92%9F%E8%AE%BE%E7%BD%AE%E6%BC%94%E7%A4%BA.gif" alt="时钟设置演示" style="zoom:33%;" />
 
