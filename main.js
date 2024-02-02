@@ -121,12 +121,13 @@ const work = () => {
         });
     }
 
-    // 等待加载完成以后并且延迟1ms发送消息
+    // 等待加载完成以后并且延迟500ms发送消息
+    // 自行测试时间，之前我的100ms就可以，但是电脑性能慢一点需要的时间更多，我索性就直接500ms了
     todoWindow.webContents.on("did-finish-load", () => {
       setTimeout(() => {
         todoWindow.webContents.send("load-html-content", title, content);
         console.log("Message sent after delay!");
-      }, 1000); // 延迟时间，以毫秒为单位
+      }, 500); // 延迟时间，以毫秒为单位
     });
     todoWindow.setAlwaysOnTop(globalSettings[0].todoP); // 动态配置是否置顶
 
