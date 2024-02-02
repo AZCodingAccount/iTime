@@ -33,7 +33,7 @@ contextBridge.exposeInMainWorld("electron", {
   },
 
   // 主进程向渲染进程发消息
-  // 参数是一个回调函数，用的话直接访问回调函数即可。
+  // 参数是一个回调函数，用的话直接使用回调函数即可。
   // 接收参数
   loadHtmlContent: (callback) => {
     ipcRenderer.on("load-html-content", (event, title, content) => {
@@ -63,7 +63,6 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.invoke("shortcut-setting", customSettingsForIpc),
   // 获取当前系统
   getCurrentOS: () => ipcRenderer.invoke("get-current-os"), // 直接在预加载进程也可以访问到
-
-  // getAppPath: () => global.sharedObject.appPath, // 获取app路径
+  // 获取app路径
   getAppPath: () => process.resourcesPath,
 });
