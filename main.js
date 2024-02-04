@@ -8,6 +8,7 @@ const {
   globalShortcut,
   Notification,
   dialog,
+  powerSaveBlocker,
 } = require("electron");
 const path = require("path");
 const WinState = require("electron-win-state").default;
@@ -61,6 +62,7 @@ const work = () => {
         devTools: false,
         webSecurity: false, // 禁用 Web 安全策略
         nodeIntegration: true, // 启用集成
+        backgroundThrottling: false, // 取消节流
         // 不安全，不建议使用
         // nodeIntegration: true, // 启用Node.js集成
         // contextIsolation: false, // 取消上下文隔离
@@ -98,6 +100,7 @@ const work = () => {
       skipTaskbar: true, // 不在任务栏中显示
       webPreferences: {
         sandbox: false, // 取消沙箱模式
+        backgroundThrottling: false, // 取消节流
         preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
       },
     });
@@ -159,6 +162,7 @@ const work = () => {
       webPreferences: {
         sandbox: false, // 取消沙箱模式
         preload: path.resolve(__dirname, "./preload"), // 预加载脚本
+        backgroundThrottling: false, // 取消节流
       },
     });
     if (isDev) {
@@ -196,6 +200,7 @@ const work = () => {
       webPreferences: {
         sandbox: false, // 取消沙箱模式
         preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
+        backgroundThrottling: false, // 取消节流
       },
     });
     if (isDev) {
@@ -241,6 +246,7 @@ const work = () => {
         // webSecurity: false, // 允许加载本地文件
         // allowFileAccess: true, // 允许访问文件
         sandbox: false, // 取消沙箱模式
+        backgroundThrottling: false, // 取消节流
         preload: path.resolve(__dirname, "./preload"),
       },
     });
@@ -277,6 +283,7 @@ const work = () => {
       resizable: false,
       skipTaskbar: true, // 不在任务栏中显示
       webPreferences: {
+        backgroundThrottling: false, // 取消节流
         sandbox: false, // 取消沙箱模式
         preload: path.resolve(__dirname, "./preload"), // 配置预加载脚本
       },
@@ -319,6 +326,9 @@ const work = () => {
   };
   app.whenReady().then(() => {
     createWindow();
+
+    // 阻止应用进入低功耗模式
+    const id = powerSaveBlocker.start("prevent-app-suspension");
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) {

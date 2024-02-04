@@ -1,6 +1,6 @@
 {
   "name": "iTime",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "基于electron+vue3+arco design开发的桌面效率工具",
   "author": "AlbertZhang<han892577@qq.com>",
   "private": true,
