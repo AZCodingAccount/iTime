@@ -59,7 +59,7 @@ const work = () => {
       ...WinState.winOptions,
       icon: "public/icons/icon.png", // 指定图标路径
       webPreferences: {
-        // devTools: false,
+        devTools: false,
         webSecurity: false, // 禁用 Web 安全策略
         nodeIntegration: true, // 启用集成
         backgroundThrottling: false, // 取消节流
@@ -78,7 +78,7 @@ const work = () => {
     } else {
       win.loadFile(path.join("dist", "index.html"));
     }
-    win.webContents.openDevTools(); // 打开开发者工具
+    // win.webContents.openDevTools(); // 打开开发者工具
     winState.manage(win); // 配置持久化
     win.on("ready-to-show", () => {
       win.show();
