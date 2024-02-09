@@ -109,19 +109,27 @@ const work = () => {
     if (isDev) {
       todoWindow.loadURL("http://localhost:5173/#/desktop/customtodo");
     } else {
-      // 生产模式：加载打包后的 index.html 文件，并通过哈希路由导航到特定页面
-      todoWindow
-        .loadFile(path.join(__dirname, "dist", "index.html"))
-        .then(() => {
-          // 导航到特定路由
-          todoWindow.loadURL(
-            `file://${path.join(
-              __dirname,
-              "dist",
-              "index.html"
-            )}#/desktop/customtodo`
-          );
-        });
+      // // 生产模式：加载打包后的 index.html 文件，并通过哈希路由导航到特定页面
+      // todoWindow
+      //   .loadFile(path.join(__dirname, "dist", "index.html"))
+      //   .then(() => {
+      //     // 导航到特定路由
+      //     todoWindow.loadURL(
+      //       `file://${path.join(
+      //         __dirname,
+      //         "dist",
+      //         "index.html"
+      //       )}#/desktop/customtodo`
+      //     );
+      //   });
+      // 导航到特定路由
+      todoWindow.loadURL(
+        `file://${path.join(
+          __dirname,
+          "dist",
+          "index.html"
+        )}#/desktop/customtodo`
+      );
     }
 
     // 等待加载完成以后并且延迟500ms发送消息
@@ -168,20 +176,20 @@ const work = () => {
     if (isDev) {
       timerWindow.loadURL("http://localhost:5173/#/fullscreen/timer");
     } else {
-      timerWindow
-        .loadFile(path.join(__dirname, "dist", "index.html"))
-        .then(() => {
-          timerWindow.loadURL(
-            `file://${path.join(
-              __dirname,
-              "dist",
-              "index.html"
-            )}#/fullscreen/timer`
-          );
-        });
-      // timerWindow.loadURL(
-      //   `file://${path.join(__dirname, "dist", "index.html")}#/fullscreen/timer`
-      // );
+      // timerWindow
+      //   .loadFile(path.join(__dirname, "dist", "index.html"))
+      //   .then(() => {
+      //     timerWindow.loadURL(
+      //       `file://${path.join(
+      //         __dirname,
+      //         "dist",
+      //         "index.html"
+      //       )}#/fullscreen/timer`
+      //     );
+      //   });
+      timerWindow.loadURL(
+        `file://${path.join(__dirname, "dist", "index.html")}#/fullscreen/timer`
+      );
     }
     timerWindow.on("closed", () => {
       timerWindow = null;
@@ -209,17 +217,20 @@ const work = () => {
     if (isDev) {
       timerWidgetWindow.loadURL("http://localhost:5173/#/desktop/timer");
     } else {
-      timerWidgetWindow
-        .loadFile(path.join(__dirname, "dist", "index.html"))
-        .then(() => {
-          timerWidgetWindow.loadURL(
-            `file://${path.join(
-              __dirname,
-              "dist",
-              "index.html"
-            )}#/desktop/timer`
-          );
-        });
+      // timerWidgetWindow
+      //   .loadFile(path.join(__dirname, "dist", "index.html"))
+      //   .then(() => {
+      //     timerWidgetWindow.loadURL(
+      //       `file://${path.join(
+      //         __dirname,
+      //         "dist",
+      //         "index.html"
+      //       )}#/desktop/timer`
+      //     );
+      //   });
+      timerWidgetWindow.loadURL(
+        `file://${path.join(__dirname, "dist", "index.html")}#/desktop/timer`
+      );
     }
     timerWidgetWindow.on("closed", () => {
       timerWidgetWindow = null;
@@ -256,17 +267,24 @@ const work = () => {
     if (isDev) {
       pomodoroWindow.loadURL("http://localhost:5173/#/fullscreen/pomodoro");
     } else {
-      pomodoroWindow
-        .loadFile(path.join(__dirname, "dist", "index.html"))
-        .then(() => {
-          pomodoroWindow.loadURL(
-            `file://${path.join(
-              __dirname,
-              "dist",
-              "index.html"
-            )}#/fullscreen/pomodoro`
-          );
-        });
+      // pomodoroWindow
+      //   .loadFile(path.join(__dirname, "dist", "index.html"))
+      //   .then(() => {
+      //     pomodoroWindow.loadURL(
+      //       `file://${path.join(
+      //         __dirname,
+      //         "dist",
+      //         "index.html"
+      //       )}#/fullscreen/pomodoro`
+      //     );
+      //   });
+      pomodoroWindow.loadURL(
+        `file://${path.join(
+          __dirname,
+          "dist",
+          "index.html"
+        )}#/fullscreen/pomodoro`
+      );
     } // 清除窗口状态
     pomodoroWindow.on("closed", () => {
       pomodoroWindow = null;
@@ -294,17 +312,20 @@ const work = () => {
     if (isDev) {
       pomodoroWidgetWindow.loadURL("http://localhost:5173/#/desktop/pomodoro");
     } else {
-      pomodoroWidgetWindow
-        .loadFile(path.join(__dirname, "dist", "index.html"))
-        .then(() => {
-          pomodoroWidgetWindow.loadURL(
-            `file://${path.join(
-              __dirname,
-              "dist",
-              "index.html"
-            )}#/desktop/pomodoro`
-          );
-        });
+      // pomodoroWidgetWindow
+      //   .loadFile(path.join(__dirname, "dist", "index.html"))
+      //   .then(() => {
+      //     pomodoroWidgetWindow.loadURL(
+      //       `file://${path.join(
+      //         __dirname,
+      //         "dist",
+      //         "index.html"
+      //       )}#/desktop/pomodoro`
+      //     );
+      //   });
+      pomodoroWidgetWindow.loadURL(
+        `file://${path.join(__dirname, "dist", "index.html")}#/desktop/pomodoro`
+      );
     } // 清除窗口状态
     pomodoroWidgetWindow.on("closed", () => {
       pomodoroWidgetWindow = null;
