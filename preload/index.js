@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer, app } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", {
   // 渲染进程向主进程发消息
@@ -49,7 +49,7 @@ contextBridge.exposeInMainWorld("electron", {
   },
   // 编辑待办
   editToDo: (callback) => {
-    ipcRenderer.on("edit-todo", (event, id) => {
+    ipcRenderer.on("edit-", (event, id) => {
       callback(id);
     });
   },
