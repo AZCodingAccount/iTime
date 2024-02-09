@@ -49,7 +49,7 @@ contextBridge.exposeInMainWorld("electron", {
   },
   // 编辑待办
   editToDo: (callback) => {
-    ipcRenderer.on("edit-", (event, id) => {
+    ipcRenderer.on("edit-todo", (event, id) => {
       callback(id);
     });
   },
