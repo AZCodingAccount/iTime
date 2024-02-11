@@ -109,19 +109,6 @@ const work = () => {
     if (isDev) {
       todoWindow.loadURL("http://localhost:5173/#/desktop/customtodo");
     } else {
-      // // 生产模式：加载打包后的 index.html 文件，并通过哈希路由导航到特定页面
-      // todoWindow
-      //   .loadFile(path.join(__dirname, "dist", "index.html"))
-      //   .then(() => {
-      //     // 导航到特定路由
-      //     todoWindow.loadURL(
-      //       `file://${path.join(
-      //         __dirname,
-      //         "dist",
-      //         "index.html"
-      //       )}#/desktop/customtodo`
-      //     );
-      //   });
       // 导航到特定路由
       todoWindow.loadURL(
         `file://${path.join(
