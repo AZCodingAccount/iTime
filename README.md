@@ -4,6 +4,7 @@
 
 ​ iTime🕰️ 是一款基于**vue3**、**arco design**、**electron**开发的桌面端效率应用，slogan 是`让每一秒都刚刚好`，意为提高您的效率，帮助您充分利用自己的每一秒。项目功能模块有**待办模块**、**倒计时模块**、**番茄钟模块**、**自定义设置模块**。
 ## 项目预览 👀
+B站视频地址：[基于electron开发的桌面端效率软件—第一期【功能介绍】](https://www.bilibili.com/video/BV1Yt421W79i)
 
 移步[iTime软件使用介绍](https://github.com/AZCodingAccount/iTime/blob/master/软件使用说明书.md)，内有详细功能介绍与Gif图
 
